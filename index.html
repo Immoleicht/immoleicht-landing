@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Immoleicht — bringt diese Wohnung Geld oder kostet sie welche?</title>
+<meta name="description" content="Immoleicht zeigt zu jeder Einheit, ob sie Überschuss oder Minus macht — Miete, Darlehensrate und Kosten in einer Rechnung. Die erste Einheit ist dauerhaft kostenlos.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='25' font-size='26'>🏠</text></svg>">
+
+<style>
+/*
+  Gestaltung übernommen aus dem Designsystem der Anwendung (src/app/globals.css).
+  Bewusst keine eigenen Farben und keine eigene Schrift: Sonst entstehen zwei
+  Erscheinungsbilder, die DESIGN-2 später beide einsammeln müsste.
+
+  Die eine Regel, die alles zusammenhält:
+  Farbe bedeutet ausschliesslich Zustand. Grün heisst "bringt Geld", Rot heisst
+  "kostet Geld". Sonst ist nichts farbig — auch keine Schaltfläche.
+*/
+:root {
+  --grund:      hsl(120 7% 97%);
+  --text:       hsl(144 7% 13%);
+  --leise:      hsl(143 3% 49%);
+  --karte:      hsl(0 0% 100%);
+  --linie:      hsl(140 6% 91%);
+  --positiv:    hsl(154 29% 33%);
+  --positiv-fl: hsl(154 30% 93%);
+  --kritisch:   hsl(6 50% 44%);
+  --kritisch-fl:hsl(6 55% 95%);
+  --radius: 0.75rem;
+  --serif: ui-serif, "Iowan Old Style", Charter, Georgia, serif;
+  --sans: "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --grund:      hsl(144 8% 9%);
+    --text:       hsl(120 7% 94%);
+    --leise:      hsl(143 4% 62%);
+    --karte:      hsl(144 7% 12%);
+    --linie:      hsl(144 6% 20%);
+    --positiv:    hsl(154 38% 62%);
+    --positiv-fl: hsl(154 22% 17%);
+    --kritisch:   hsl(6 62% 66%);
+    --kritisch-fl:hsl(6 30% 18%);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.huelle { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+
+.marke {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  margin: 0 0 3.5rem;
+}
+.marke b { font-weight: 600; }
+
+h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0 0 1rem;
+}
+.vorspann { font-size: 1.15rem; color: var(--leise); margin: 0 0 2.5rem; max-width: 34rem; }
+
+/* ── Die Rechnung: das Kernstück der Seite ─────────────────────────────── */
+.rechnungen { display: grid; gap: 1rem; margin: 0 0 1rem; }
+@media (min-width: 40rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
+
+.rechnung {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1rem;
+}
+.rechnung h2 {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.85rem;
+}
+.rechnung h2 span { display: block; font-weight: 400; color: var(--leise); font-size: 0.82rem; }
+
+.zeile { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.3rem 0; }
+.zeile dt { color: var(--leise); font-size: 0.9rem; }
+.zeile dd { margin: 0; font-family: var(--mono); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+
+dl { margin: 0; }
+.summe {
+  margin-top: 0.65rem; padding-top: 0.7rem;
+  border-top: 1px solid var(--linie);
+}
+.summe dt { color: var(--text); font-weight: 600; font-size: 0.9rem; }
+.summe dd { font-weight: 700; font-size: 1.05rem; }
+
+.gut { color: var(--positiv); }
+.schlecht { color: var(--kritisch); }
+
+.merker {
+  display: inline-block; margin-top: 0.75rem;
+  font-size: 0.78rem; padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.merker.gut { background: var(--positiv-fl); }
+.merker.schlecht { background: var(--kritisch-fl); }
+
+.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 0 0 3.5rem; }
+
+/* ── Fliesstext ────────────────────────────────────────────────────────── */
+h3 {
+  font-family: var(--serif); font-weight: 600;
+  font-size: 1.35rem; letter-spacing: -0.01em;
+  margin: 0 0 0.6rem;
+}
+section { margin-bottom: 3rem; }
+section p { margin: 0 0 1rem; max-width: 34rem; }
+
+.preis { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Keine Zierfarbe: Verweise tragen die Textfarbe, wie in der Anwendung. */
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; border-radius: 3px; }
+
+.zugang {
+  display: inline-block; margin-top: 0.4rem;
+  border: 1px solid var(--text); border-radius: var(--radius);
+  padding: 0.6rem 1.1rem; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+}
+.zugang:hover { background: var(--text); color: var(--grund); }
+
+footer {
+  border-top: 1px solid var(--linie); padding-top: 1.5rem;
+  color: var(--leise); font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+<main class="huelle">
+
+  <p class="marke"><b>Immoleicht</b></p>
+
+  <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
+  <p class="vorspann">
+    Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
+    bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
+  </p>
+
+  <div class="rechnungen">
+
+    <article class="rechnung">
+      <h2>Wohnung 3 <span>2. OG links · 68 m²</span></h2>
+      <dl>
+        <div class="zeile"><dt>Kaltmiete</dt><dd>+ 780,00</dd></div>
+        <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
+        <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
+        <div class="zeile summe"><dt>Überschuss</dt><dd class="gut">+ 22,60 €</dd></div>
+      </dl>
+      <span class="merker gut">trägt sich</span>
+    </article>
+
+    <article class="rechnung">
+      <h2>Wohnung 1 <span>Erdgeschoss · 71 m²</span></h2>
+      <dl>
+        <div class="zeile"><dt>Kaltmiete</dt><dd>+ 540,00</dd></div>
+        <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
+        <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
+        <div class="zeile summe"><dt>Fehlbetrag</dt><dd class="schlecht">− 217,40 €</dd></div>
+      </dl>
+      <span class="merker schlecht">zahlt drauf</span>
+    </article>
+
+  </div>
+  <p class="lesehilfe">
+    Beispielzahlen. Farbe hat in Immoleicht genau eine Bedeutung: Sie sagt, wie es um
+    eine Sache steht — nie, dass etwas hübsch aussehen soll.
+  </p>
+
+  <section>
+    <h3>Warum das der Unterschied ist</h3>
+    <p>
+      Wer eine Wohnung vermietet, kennt die Miete. Ob sie sich rechnet, hängt aber an der
+      Rate, den Rücklagen und dem Leerstand — Zahlen, die meist in einer anderen Tabelle
+      stehen oder in gar keiner.
+    </p>
+    <p>
+      Immoleicht führt sie zusammen. Von der ersten Wohnung bis zum Bestand einer
+      Hausverwaltung, mit denselben Bildschirmen: Was man nicht braucht, ist nicht da.
+    </p>
+  </section>
+
+  <section>
+    <h3>Was es kostet</h3>
+    <p>
+      Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
+      Jede weitere kostet <span class="preis">9,99 €</span> im Monat.
+    </p>
+    <p>
+      Wer eine Eigentumswohnung verwaltet, zahlt also nichts. Wer hundert verwaltet, zahlt
+      für neunundneunzig.
+    </p>
+  </section>
+
+  <section>
+    <h3>Stand</h3>
+    <p>
+      Immoleicht wird gerade gebaut. Diese Seite beschreibt, was es werden soll — nicht,
+      was es heute schon kann. Wenn Sie einen Zugang haben, geht es hier weiter:
+    </p>
+    <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
+  </section>
+
+  <footer>
+    <p>Immoleicht · Vorschau. Diese Seite ist noch nicht öffentlich beworben.</p>
+  </footer>
+
+</main>
+</body>
+</html>
