@@ -10,11 +10,19 @@ es keinen Baukasten, kein Framework und keinen Bauschritt. Wer sie ändern will,
 
 ```
 index.html          die ganze Seite, samt Gestaltung
+darstellung.js      hell/dunkel, läuft blockierend im Kopf
+rechner.js          der Preisregler, läuft mit defer
 schriften/          drei selbst ausgelieferte Schriften und ihre Lizenztexte
 nginx.conf          Kopfzeilen, robots.txt, Auslieferung
 Dockerfile          das Betriebsabbild
-preise-erzeugen.py  Werkzeug für den Menschen, KEIN Bauschritt
+
+pruefe-csp.py       Prüfwerkzeug: Server mit den ECHTEN nginx-Kopfzeilen
+pruefe-seite.mjs    Prüfwerkzeug: Browser gegen genau diesen Server
+preise-erzeugen.py  Prüfwerkzeug: hält die Preise an drei Stellen zusammen
 ```
+
+Die drei `pruefe-*`-Dateien werden **nicht ausgeliefert** — das Dockerfile kopiert nur
+`index.html`, die beiden Skripte, `schriften/` und `nginx.conf`.
 
 ## Gestaltung: DESIGN-2, nicht mehr DESIGN-1
 
@@ -45,33 +53,76 @@ der Text beim Nachladen nicht umspringt. Ohne Bauschritt lässt sich das nicht e
 nachbauen — geschätzte Werte wären schlimmer als keine. Stattdessen sind die zwei
 wichtigsten Schnitte im Kopf der Datei vorgeladen.
 
-## Der Preisrechner
+## Der Preisregler
 
-Im Abschnitt „Was es kostet" steht ein Rechner: Man wählt eine von zwölf Stufen, und die
-Seite zeigt, was das kostet — monatlich und jährlich, mit der ersten Einheit schon
-abgezogen.
+Im Abschnitt „Was es kostet" steht ein Schieberegler von 1 bis 100 Einheiten, daneben ein
+Zahlenfeld für alles darüber (bis 9999 — eine Verwaltung soll ihre 340 eintippen können,
+ohne einen Regler mit 340 Stufen zu bedienen). Umschalter monatlich/jährlich, der große
+Betrag läuft beim Ziehen mit.
 
-**Er kommt ohne JavaScript aus, und das ist keine Spielerei.** `nginx.conf` setzt
-`script-src 'none'`. Ein eingebettetes Skript würde beim örtlichen Öffnen der Datei
-tadellos rechnen und im Betrieb wortlos nichts tun — ein Fehler, den niemand sieht, weil
-die Seite aussieht wie immer. Stattdessen: zwölf versteckte Radiofelder und je Stufe eine
-CSS-Regel, die die passenden Zahlen einblendet. Alle Beträge stehen als Text im Quelltext.
+### Warum die Sicherheitsregel dafür geändert wurde
 
-Wer statt der Stufen ein freies Feld oder einen Schieberegler will, braucht eine eigene
-`rechner.js` **und** `script-src 'self'` in `nginx.conf`. Beides ist bewusst nicht getan.
+Bis zum 21.08.2026 stand hier ein Rechner mit **zwölf festen Stufen, ganz ohne
+JavaScript** — versteckte Radiofelder, gesteuert durch CSS. Das war kein Selbstzweck:
+`nginx.conf` setzte `script-src 'none'`, und ein Skript hätte im Betrieb wortlos nichts
+getan.
+
+Ein echter Schieberegler geht so nicht. `input type="range"` kann seinen Wert nicht an CSS
+weiterreichen; ohne Skript bleibt nur eine feste Stufenleiter. Also ist die Policy
+geändert worden, **so eng wie möglich**:
+
+| | vorher | jetzt |
+|---|---|---|
+| Skript als eigene Datei von diesem Server | verboten | **erlaubt** |
+| `<script>` im HTML, `onclick=`-Attribute | verboten | **weiterhin verboten** |
+| `eval`, fremde Hosts | verboten | **weiterhin verboten** |
+
+`script-src 'self'` **ohne** `'unsafe-inline'` ist deshalb kein weicher Kompromiss: Der
+Riegel gegen eingeschleusten Code bleibt zu. Genau darum steht in `index.html` kein
+einziges `<script>`-Element mit Inhalt, nur zwei Verweise auf eigene Dateien. Wer das
+später auf `'unsafe-inline'` erweitert, hebt den Schutz auf — dann lieber ein Hash oder
+eine Nonce.
+
+**Ohne JavaScript bleibt die Seite vollständig lesbar.** Im `<noscript>`-Block steht
+dieselbe Rechnung als Tabelle, und die Einblend-Bewegung hängt an einer Klasse, die erst
+das Skript setzt — ohne Skript ist von Anfang an alles sichtbar.
+
+### Prüfen, bevor ausgerollt wird
+
+Eine CSP-Änderung ist genau die Sorte Änderung, bei der Nichtprüfen teuer ist: Zu eng, und
+das Skript läuft nur örtlich. Ohne Docker auf der Maschine gibt es dafür ein eigenes Paar:
+
+```bash
+python3 pruefe-csp.py          # Fenster 1: Server mit den ECHTEN Kopfzeilen aus nginx.conf
+node pruefe-seite.mjs          # Fenster 2: Browser dagegen
+```
+
+`pruefe-csp.py` **liest** die `add_header`-Zeilen aus `nginx.conf`, statt sie
+abzuschreiben — zwei Fassungen derselben Policy liefen sonst beim ersten Ändern
+auseinander. `pruefe-seite.mjs` lässt **jede** Konsolenmeldung des Browsers durchfallen;
+so melden sich CSP-Verletzungen. Geprüft werden außerdem: Regler, Zahlenfeld über 100, der
+kostenlose Fall, Umschalten auf jährlich, Bedienung per Pfeiltaste, was eine Vorlesehilfe
+angesagt bekommt, Zielgrößen, unsinnige Eingaben, die Seite **ohne** JavaScript, hell und
+dunkel samt Speichern der Wahl, und waagerechtes Scrollen bei 390 px.
+
+`node` liegt im Hauptprojekt (dieses Repo hat kein npm); der Pfad zu Playwright steht oben
+in `pruefe-seite.mjs`.
 
 ### Wenn sich der Preis ändert
 
-Nicht von Hand. Der Rechner enthält **72 Zahlen** — zwölf Stufen mal sechs Werte:
+Der Preis steht an **drei** Stellen, und das lässt sich nicht auf eine reduzieren: die
+Konstanten in `rechner.js`, die Ersatztabelle im `<noscript>`-Block und der Satz im
+Fließtext. Wer kein JavaScript hat, bekommt keine gerechneten Zahlen — nur das, was als
+Text dasteht.
 
 ```bash
-# die beiden Preise in preise-erzeugen.py ändern, dann
-python3 preise-erzeugen.py           # gibt die Blöcke aus, in index.html einsetzen
-python3 preise-erzeugen.py --pruefe  # prüft, ob index.html dazu passt
+# die drei Zahlen in preise-erzeugen.py und rechner.js ändern, dann
+python3 preise-erzeugen.py           # erzeugt die <noscript>-Tabelle
+python3 preise-erzeugen.py --pruefe  # hält alle drei Stellen gegeneinander
 ```
 
-`preise-erzeugen.py` ist **kein Bauschritt** — das Dockerfile kopiert nur `index.html`
-und `nginx.conf`. Die Datei ist ein Werkzeug für den Menschen, der den Preis ändert.
+Der Prüflauf misst auch den Nachlass am Jahresknopf: Steht dort „−17 %", muss das aus den
+beiden Preisen wirklich folgen.
 
 Die maßgebliche Preisregel steht im Hauptprojekt und ist dort begründet:
 `docs/architektur/preis-und-zaehlung.md`. Weicht diese Seite davon ab, hat diese Seite
@@ -115,15 +166,19 @@ einsammeln.
 # ändern
 $EDITOR index.html
 
-# örtlich ansehen — OHNE Docker, aber mit richtigen Pfaden:
-python3 -m http.server 8199
+# örtlich ansehen — OHNE Docker, aber mit den echten Kopfzeilen:
+python3 pruefe-csp.py
 # dann http://127.0.0.1:8199
 ```
 
-Die Seite **muss über einen Server** angesehen werden, nicht per Doppelklick. Die
-Schriften liegen unter dem absoluten Pfad `/schriften/…`; über `file://` findet der
-Browser sie nicht und fällt still auf die Systemschrift zurück. Es sieht dann fast
-richtig aus — und ist es nicht.
+**Nicht `python3 -m http.server` benutzen, um die Seite zu beurteilen.** Der liefert ohne
+Content-Security-Policy aus — dort läuft jedes Skript, auch eines, das im Betrieb
+abgewiesen würde. `pruefe-csp.py` setzt dieselben Kopfzeilen wie nginx.
+
+Und die Seite **muss** über einen Server kommen, nicht per Doppelklick: Skripte und
+Schriften liegen unter absoluten Pfaden (`/rechner.js`, `/schriften/…`); über `file://`
+findet der Browser sie nicht. Die Seite sieht dann fast richtig aus — der Regler steht
+bloß still.
 
 Mit Docker, wenn vorhanden:
 

@@ -11,6 +11,12 @@ FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY index.html /usr/share/nginx/html/index.html
 
+# Zwei Skripte, beide von diesem Server. Eingebettete Skripte gibt es bewusst
+# keine: Die Content-Security-Policy erlaubt `script-src 'self'`, aber KEIN
+# 'unsafe-inline' - das ist der Riegel gegen eingeschleusten Code.
+COPY darstellung.js /usr/share/nginx/html/darstellung.js
+COPY rechner.js /usr/share/nginx/html/rechner.js
+
 # Die Schriften werden vom EIGENEN Server ausgeliefert, nicht von Google. Das ist
 # hier nicht Geschmack: Google Fonts von Googles Servern einzubinden uebertraegt
 # die IP-Adresse jedes Besuchers in die USA, und dafuer gibt es rechtskraeftige
@@ -18,8 +24,8 @@ COPY index.html /usr/share/nginx/html/index.html
 # Lizenztexte werden mitkopiert, weil die Lizenz das verlangt.
 COPY schriften /usr/share/nginx/html/schriften
 
-# preise-erzeugen.py wird bewusst NICHT kopiert: Es ist ein Werkzeug fuer den
-# Menschen, der den Preis aendert, und kein Bauschritt.
+# Die drei pruefe-*/preise-*-Dateien werden bewusst NICHT kopiert: Werkzeuge
+# fuer den Menschen, der aendert und prueft, und kein Bauschritt.
 
 EXPOSE 80
 
