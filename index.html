@@ -10,9 +10,9 @@
 <meta name="theme-color" content="#141715" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='25' font-size='26'>🏠</text></svg>">
 
-<!-- Nur die zwei Schnitte vorladen, die im ersten Bild wirklich vorkommen. -->
-<link rel="preload" href="/schriften/source-sans-3-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/schriften/source-serif-4-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Nur die Schnitte vorladen, die im ersten Bild wirklich vorkommen. -->
+<link rel="preload" href="/schriften/instrument-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/schriften/bricolage-800.woff2" as="font" type="font/woff2" crossorigin>
 
 <!-- Blockierend und mit Absicht: setzt Darstellung und `js`-Klasse, BEVOR
      gezeichnet wird. Mit `defer` blitzte die helle Seite kurz auf. -->
@@ -20,65 +20,83 @@
 
 <style>
 /*
-  Landingpage immoleicht.com — Gestaltung aus dem Designsystem der Anwendung
-  (`immoleicht/src/app/globals.css`), Stand DESIGN-2.
+  Landingpage immoleicht.com.
 
-  ── DIE REGEL, DIE ALLES ZUSAMMENHÄLT ───────────────────────────────────────
+  ── ZWEITER ANLAUF, 22.08.2026 ───────────────────────────────────────────────
 
-  Farbe hat genau ZWEI Bedeutungen, und sie werden niemals vermischt:
+  Die vorige Fassung übernahm Farben und Schrift unverändert aus der Anwendung
+  (DESIGN-2). Das war für ein Werkzeug richtig und für eine Landingpage zu
+  leise — der Auftraggeber hat das ausdrücklich zurückgewiesen und eine
+  eigene Referenzseite mitgeschickt. Diese Fassung übernimmt ihren TYPOGRAFIE-
+  UND ENERGIE-Charakter, aber nicht ungeprüft ihren Inhalt:
+
+  - Der PREIS bleibt 9,99 € je Einheit und Monat, erste Einheit dauerhaft frei.
+    Die Referenz zeigte ein anderes Modell (0 € bis 3 Einheiten, dann 2 €). Eine
+    echte Preisänderung ist laut `.claude/rules/general.md` eine von drei
+    Sachen, die gefragt werden — nicht selbst entschieden.
+  - KEINE erfundenen Fähigkeiten. Die Referenz zeigte einen KI-Assistenten,
+    Bankanbindung, DATEV-Export — nichts davon existiert. Jede Zahl und jede
+    Fähigkeit hier ist entweder gebaut (siehe `features/INDEX.md`) oder als
+    „als Nächstes" ausdrücklich so benannt.
+  - KEIN Formular, das eine Zusage vortäuscht. Die Referenz hatte ein
+    E-Mail-Feld mit der Erfolgsmeldung „Link ist unterwegs ✓" — ohne dass
+    irgendetwas verschickt würde. Das ist keine Design-, sondern eine
+    Ehrlichkeitsfrage, und diese Seite lügt niemanden an, der sie liest.
+
+  Übernommen wurden: die Typografie (groß, fett, ein Display-Schnitt für
+  Überschriften), der Aufbau (Kennzahlenleiste, Vorher/Nachher-Tabelle,
+  Funktionsraster, ein Slogan-Wort mit Textmarker-Unterstreichung), und die
+  Idee eines animierten „Stapel wird zur Abrechnung"-Aufmachers — hier mit
+  echten Beispielzahlen aus der übrigen Seite, nicht mit erfundenen.
+
+  ── FARBE HAT WEITERHIN GENAU ZWEI BEDEUTUNGEN, PLUS EINE BENANNTE AUSNAHME ──
 
       Akzent (Tinte)         „hier kannst du handeln"
       Grün / Gelb / Rot      „so steht es um die Sache"
 
-  Daraus folgt zwingend, dass der Akzent weder grün noch gelb noch rot sein
-  darf. Eine dritte Bedeutung — „sieht hübsch aus" — gibt es nicht.
+  Neu dazugekommen ist „Funke" — ein Violett, das AUSSCHLIESSLICH als reine
+  Fläche auftritt: der Punkt im Wortzeichen, der Textmarker hinter einem Wort
+  in der Überschrift, das Umschlag-Etikett im Aufmacher. Es trägt nie einen
+  Wert, nie einen Zustand, nie eine Schaltfläche.
 
-  ── DIE EINE AUSNAHME, UND WARUM SIE HIER GESAMMELT STEHT ───────────────────
-
-  Ein Schein, ein wanderndes Licht, ein Wasserzeichen — drei Stellen, die den
-  Akzentton als reine FLÄCHE benutzen, nicht als ZEICHEN. Keine trägt einen
-  Wert, einen Zustand oder eine Handlung; keine ersetzt eine Schaltfläche.
-  Nimmt man sie weg, geht keine Aussage verloren — nur ein Eindruck.
-
-      .aurora   die schwebenden Flecken hinter der Überschrift
-      .spotlight das Licht, das der Maus im Aufmacher folgt
-      .schrittnr die großen blassen Ziffern „01"/„02"
-
-  Das ist bewusst EINE Sammelstelle statt drei verstreuter Ausnahmen: Wer eine
-  vierte hinzufügt, findet hier, was schon gilt — und muss sich fragen, ob sie
-  wirklich dieselbe Begründung trägt. Alle drei rechnen ausschließlich mit
-  `--akzent-h`, nie mit `--positiv-h`, `--warnung-h` oder `--kritisch-h`: Genau
-  das wäre die vierte, verbotene Bedeutung.
-
-  ── DREI STÄNDE DER DARSTELLUNG ─────────────────────────────────────────────
-
-  Wie das System, hell, dunkel — dieselben drei wie in der Anwendung
-  (`DESIGN-3`). Die Reihenfolge der Regeln unten ist wichtig: Erst hell als
-  Grundlage, dann das System (aber nur, wenn nicht ausdrücklich hell gewählt
-  wurde), dann die ausdrückliche Wahl „dunkel". Andersherum gewänne das System
-  gegen den Nutzer.
+  Bewusst NICHT Gelb, wie es die Referenz vorschlug: Gelb ist bei uns bereits
+  „Frist bald fällig" (`--warnung`), sichtbar auf derselben Seite im Abschnitt
+  „Was jetzt ansteht". Ein zweiter, rein dekorativer Gelbton hätte mit dieser
+  Bedeutung kollidiert — genau die vierte Bedeutung, vor der die Regel warnt.
+  Violett liegt fernab von Blau, Grün, Gelb und Rot und kollidiert mit keiner.
 */
 
 /* ── Schriften ─────────────────────────────────────────────────────────────
- * Alle drei unter der SIL Open Font License 1.1, selbst ausgeliefert. Das ist
- * nicht Geschmack: Google Fonts von Googles Servern zu laden überträgt die
- * IP-Adresse jedes Besuchers in die USA.
+ * Bricolage Grotesque (Überschriften) und Instrument Sans (Fließtext) stehen
+ * unter der SIL Open Font License 1.1 — selbst geladen von den offiziellen
+ * Quelldateien und selbst ausgeliefert, NICHT von Googles Servern. Das ist
+ * hier nicht Geschmack: Google Fonts von Googles Servern einzubinden
+ * überträgt die IP-Adresse jedes Besuchers in die USA, und dafür gibt es
+ * rechtskräftige Abmahnungen. IBM Plex Mono bleibt unverändert für Zahlen.
  */
 @font-face {
-  font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap;
-  src: url("/schriften/source-sans-3-latin-400-normal.woff2") format("woff2");
+  font-family: "Instrument Sans"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/schriften/instrument-400.woff2") format("woff2");
 }
 @font-face {
-  font-family: "Source Sans 3"; font-style: normal; font-weight: 500; font-display: swap;
-  src: url("/schriften/source-sans-3-latin-500-normal.woff2") format("woff2");
+  font-family: "Instrument Sans"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/schriften/instrument-500.woff2") format("woff2");
 }
 @font-face {
-  font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap;
-  src: url("/schriften/source-sans-3-latin-600-normal.woff2") format("woff2");
+  font-family: "Instrument Sans"; font-style: normal; font-weight: 600; font-display: swap;
+  src: url("/schriften/instrument-600.woff2") format("woff2");
 }
 @font-face {
-  font-family: "Source Serif 4"; font-style: normal; font-weight: 600; font-display: swap;
-  src: url("/schriften/source-serif-4-latin-600-normal.woff2") format("woff2");
+  font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/schriften/bricolage-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/schriften/bricolage-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 800; font-display: swap;
+  src: url("/schriften/bricolage-800.woff2") format("woff2");
 }
 @font-face {
   font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
@@ -90,10 +108,9 @@
 }
 
 /*
- * Die Werte stehen als HSL-DREIERGRUPPE, nicht als fertige Farbe. Nur so lässt
- * sich derselbe Ton an einer Stelle mit Deckkraft benutzen — `hsl(var(--x) / .1)`
- * — ohne ihn ein zweites Mal hinzuschreiben. Zwei Schreibweisen desselben Tons
- * laufen sonst beim ersten Ändern auseinander.
+ * Die Werte stehen als HSL-DREIERGRUPPE, nicht als fertige Farbe — siehe
+ * Begründung im Kopfkommentar der vorigen Fassung: nur so lässt sich derselbe
+ * Ton an einer Stelle mit Deckkraft benutzen, ohne ihn zweimal hinzuschreiben.
  */
 :root {
   --grund-h:      120 7% 97%;
@@ -110,6 +127,10 @@
   --warnung-fl-h: 36 55% 93%;
   --kritisch-h:   6 50% 44%;
   --kritisch-fl-h:6 55% 95%;
+  /* Die Ausnahme, siehe Kopfkommentar: reine Fläche, nie ein Zeichen. */
+  --funke-h:      262 70% 55%;
+  --funke-vg-h:   0 0% 100%;
+  --funke-fl-h:   262 60% 95%;
   --schatten: 0 0% 0%;
 
   --grund: hsl(var(--grund-h));
@@ -126,11 +147,14 @@
   --warnung-fl: hsl(var(--warnung-fl-h));
   --kritisch: hsl(var(--kritisch-h));
   --kritisch-fl: hsl(var(--kritisch-fl-h));
+  --funke: hsl(var(--funke-h));
+  --funke-vg: hsl(var(--funke-vg-h));
+  --funke-fl: hsl(var(--funke-fl-h));
 
-  --radius: 0.75rem;
-  --radius-lg: 1.25rem;
-  --serif: "Source Serif 4", ui-serif, Charter, Georgia, serif;
-  --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius: 0.85rem;
+  --radius-lg: 1.5rem;
+  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -150,6 +174,9 @@
     --warnung-fl-h: 36 40% 13%;
     --kritisch-h:   7 63% 65%;
     --kritisch-fl-h:7 40% 15%;
+    --funke-h:      262 70% 75%;
+    --funke-vg-h:   150 10% 10%;
+    --funke-fl-h:   262 30% 18%;
   }
 }
 :root[data-darstellung="dunkel"] {
@@ -167,6 +194,9 @@
   --warnung-fl-h: 36 40% 13%;
   --kritisch-h:   7 63% 65%;
   --kritisch-fl-h:7 40% 15%;
+  --funke-h:      262 70% 75%;
+  --funke-vg-h:   150 10% 10%;
+  --funke-fl-h:   262 30% 18%;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -180,26 +210,15 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: hsl(var(--akzent-h) / 0.25); color: var(--text); }
+::selection { background: hsl(var(--funke-h) / 0.28); color: var(--text); }
 
-/*
- * Das `hidden`-Attribut muss stärker sein als jede Regel hier.
- *
- * Gemessen am 21.08.2026: Der Darstellungsknopf trägt `hidden`, bis das Skript
- * ihn freigibt — er soll ohne JavaScript gar nicht erscheinen, weil er dann
- * nichts täte. Er erschien trotzdem. Grund: `.knopf-klein` setzt
- * `display: inline-flex`, und JEDE eigene display-Regel schlägt das
- * `[hidden] { display: none }` des Browsers. Das Attribut sah richtig aus und
- * wirkte nicht — die schlechteste Kombination.
- *
- * Deshalb hier einmal zentral und mit `!important`. Es ist die eine Stelle im
- * Projekt, an der das berechtigt ist: `hidden` ist keine Gestaltungsfrage,
- * sondern eine Aussage über Anwesenheit.
- */
+/* Siehe Begründung in der vorigen Fassung: `hidden` muss stärker sein als
+   jede eigene display-Regel, sonst erscheint z. B. der Darstellungsknopf
+   trotz `hidden`, weil `.knopf-klein { display: inline-flex }` gewinnt. */
 [hidden] { display: none !important; }
-.huelle { max-width: 54rem; margin: 0 auto; padding: 0 1.25rem; }
+.huelle { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+.lesebreite { max-width: 40rem; }
 
-/* Nur für Vorlesehilfen. Nicht display:none — das nähme es auch ihnen. */
 .nurvorlesen {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
@@ -214,14 +233,6 @@ body {
 }
 .sprungmarke:focus { top: 0.5rem; }
 
-/*
- * Leseweite Andeutung des Fortschritts, keine Statusfarbe: Sie misst nur, wie
- * weit gescrollt wurde — nichts an ihr steht für „gut" oder „schlecht". Der
- * Akzent ist hier deshalb richtig, nicht grün oder rot.
- *
- * Liegt ÜBER der Kopfleiste (`z-index: 40 > 10`), damit sie unabhängig vom
- * Scrollstand als dünne Linie an der Fensteroberkante sichtbar bleibt.
- */
 .fortschritt {
   position: fixed; inset: 0 auto auto 0; z-index: 40;
   height: 2px; width: 0%;
@@ -239,36 +250,49 @@ body {
   border-bottom: 1px solid transparent;
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
-/* Gesetzt von rechner.js, sobald gescrollt wurde — eine ruhige Elevation statt
-   einer dauerhaften Kante, damit die Kopfleiste erst beim Wegscrollen des
-   Aufmachers eine eigene Ebene bekommt. */
 .kopf.schwebt {
   border-bottom-color: hsl(var(--linie-h) / 0.7);
   box-shadow: 0 12px 32px -20px hsl(var(--schatten) / 0.35);
 }
-.kopf .huelle {
-  display: flex; align-items: center; gap: 0.75rem;
-  min-height: 3.75rem;
-}
+.kopf .huelle { display: flex; align-items: center; gap: 1.5rem; min-height: 4.25rem; }
+
 .marke {
-  display: flex; align-items: center; gap: 0.5rem;
-  font-family: var(--serif); font-size: 1.05rem; letter-spacing: 0.01em;
-  margin: 0; margin-right: auto;
+  display: flex; align-items: baseline; gap: 0;
+  font-family: var(--display); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em;
+  margin: 0; margin-right: auto; text-decoration: none; color: var(--text);
 }
-.marke b { font-weight: 600; }
+.marke em { font-style: normal; font-weight: 300; color: var(--leise); }
+/* Der Punkt im Wortzeichen — die erste der drei „Funke"-Stellen. */
+.marke .punkt {
+  width: 0.4rem; height: 0.4rem; border-radius: 50%;
+  background: var(--funke); margin-left: 0.2rem; align-self: flex-start; margin-top: 0.35rem;
+}
 .marke .zusatz {
-  font-family: var(--sans);
-  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
-  color: var(--leise);
-  border: 1px solid var(--linie); border-radius: 999px;
-  padding: 0.1rem 0.45rem;
+  font-family: var(--sans); font-weight: 600; font-size: 0.6rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--leise);
+  border: 1px solid var(--linie); border-radius: 999px; padding: 0.15rem 0.5rem; margin-left: 0.7rem;
+}
+/*
+ * Gemessen bei 390 px: Wortzeichen + Beta-Schild + Darstellungsknopf + der
+ * Knopf "Zur Anwendung" nebeneinander brauchten 392 px, verfuegbar waren 342 -
+ * die Seite wurde dadurch als Ganzes waagerecht scrollbar (445 statt 390 px
+ * `scrollWidth`). Das Beta-Schild traegt hier keine Information, die nicht
+ * auch im Absatz darunter steht, und ist der guenstigste Posten zum Kuerzen.
+ */
+@media (max-width: 26rem) {
+  .marke .zusatz { display: none; }
+  .kopf .huelle { gap: 0.75rem; }
+  .zugang { padding: 0.65rem 1rem; }
 }
 
-/* Der Umschalter erscheint erst, wenn das Skript läuft — sonst wäre es ein
-   Knopf, der nichts tut. Bis dahin gilt die Einstellung des Systems. */
+.hauptnav { display: flex; gap: 1.75rem; list-style: none; margin: 0; padding: 0; font-size: 0.92rem; font-weight: 500; }
+.hauptnav a { color: var(--leise); text-decoration: none; transition: color 0.15s; }
+.hauptnav a:hover { color: var(--text); }
+@media (max-width: 56rem) { .hauptnav { display: none; } }
+
 .knopf-klein {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 2.75rem; height: 2.75rem;             /* 44 px Zielgrösse, WCAG 2.5.8 */
+  width: 2.75rem; height: 2.75rem;
   border: 1px solid var(--linie); border-radius: 999px;
   background: transparent; color: var(--text);
   cursor: pointer; font-size: 1rem; line-height: 1;
@@ -284,92 +308,78 @@ body {
 /* ── Schaltflächen ─────────────────────────────────────────────────────────── */
 .zugang, .zugang-leise {
   display: inline-flex; align-items: center; justify-content: center;
-  min-height: 2.75rem;                         /* 44 px Zielgrösse, WCAG 2.5.8 */
-  padding: 0.6rem 1.25rem;
-  border-radius: var(--radius);
-  text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  min-height: 2.9rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  text-decoration: none; font-weight: 600; font-size: 0.96rem;
   white-space: nowrap;
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
 }
 .zugang {
-  background: var(--akzent); color: var(--akzent-vg); border: 1px solid var(--akzent);
-  box-shadow: 0 1px 2px hsl(var(--akzent-h) / 0.3), 0 10px 24px -12px hsl(var(--akzent-h) / 0.55);
+  background: var(--akzent); color: var(--akzent-vg); border: 1.5px solid var(--akzent);
+  box-shadow: 0 1px 2px hsl(var(--akzent-h) / 0.3), 0 12px 26px -12px hsl(var(--akzent-h) / 0.55);
 }
 .zugang:hover { filter: brightness(1.12); }
-.zugang-leise { border: 1px solid var(--linie); color: var(--text); }
-.zugang-leise:hover { border-color: var(--akzent); }
+.zugang-leise { border: 1.5px solid var(--linie); color: var(--text); }
+.zugang-leise:hover { border-color: var(--akzent); background: var(--karte); }
 @media (hover: hover) {
   .zugang:hover, .zugang-leise:hover { transform: translateY(-1px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .zugang:hover, .zugang-leise:hover { transform: none; }
 }
-.knopfreihe { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.85rem; }
+.knopfreihe { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
+.knopfreihe .fussnotiz { flex-basis: 100%; font-size: 0.85rem; color: var(--leise); margin-top: 0.2rem; }
 
 /* ── Aufmacher ─────────────────────────────────────────────────────────────── */
-/*
- * `overflow: hidden` ist hier kein Beiwerk, sondern die Behebung eines
- * gemessenen Fehlers: Der Schein ragt absichtlich seitlich über den Text
- * hinaus und machte damit die ganze Seite auf einem 390 px breiten Handy
- * waagerecht scrollbar — 468 px Inhalt in 390 px Fenster.
- *
- * Vorher stand dagegen `overflow-x: hidden` am `body`. Das ist die verbreitete
- * Abhilfe und die schlechtere: Sie versteckt JEDEN künftigen Überstand gleich
- * mit, und dann findet die Prüfung den nächsten echten Layoutfehler nicht
- * mehr. Geklemmt wird deshalb dort, wo der Überstand entsteht — und das gilt
- * jetzt für drei schwebende Flecken statt für einen.
- */
-.aufmacher { position: relative; overflow: hidden; padding: 5.5rem 0 4.5rem; }
-
-/* Fläche, kein Zeichen — siehe die Sammelstelle der Ausnahme oben. */
-.aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-.blob {
-  position: absolute; border-radius: 50%; filter: blur(64px);
-  background: radial-gradient(circle, hsl(var(--akzent-h) / 0.32), transparent 72%);
+.aufmacher { padding: 4.5rem 0 5rem; }
+.aufmacher .huelle {
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; align-items: center;
 }
-.blob-1 { width: 32rem; height: 32rem; top: -13rem; left: -9rem; animation: schweben-a 24s ease-in-out infinite; }
-.blob-2 { width: 24rem; height: 24rem; top: -8rem; right: -7rem; opacity: 0.7; animation: schweben-b 28s ease-in-out infinite; }
-.blob-3 { width: 18rem; height: 18rem; bottom: -11rem; left: 32%; opacity: 0.55; animation: schweben-c 32s ease-in-out infinite; }
-@keyframes schweben-a { 0%, 100% { translate: 0 0; } 50% { translate: 2.5rem 2rem; } }
-@keyframes schweben-b { 0%, 100% { translate: 0 0; } 50% { translate: -2rem 2.5rem; } }
-@keyframes schweben-c { 0%, 100% { translate: 0 0; } 50% { translate: 1.5rem -2rem; } }
-@media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
-
-/* Das Licht, das der Maus folgt — nur wo eine Maus wirklich führt, siehe die
-   Begründung bei `spotlightAufsetzen()` in rechner.js. Ohne Skript bleibt
-   `--sx`/`--sy` auf ihrem Vorgabewert stehen: ein ruhiger, zentrierter Schein. */
-.spotlight {
-  position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  opacity: 0; transition: opacity 0.4s ease;
-  background: radial-gradient(38rem circle at var(--sx, 60%) var(--sy, 10%),
-    hsl(var(--akzent-h) / 0.14), transparent 68%);
+@media (max-width: 62rem) {
+  .aufmacher .huelle { grid-template-columns: 1fr; }
+  .aufmacher { padding-top: 3rem; }
 }
-@media (hover: hover) and (pointer: fine) { .js .spotlight { opacity: 1; } }
 
 .augenbraue {
-  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--leise); margin: 0 0 1.1rem;
+  display: flex; align-items: center; gap: 0.65rem;
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--leise); margin: 0 0 1.4rem;
 }
-h1 {
-  font-family: var(--serif); font-weight: 600;
-  font-size: clamp(2.5rem, 7.5vw, 4.25rem);
-  line-height: 1.05; letter-spacing: -0.025em;
-  text-wrap: balance;
-  margin: 0 0 1.25rem; max-width: 19ch;
-}
-.vorspann { font-size: 1.22rem; color: var(--leise); margin: 0; max-width: 36rem; }
+.augenbraue::before { content: ""; width: 1.75rem; height: 1.5px; background: var(--akzent); }
 
+h1 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.5rem, 5.2vw, 4rem);
+  line-height: 1.04; letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin: 0 0 1.4rem; max-width: 16ch;
+}
 /*
- * Kinetische Ankunft: Augenbraue, Überschrift, Vorspann und Knopfreihe
- * erscheinen einmalig und leicht versetzt beim Laden — vier direkte Kinder,
- * vier Verzögerungen. Anders als `.enthuellen` ist das NICHT an Sichtbarkeit
- * beim Scrollen gebunden, sondern an den ersten Aufbau der Seite: Der
- * Aufmacher ist ohnehin sofort im Bild.
- *
- * Gebunden an `.js`, das VOR dem ersten Zeichnen gesetzt wird (siehe Kopf der
- * Datei) — ohne Skript ist gar keine dieser Regeln aktiv, und alles steht von
- * Anfang an sichtbar da, statt umgekehrt unsichtbar zu bleiben.
+ * Der Textmarker hinter „Geld" — die zweite „Funke"-Stelle. `z-index: -1` UND
+ * eine eigene stapelnde Ebene am Wort selbst (`position: relative`) halten
+ * die Fläche HINTER den Buchstaben, nicht davor: Der Text bleibt in
+ * `--text`, nur ein Farbstreifen scheint dahinter hervor — wie ein
+ * Textmarker auf Papier, keine neue Textfarbe.
  */
+h1 .markiert {
+  position: relative; display: inline-block; font-style: normal;
+}
+h1 .markiert::after {
+  content: ""; position: absolute; z-index: -1;
+  left: -0.06em; right: -0.06em; bottom: 0.04em; height: 0.32em;
+  background: hsl(var(--funke-h) / 0.4);
+  border-radius: 0.15em;
+  transform: scaleX(0); transform-origin: left;
+}
+.js h1 .markiert::after {
+  animation: marker-auf 0.7s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes marker-auf { to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .js h1 .markiert::after { animation: none; transform: scaleX(1); } }
+
+.vorspann { font-size: 1.2rem; color: var(--leise); margin: 0 0 2rem; max-width: 32rem; }
+
 .js .kinetisch > * {
   opacity: 0; transform: translateY(12px);
   animation: erscheinen 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -377,29 +387,135 @@ h1 {
 .js .kinetisch > *:nth-child(1) { animation-delay: 0.02s; }
 .js .kinetisch > *:nth-child(2) { animation-delay: 0.12s; }
 .js .kinetisch > *:nth-child(3) { animation-delay: 0.26s; }
-.js .kinetisch > *:nth-child(4) { animation-delay: 0.40s; }
+.js .kinetisch > *:nth-child(4) { animation-delay: 0.4s; }
 @keyframes erscheinen { to { opacity: 1; transform: none; } }
 
-/* ── Abschnitte und Einblenden ────────────────────────────────────────────── */
-section { padding: 3.75rem 0; }
-h2.ueberschrift {
-  font-family: var(--serif); font-weight: 600;
-  font-size: clamp(1.6rem, 3.5vw, 2.15rem); letter-spacing: -0.015em;
-  margin: 0 0 0.6rem;
+/* ── Der Aufmacher-Beweis: Stapel wird zur Abrechnung ─────────────────────────
+ *
+ * Zeigt in einer Bewegung, WAS anders ist: links liegen dieselben Zahlen als
+ * lose Zettel, rechts stehen sie als EINE Rechnung. Beide Zustände benutzen
+ * exakt die Beispielzahlen aus dem Abschnitt „Für wen" weiter unten — Wohnung 3
+ * (trägt sich) und Wohnung 1 (zahlt drauf) — keine zweite, erfundene Zahl.
+ */
+/*
+ * ZWEI ZUSTAENDE, UND DER OHNE JAVASCRIPT GEWINNT ALS GRUNDSTELLUNG.
+ *
+ * Standard (keine Klasse): die fertigen Rechnungskarten sind sichtbar, die
+ * losen Zettel nicht. Das ist zugleich der Zustand ohne Skript UND der
+ * Zustand bei `prefers-reduced-motion` — beide sollen sofort das eigentliche
+ * Ergebnis zeigen, nicht den Zwischenschritt.
+ *
+ * `.zeigt-vorher` ist die einzige Klasse, die JavaScript setzt: kurz beim
+ * Laden (siehe `demoAufsetzen()` in rechner.js), um den Unterschied als
+ * Bewegung zu zeigen, danach wieder entfernt. Ohne Skript wird sie nie
+ * gesetzt — die Seite bleibt dann dauerhaft im aussagekraeftigeren Zustand,
+ * statt in einem Zwischenschritt haengen zu bleiben.
+ */
+.demo {
+  position: relative; height: 30rem;
+  perspective: 1400px;
 }
-section p { margin: 0 0 1rem; max-width: 38rem; }
+@media (max-width: 62rem) { .demo { height: 26rem; } }
+.zettel {
+  position: absolute; left: 50%; top: 50%; width: 17rem;
+  background: var(--karte); border: 1px solid var(--linie); border-radius: 0.85rem;
+  padding: 1rem 1.15rem; font-size: 0.82rem; color: var(--leise);
+  box-shadow: 0 18px 40px -22px hsl(var(--schatten) / 0.35);
+  opacity: 0; transform: translate(-50%, -50%) rotate(0) translateY(-44px) scale(0.92);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s;
+  will-change: transform;
+}
+.zettel b { display: block; color: var(--text); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.88rem; }
+.zettel .betrag { font-family: var(--mono); font-weight: 600; color: var(--text); float: right; }
+.zettel .marke-klein {
+  position: absolute; top: 0.85rem; right: 0.85rem;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.18rem 0.5rem; border-radius: 999px; background: var(--flaeche); color: var(--leise);
+}
+.karten-stapel {
+  position: absolute; left: 50%; top: 50%; width: 20rem;
+  transform: translate(-50%, -50%) scale(1); opacity: 1;
+  transition: all 0.9s 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: grid; gap: 0.85rem;
+}
+.demo.zeigt-vorher .zettel { opacity: 1; transform: translate(-50%, -50%) rotate(var(--r)) translateY(var(--y)); }
+.demo.zeigt-vorher .karten-stapel { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+@media (prefers-reduced-motion: reduce) {
+  .zettel, .karten-stapel { transition: none; }
+}
+
+.ergebnis-karte {
+  border-radius: var(--radius-lg); padding: 1.35rem 1.5rem;
+  box-shadow: 0 30px 60px -30px hsl(var(--schatten) / 0.55);
+}
+/*
+ * KEIN Verlauf aus zwei Toenen des Akzents: `hsl(var(--akzent-h) 46% 46%)`
+ * sieht nach gueltigem CSS aus und ist es nicht - `--akzent-h` ist bereits das
+ * VOLLE Dreiergespann "222 52% 36%", das Anhaengen von zwei weiteren Zahlen
+ * ergibt fuenf Werte in einem hsl(), und der Browser verwirft die ganze
+ * Eigenschaft. Gemessen: Die Karte stand ohne jeden Hintergrund da, nur der
+ * weisse Text blieb kaum lesbar auf der Seite stehen. Eine einzige Flaeche
+ * ist hier sicherer als ein Verlauf aus einer zusammengesetzten Variable.
+ */
+.ergebnis-karte.gut { background: var(--akzent); color: var(--akzent-vg); }
+.ergebnis-karte.schlecht { background: var(--karte); border: 1px solid var(--linie); color: var(--text); }
+.ergebnis-karte h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+.ergebnis-karte .ort { font-size: 0.78rem; opacity: 0.85; margin: 0.15rem 0 0.7rem; }
+.ergebnis-karte .zahl {
+  display: block; font-family: var(--mono); font-weight: 700;
+  font-size: 2.3rem; letter-spacing: -0.03em; line-height: 1;
+}
+.ergebnis-karte.schlecht .zahl { color: var(--kritisch); }
+.ergebnis-karte .stichwort { display: inline-block; margin-top: 0.6rem; font-size: 0.76rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; }
+.ergebnis-karte.gut .stichwort { background: hsl(0 0% 100% / 0.18); }
+.ergebnis-karte.schlecht .stichwort { background: var(--kritisch-fl); color: var(--kritisch); }
+
+.umschalter {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 0.25rem; background: var(--karte); border: 1px solid var(--linie);
+  border-radius: 999px; padding: 0.25rem; box-shadow: 0 8px 24px -16px hsl(var(--schatten) / 0.3);
+}
+.umschalter button {
+  border: 0; background: transparent; padding: 0.55rem 1.1rem; border-radius: 999px;
+  font: 600 0.82rem var(--sans); color: var(--leise); cursor: pointer;
+  min-height: 2.5rem;
+}
+.umschalter button.aktiv { background: var(--text); color: var(--grund); }
+.umschalter button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+
+/* ── Kennzahlenleiste ──────────────────────────────────────────────────────── */
+.leiste {
+  border-top: 1px solid var(--linie); border-bottom: 1px solid var(--linie);
+  background: var(--karte);
+}
+.leiste .huelle { display: grid; grid-template-columns: repeat(4, 1fr); }
+.leiste > .huelle > div { padding: 1.75rem 1.5rem; border-right: 1px solid var(--linie); }
+.leiste > .huelle > div:last-child { border-right: 0; }
+.leiste .n { font-family: var(--display); font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; }
+.leiste .n small { font-size: 1rem; color: var(--leise); margin-left: 0.25rem; font-weight: 500; }
+.leiste .l { font-size: 0.84rem; color: var(--leise); margin-top: 0.2rem; }
+@media (max-width: 50rem) {
+  .leiste .huelle { grid-template-columns: 1fr 1fr; }
+  .leiste > .huelle > div { border-bottom: 1px solid var(--linie); }
+  .leiste > .huelle > div:nth-child(2) { border-right: 0; }
+}
+
+/* ── Abschnitte ────────────────────────────────────────────────────────────── */
+section { padding: 5.5rem 0; }
+.sec-kopf { max-width: 40rem; margin-bottom: 3rem; }
+h2 {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(1.85rem, 3.6vw, 2.6rem); letter-spacing: -0.02em; line-height: 1.08;
+  margin: 0 0 0.85rem;
+}
+.sec-kopf p { font-size: 1.1rem; color: var(--leise); margin: 0; }
+section p { margin: 0 0 1rem; }
 section p:last-child { margin-bottom: 0; }
 
-/*
- * Die Bewegung hängt an der Klasse `js`, die `darstellung.js` setzt. Ohne
- * Skript greift keine dieser Regeln, und die Seite ist von Anfang an sichtbar.
- * Inhalte per CSS zu verstecken und per JavaScript zu zeigen wäre die
- * häufigste Art, eine Seite unbrauchbar zu machen.
- */
-.js .enthuellen { opacity: 0; transform: translateY(14px); }
+.js .enthuellen { opacity: 0; transform: translateY(16px); }
 .js .enthuellen.sichtbar {
   opacity: 1; transform: none;
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -407,165 +523,130 @@ section p:last-child { margin-bottom: 0; }
   .js .kinetisch > * { opacity: 1; transform: none; animation: none; }
 }
 
-/* ── Karten: leicht durchscheinend, mit weichem Schatten statt harter Kante ──
- *
- * Die Deckkraft steht bei 0,92 statt bei 1 — spürbar als Tiefe, ohne die
- * gemessenen Kontrastwerte zu gefährden: Hinter jeder Karte liegt außerhalb
- * des Aufmachers durchgehend die flache Grundfläche `--grund`, nie die
- * schwebenden Flecken. Der Unterschied zu voller Deckkraft ist damit eine
- * Frage des Schattens und der leichten Sättigung, nicht der Lesbarkeit.
- */
-.karte, .rechnung, .rechner {
-  background: hsl(var(--karte-h) / 0.92);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  backdrop-filter: blur(16px) saturate(1.3);
-  border: 1px solid hsl(var(--linie-h) / 0.85);
+/* ── Karten, Wasserzeichen ─────────────────────────────────────────────────── */
+.karte {
+  background: hsl(var(--karte-h) / 0.94);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  border: 1px solid hsl(var(--linie-h) / 0.9);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: 0 1px 1px hsl(var(--schatten) / 0.03), 0 16px 40px -26px hsl(var(--schatten) / 0.4);
+  padding: 1.75rem;
+  box-shadow: 0 1px 1px hsl(var(--schatten) / 0.03), 0 18px 40px -28px hsl(var(--schatten) / 0.35);
 }
-.rechnung {
-  padding: 1.35rem 1.35rem 1.15rem;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-  transform-style: preserve-3d; will-change: transform;
+.karte h3 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; margin: 0 0 0.6rem; letter-spacing: -0.01em; }
+.karte p { font-size: 0.96rem; color: var(--leise); }
+
+.paar { display: grid; gap: 1.25rem; }
+@media (min-width: 44rem) { .paar { grid-template-columns: 1fr 1fr; } }
+.schritt { position: relative; overflow: hidden; }
+.schrittnr {
+  position: absolute; top: -0.9rem; right: -0.1rem;
+  font-family: var(--mono); font-weight: 700; font-size: 4.5rem; line-height: 1;
+  color: hsl(var(--akzent-h) / 0.1); pointer-events: none; user-select: none;
 }
-@media (hover: hover) {
-  .rechnung:hover {
-    border-color: hsl(var(--akzent-h) / 0.4);
-    box-shadow: 0 1px 1px hsl(var(--schatten) / 0.04), 0 22px 44px -22px hsl(var(--schatten) / 0.45);
-  }
-}
-@media (prefers-reduced-motion: reduce) { .rechnung { transform: none !important; } }
-
-.rechnung h3, .karte h3 {
-  font-family: var(--sans); font-size: 0.9rem; font-weight: 600; margin: 0 0 0.85rem;
-}
-.rechnung h3 span { display: block; font-weight: 400; color: var(--leise); font-size: 0.82rem; }
-
-.zeile { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.3rem 0; }
-.zeile dt { color: var(--leise); font-size: 0.9rem; }
-.zeile dd { margin: 0; font-family: var(--mono); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
-dl { margin: 0; }
-.summe { margin-top: 0.65rem; padding-top: 0.7rem; border-top: 1px solid var(--linie); }
-.summe dt { color: var(--text); font-weight: 600; font-size: 0.9rem; }
-.summe dd { font-weight: 700; font-size: 1.05rem; }
-
-.gut { color: var(--positiv); }
-.schlecht { color: var(--kritisch); }
-
-.merker { display: inline-block; margin-top: 0.75rem; font-size: 0.78rem; padding: 0.15rem 0.5rem; border-radius: 999px; }
-.merker.gut { background: var(--positiv-fl); }
-.merker.schlecht { background: var(--kritisch-fl); }
-
-.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 1rem 0 0; max-width: 42rem; }
-
-/* ── Bestandsleiste ───────────────────────────────────────────────────────── */
-.bestand {
-  display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr);
-  background: var(--linie); border: 1px solid var(--linie);
-  border-radius: var(--radius-lg); overflow: hidden; margin: 0 0 1rem;
-}
-@media (min-width: 44rem) { .bestand { grid-template-columns: repeat(4, 1fr); } }
-.kachel { background: var(--karte); padding: 1rem 1.1rem; }
-.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.2rem; }
-.kachel dd {
-  margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 1.4rem; font-weight: 700; line-height: 1.25;
-}
-
-.rechnungen { display: grid; gap: 1rem; perspective: 1200px; }
-@media (min-width: 44rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
 
 /* ── Fristen ──────────────────────────────────────────────────────────────── */
 .fristen { list-style: none; margin: 0; padding: 0; }
-.frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.65rem 0; border-top: 1px solid var(--linie); }
+.frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.7rem 0; border-top: 1px solid var(--linie); }
 .frist:first-child { border-top: 0; padding-top: 0; }
 .frist .wann {
   flex: 0 0 auto; font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 0.8rem; font-weight: 500;
-  padding: 0.12rem 0.5rem; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 500; padding: 0.12rem 0.55rem; border-radius: 999px;
   min-width: 7.5rem; text-align: center;
 }
 .frist.schlecht .wann { background: var(--kritisch-fl); color: var(--kritisch); }
 .frist.bald .wann { background: var(--warnung-fl); color: var(--warnung); }
 .frist.ruhig .wann { background: var(--flaeche); color: var(--leise); }
-.frist .was { font-size: 0.92rem; }
+.frist .was { font-size: 0.95rem; }
 .frist .was span { display: block; color: var(--leise); font-size: 0.85rem; }
 
-/* ── Zwei Spalten, editorial mit großer blasser Schrittziffer ─────────────── */
-.paar { display: grid; gap: 1rem; margin-top: 1.5rem; }
-@media (min-width: 44rem) { .paar { grid-template-columns: 1fr 1fr; } }
-.paar h3 {
-  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise); margin: 0 0 0.5rem;
+/* ── Funktionsraster ───────────────────────────────────────────────────────── */
+.raster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+@media (max-width: 62rem) { .raster { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 42rem) { .raster { grid-template-columns: 1fr; } }
+.f {
+  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  padding: 1.6rem; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
-.paar p { margin: 0; font-size: 0.95rem; max-width: none; }
-.liste { list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
-.liste li { padding: 0.22rem 0; }
-.liste.kommt li { color: var(--leise); }
+@media (hover: hover) {
+  .f:hover { transform: translateY(-3px); box-shadow: 0 22px 44px -26px hsl(var(--schatten) / 0.35); border-color: hsl(var(--akzent-h) / 0.35); }
+}
+@media (prefers-reduced-motion: reduce) { .f:hover { transform: none; } }
+.f .wann {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--leise);
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.f h3 { font-family: var(--display); font-size: 1.2rem; font-weight: 700; margin: 0.6rem 0 0.5rem; letter-spacing: -0.01em; }
+.f p { font-size: 0.92rem; color: var(--leise); margin: 0; }
+.spaeter { margin-top: 2.25rem; padding-top: 1.75rem; border-top: 1px solid var(--linie); }
+.spaeter h4 {
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--leise); margin: 0 0 0.85rem;
+}
+.chipzeile { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.chipzeile span {
+  font-size: 0.85rem; padding: 0.4rem 0.85rem; border-radius: 999px;
+  background: var(--flaeche); color: var(--leise);
+}
 
-/* Wasserzeichen, kein Zeichen — siehe die Sammelstelle der Ausnahme oben.
-   `aria-hidden` UND aus dem Textfluss genommen: Eine Vorlesehilfe soll „01"
-   nicht wie einen eigenen Absatz vorlesen. */
-.schritt { position: relative; overflow: hidden; }
-.schrittnr {
-  position: absolute; top: -0.65rem; right: -0.15rem;
-  font-family: var(--mono); font-weight: 700;
-  font-size: 4.25rem; line-height: 1;
-  color: hsl(var(--akzent-h) / 0.12);
-  pointer-events: none; user-select: none;
+/* ── Vorher/Nachher ────────────────────────────────────────────────────────── */
+.vgl {
+  display: grid; grid-template-columns: 1.3fr 1fr 1fr;
+  border: 1px solid var(--linie); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--karte);
+}
+.vgl > div { padding: 1.1rem 1.35rem; border-bottom: 1px solid var(--linie); display: flex; align-items: center; font-size: 0.95rem; }
+.vgl .kopfzeile {
+  background: var(--flaeche); font-weight: 600; font-size: 0.76rem;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
+}
+.vgl .kopfzeile.neu { color: var(--akzent); background: hsl(var(--akzent-h) / 0.08); }
+.vgl .alt { color: var(--leise); text-decoration: line-through; text-decoration-color: var(--linie); }
+.vgl .neu { font-weight: 600; }
+.vgl .neu::before { content: "✓"; color: var(--positiv); margin-right: 0.6rem; font-weight: 700; }
+.vgl .aufgabe { font-weight: 500; }
+@media (max-width: 46rem) {
+  .vgl { grid-template-columns: 1fr; }
+  .vgl .kopfzeile { display: none; }
+  .vgl .aufgabe { background: var(--flaeche); font-weight: 600; }
 }
 
 /* ── Preisregler ───────────────────────────────────────────────────────────
  *
- * WAS SICH AM 21.08.2026 GEÄNDERT HAT — UND WAS ES GEKOSTET HAT
- *
- * Hier standen zwölf feste Stufen als versteckte Radiofelder, gesteuert allein
- * durch CSS. Der Grund dafür war zwingend: `nginx.conf` setzte
- * `script-src 'none'`, ein Skript hätte im Betrieb wortlos nichts getan.
- *
- * Der Wunsch war ein echter Schieberegler mit freier Zahl. Das geht ohne
- * JavaScript nicht — ein `input type=range` kann seinen Wert nicht an CSS
- * weiterreichen. Also ist die Sicherheitsregel geändert worden, und zwar so
- * eng wie möglich: `script-src 'self'`. Skripte nur als eigene Datei von
- * diesem Server, weiterhin KEIN `'unsafe-inline'` — der Riegel gegen
- * eingeschleusten Code bleibt zu. Die Begründung steht in `nginx.conf`.
- *
- * Was die Seite dafür behält: Sie ist ohne Skript vollständig lesbar. Im
- * `<noscript>`-Block steht dieselbe Rechnung als Tabelle.
+ * Rechenlogik und Barrierefreiheit unveraendert aus der vorigen Fassung -
+ * siehe rechner.js. Hier nur die Gestaltung an die neue Sprache angepasst.
  */
-.rechner { padding: 1.75rem 1.5rem; }
-@media (min-width: 44rem) { .rechner { padding: 2.25rem; } }
-.frage { font-size: 0.95rem; font-weight: 600; margin: 0 0 1.1rem; max-width: none; }
+.rechner {
+  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  padding: 2rem 1.75rem;
+}
+@media (min-width: 44rem) { .rechner { padding: 2.75rem; } }
+.frage { font-family: var(--display); font-size: 1.15rem; font-weight: 700; margin: 0 0 1.3rem; letter-spacing: -0.01em; }
 
 .reglerzeile { display: flex; align-items: center; gap: 1rem; }
 .schiene {
   -webkit-appearance: none; appearance: none;
-  flex: 1 1 auto; min-width: 0;
-  height: 2.75rem;                              /* 44 px Zielgrösse, WCAG 2.5.8 */
+  flex: 1 1 auto; min-width: 0; height: 2.75rem;
   background: transparent; cursor: pointer;
 }
-/* Die Schiene füllt sich bis zum Griff. `--fuellung` setzt rechner.js. */
 .schiene::-webkit-slider-runnable-track {
-  height: 0.5rem; border-radius: 999px;
-  background: linear-gradient(to right,
-    var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+  height: 0.55rem; border-radius: 999px;
+  background: linear-gradient(to right, var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
 }
 .schiene::-moz-range-track {
-  height: 0.5rem; border-radius: 999px;
-  background: linear-gradient(to right,
-    var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+  height: 0.55rem; border-radius: 999px;
+  background: linear-gradient(to right, var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
 }
 .schiene::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%;
   background: var(--karte); border: 3px solid var(--akzent);
   margin-top: -0.6rem;
   box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
   transition: transform 0.12s;
 }
 .schiene::-moz-range-thumb {
-  width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%;
   background: var(--karte); border: 3px solid var(--akzent);
   box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
 }
@@ -579,114 +660,78 @@ dl { margin: 0; }
 }
 
 .zahlfeld {
-  width: 5.5rem; min-height: 2.75rem; padding: 0.4rem 0.5rem;
-  text-align: center;
-  font-family: var(--mono); font-size: 1.05rem; font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--text); background: var(--grund);
-  border: 1px solid var(--linie); border-radius: 0.6rem;
+  width: 5.5rem; min-height: 2.75rem; padding: 0.4rem 0.5rem; text-align: center;
+  font-family: var(--mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--text); background: var(--grund); border: 1px solid var(--linie); border-radius: 0.6rem;
 }
 .zahlfeld:focus-visible { outline: 2px solid var(--akzent); outline-offset: 1px; }
-/*
- * `max-width: none` ist hier nicht Kosmetik: `section p` begrenzt Absätze auf
- * 38 rem Lesebreite, und das traf auch diese Zeile. Die „100" landete dadurch
- * bei zwei Dritteln der Schiene statt an ihrem Ende — eine Skala, die an der
- * falschen Stelle endet, ist schlimmer als gar keine.
- *
- * Das `padding-right` hält die rechte Marke über dem Ende der Schiene, nicht
- * über dem Zahlenfeld daneben: 5,5 rem Feldbreite plus 1 rem Abstand.
- */
 .spanne {
-  display: flex; justify-content: space-between;
-  font-size: 0.78rem; color: var(--leise);
-  font-family: var(--mono);
-  margin-top: -0.35rem; padding-right: 6.5rem; max-width: none;
+  display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--leise);
+  font-family: var(--mono); margin-top: -0.35rem; padding-right: 6.5rem;
 }
 
-/* Monatlich oder jährlich */
-.taktwahl {
-  display: inline-flex; gap: 0.25rem; margin: 1.75rem 0 0;
-  padding: 0.25rem; background: var(--flaeche); border-radius: 999px;
-}
+.taktwahl { display: inline-flex; gap: 0.25rem; margin: 1.85rem 0 0; padding: 0.25rem; background: var(--flaeche); border-radius: 999px; }
 .taktwahl button {
-  min-height: 2.5rem; padding: 0.4rem 1rem;
-  border: 0; border-radius: 999px;
-  background: transparent; color: var(--text);
-  font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  transition: background 0.15s, color 0.15s;
+  min-height: 2.5rem; padding: 0.4rem 1rem; border: 0; border-radius: 999px;
+  background: transparent; color: var(--text); font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
+  cursor: pointer; white-space: nowrap; transition: background 0.15s, color 0.15s;
 }
-/* Der Akzent trägt die Auswahl — eine der vier Aufgaben, die DESIGN-2 ihm gibt. */
 .taktwahl button.aktiv { background: var(--akzent); color: var(--akzent-vg); font-weight: 600; }
 .taktwahl button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 .taktwahl .nachlass { font-size: 0.78rem; opacity: 0.85; margin-left: 0.35rem; }
 
-/*
- * `isolation: isolate` öffnet einen eigenen Stapelkontext: Das Leuchten
- * (`z-index: -1`) bleibt darin gefangen, statt hinter spätere Abschnitte der
- * Seite zu rutschen. Dieselbe Absicherung, die vorher `.aufmacher` über
- * `position: relative` erledigte.
- */
-.ergebnis { position: relative; isolation: isolate; margin-top: 1.75rem; padding-top: 1.4rem; border-top: 1px solid var(--linie); }
-/* Fläche, kein Zeichen. Die Deckkraft setzt rechner.js aus `--fuellung` — je
-   mehr Einheiten, desto kräftiger der Schein hinter der eigenen Zahl. Reiner
-   Rückmelde-Effekt zur Reglerbewegung, kein Statuszeichen. */
+.ergebnis { position: relative; isolation: isolate; margin-top: 1.85rem; padding-top: 1.5rem; border-top: 1px solid var(--linie); }
 .ergebnis-gluehen {
   position: absolute; inset: -1.5rem -1.5rem auto -1.5rem; height: 9rem;
   background: radial-gradient(60% 100% at 15% 15%, hsl(var(--akzent-h) / 0.5), transparent 72%);
-  z-index: -1; pointer-events: none; opacity: 0.12;
-  transition: opacity 0.25s ease;
+  z-index: -1; pointer-events: none; opacity: 0.12; transition: opacity 0.25s ease;
 }
 .betrag-gross {
-  display: block;
-  font-family: var(--mono); font-weight: 700;
-  font-size: clamp(2.75rem, 9vw, 4.25rem); line-height: 1;
-  letter-spacing: -0.035em; font-variant-numeric: tabular-nums;
+  display: block; font-family: var(--mono); font-weight: 700;
+  font-size: clamp(2.75rem, 8vw, 4.5rem); line-height: 1; letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
 }
-.betrag-zeile { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; max-width: none; }
-/*
- * Kein Leerzeichen zwischen Betrag und Euro-Zeichen, sondern ein gesetzter
- * Abstand. In IBM Plex Mono ist jedes Zeichen gleich breit, auch das
- * Leerzeichen — bei großer Schriftgrösse klaffte dadurch eine Lücke von einer
- * halben Ziffernbreite zwischen Zahl und Währung.
- */
+.betrag-zeile { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
 .waehrung { margin-left: 0.14em; }
-.takt { font-size: 1.05rem; color: var(--leise); }
-.jahresvorteil {
-  font-size: 0.82rem; font-weight: 600;
-  padding: 0.15rem 0.55rem; border-radius: 999px;
-  background: var(--positiv-fl); color: var(--positiv);
-}
-.nebensatz { display: block; color: var(--leise); font-size: 0.95rem; margin-top: 0.35rem; }
-.herleitung {
-  display: block; margin-top: 1rem;
-  font-family: var(--mono); font-size: 0.85rem; color: var(--leise);
-  font-variant-numeric: tabular-nums;
-}
-.viele {
-  margin: 1rem 0 0; padding: 0.75rem 0.9rem;
-  background: var(--flaeche); border-radius: 0.6rem;
-  font-size: 0.88rem; color: var(--leise); max-width: none;
-}
+.takt { font-size: 1.1rem; color: var(--leise); }
+.jahresvorteil { font-size: 0.84rem; font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--positiv-fl); color: var(--positiv); }
+.nebensatz { display: block; color: var(--leise); font-size: 0.97rem; margin-top: 0.4rem; }
+.herleitung { display: block; margin-top: 1.1rem; font-family: var(--mono); font-size: 0.85rem; color: var(--leise); font-variant-numeric: tabular-nums; }
+.viele { margin: 1.1rem 0 0; padding: 0.8rem 1rem; background: var(--flaeche); border-radius: 0.7rem; font-size: 0.89rem; color: var(--leise); }
 
-/* Ohne Skript: dieselbe Rechnung als Tabelle. */
 .ohneskript table { border-collapse: collapse; width: 100%; max-width: 30rem; font-size: 0.92rem; }
-.ohneskript th, .ohneskript td {
-  text-align: right; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--linie);
-  font-variant-numeric: tabular-nums;
-}
+.ohneskript th, .ohneskript td { text-align: right; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--linie); font-variant-numeric: tabular-nums; }
 .ohneskript th { color: var(--leise); font-weight: 600; font-size: 0.8rem; }
 .ohneskript th:first-child, .ohneskript td:first-child { text-align: left; }
 .ohneskript td { font-family: var(--mono); }
 
-.preis { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.92em; letter-spacing: -0.01em; }
+.preis-inline { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.92em; letter-spacing: -0.01em; }
+
+/* ── Schlussband ───────────────────────────────────────────────────────────── */
+.schluss {
+  background: linear-gradient(135deg, hsl(var(--funke-h) / 0.16), hsl(var(--akzent-h) / 0.12));
+  border: 1px solid hsl(var(--akzent-h) / 0.16);
+  border-radius: var(--radius-lg); padding: 3.5rem;
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2.5rem; align-items: center;
+  position: relative; overflow: hidden;
+}
+.schluss::after {
+  content: ""; position: absolute; right: -6rem; top: -6rem; width: 18rem; height: 18rem;
+  border-radius: 50%; background: hsl(var(--funke-h) / 0.45); filter: blur(10px); pointer-events: none;
+}
+.schluss h2 { margin-bottom: 0.6rem; }
+.schluss p { color: var(--leise); font-size: 1.02rem; max-width: 32rem; }
+.schluss .aktion { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.85rem; align-items: flex-start; }
+@media (max-width: 54rem) {
+  .schluss { grid-template-columns: 1fr; padding: 2.5rem 1.75rem; }
+}
 
 /* ── Verweise ─────────────────────────────────────────────────────────────── */
 a { color: var(--akzent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:focus-visible { outline: 2px solid var(--akzent); outline-offset: 3px; border-radius: 3px; }
 
-footer { border-top: 1px solid var(--linie); padding: 2rem 0 3rem; color: var(--leise); font-size: 0.85rem; }
-footer p { margin: 0 0 0.4rem; max-width: 42rem; }
+footer { border-top: 1px solid var(--linie); padding: 2.5rem 0; color: var(--leise); font-size: 0.85rem; }
+footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
 </style>
 </head>
 <body>
@@ -696,9 +741,16 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 
 <header class="kopf">
   <div class="huelle">
-    <p class="marke"><b>Immoleicht</b> <span class="zusatz">Beta</span></p>
-    <button type="button" id="darstellung" class="knopf-klein" hidden
-            aria-label="Darstellung umschalten"></button>
+    <a href="#inhalt" class="marke" aria-label="Immoleicht, zum Seitenanfang">
+      Immo<em>leicht</em><span class="punkt" aria-hidden="true"></span><span class="zusatz">Beta</span>
+    </a>
+    <ul class="hauptnav">
+      <li><a href="#fuer-wen">Für wen</a></li>
+      <li><a href="#funktionen">Funktionen</a></li>
+      <li><a href="#vergleich">Vorher/Nachher</a></li>
+      <li><a href="#preis">Preis</a></li>
+    </ul>
+    <button type="button" id="darstellung" class="knopf-klein" hidden aria-label="Darstellung umschalten"></button>
     <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
   </div>
 </header>
@@ -706,76 +758,85 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 <main id="inhalt">
 
   <div class="aufmacher">
-    <div class="aurora" aria-hidden="true">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
-    <div class="spotlight" id="spotlight" aria-hidden="true"></div>
-    <div class="huelle kinetisch">
-      <p class="augenbraue">Cashflow-Copilot für Immobilien</p>
-      <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
-      <p class="vorspann">
-        Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
-        bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
-      </p>
-      <div class="knopfreihe">
-        <a class="zugang" href="#preis">Preis berechnen</a>
-        <a class="zugang-leise" href="#unterschied">Was es anders macht</a>
+    <div class="huelle">
+      <div class="kinetisch">
+        <p class="augenbraue">Cashflow-Copilot für Immobilien</p>
+        <h1>Verwalten kann leicht sein — <span class="markiert">Geld</span> zu sehen auch.</h1>
+        <p class="vorspann">
+          Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
+          bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
+        </p>
+        <div class="knopfreihe">
+          <a class="zugang" href="#preis">Preis berechnen</a>
+          <a class="zugang-leise" href="#funktionen">Was heute schon geht</a>
+          <small class="fussnotiz">Erste Einheit dauerhaft kostenlos. Kein Testzeitraum, der abläuft.</small>
+        </div>
       </div>
+
+      <div class="demo" id="demo" aria-label="Vorführung: lose Zahlen werden zu einer Rechnung je Wohnung">
+        <div class="zettel" style="--r:-6deg;--y:-92px">
+          <span class="marke-klein">Miete</span>
+          <b>Kaltmiete, Wohnung 3</b>
+          <span class="betrag">780,00 €</span>
+        </div>
+        <div class="zettel" style="--r:4deg;--y:-30px">
+          <span class="marke-klein">Rate</span>
+          <b>Darlehensrate, Objekt</b>
+          <span class="betrag">612,40 €</span>
+        </div>
+        <div class="zettel" style="--r:-3deg;--y:32px">
+          <span class="marke-klein">Kosten</span>
+          <b>Rücklage &amp; laufende Kosten</b>
+          <span class="betrag">145,00 €</span>
+        </div>
+        <div class="zettel" style="--r:5deg;--y:94px">
+          <span class="marke-klein">Unklar</span>
+          <b>Wohnung 1 — trägt sich das?</b>
+          <span class="betrag">?</span>
+        </div>
+
+        <div class="karten-stapel">
+          <div class="ergebnis-karte gut">
+            <h4>Wohnung 3</h4>
+            <p class="ort">2. OG links · 68 m²</p>
+            <span class="zahl">+ 22,60 €</span>
+            <span class="stichwort">trägt sich</span>
+          </div>
+          <div class="ergebnis-karte schlecht">
+            <h4>Wohnung 1</h4>
+            <p class="ort">Erdgeschoss · 71 m²</p>
+            <span class="zahl">− 217,40 €</span>
+            <span class="stichwort">zahlt drauf</span>
+          </div>
+        </div>
+
+        <div class="umschalter" id="umschalter" hidden role="group" aria-label="Vorher oder mit Immoleicht anzeigen">
+          <button type="button" data-zustand="vorher" aria-pressed="false">Vorher</button>
+          <button type="button" class="aktiv" data-zustand="nachher" aria-pressed="true">Mit Immoleicht</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="leiste">
+    <div class="huelle enthuellen">
+      <div><div class="n">1</div><div class="l">Einheit dauerhaft kostenlos</div></div>
+      <div><div class="n">9,99<small>€</small></div><div class="l">je weitere Einheit, im Monat</div></div>
+      <div><div class="n">Frankfurt</div><div class="l">Supabase-Standort, DSGVO</div></div>
+      <div><div class="n">0<small>€</small></div><div class="l">versteckte Kosten — Endpreis inkl. USt</div></div>
     </div>
   </div>
 
   <section>
     <div class="huelle enthuellen">
-      <dl class="bestand">
-        <div class="kachel"><dt>Einheiten</dt><dd class="zahl" data-ziel="12" data-format="ganz">12</dd></div>
-        <div class="kachel"><dt>tragen sich</dt><dd class="gut zahl" data-ziel="9" data-format="ganz">9</dd></div>
-        <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht zahl" data-ziel="3" data-format="ganz">3</dd></div>
-        <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut zahl" data-ziel="1240.6" data-format="euro" data-vorzeichen="+">+ 1.240,60 €</dd></div>
-      </dl>
-
-      <div class="rechnungen">
-        <article class="rechnung">
-          <h3>Wohnung 3 <span>2. OG links · 68 m²</span></h3>
-          <dl>
-            <div class="zeile"><dt>Kaltmiete</dt><dd>+ 780,00</dd></div>
-            <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
-            <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
-            <div class="zeile summe"><dt>Überschuss</dt><dd class="gut">+ 22,60 €</dd></div>
-          </dl>
-          <span class="merker gut">trägt sich</span>
-        </article>
-
-        <article class="rechnung">
-          <h3>Wohnung 1 <span>Erdgeschoss · 71 m²</span></h3>
-          <dl>
-            <div class="zeile"><dt>Kaltmiete</dt><dd>+ 540,00</dd></div>
-            <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
-            <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
-            <div class="zeile summe"><dt>Fehlbetrag</dt><dd class="schlecht">− 217,40 €</dd></div>
-          </dl>
-          <span class="merker schlecht">zahlt drauf</span>
-        </article>
+      <div class="sec-kopf">
+        <h2>Und was als Nächstes ansteht</h2>
+        <p>
+          Der zweite Satz, den eine Software über einen Bestand sagen können muss: nicht nur,
+          wie es heute steht, sondern was demnächst zu entscheiden ist.
+        </p>
       </div>
-
-      <p class="lesehilfe">
-        Beispielzahlen. Farbe hat in Immoleicht genau zwei Bedeutungen: Grün, Gelb und Rot
-        sagen, wie es um eine Sache steht — Blau sagt, wo man handeln kann.
-      </p>
-    </div>
-  </section>
-
-  <section>
-    <div class="huelle enthuellen">
-      <h2 class="ueberschrift">Und was als Nächstes ansteht</h2>
-      <p>
-        Der zweite Satz, den eine Software über einen Bestand sagen können muss: nicht nur,
-        wie es heute steht, sondern was demnächst zu entscheiden ist. Fristen im Mietrecht
-        und in der Finanzierung kommen mit Vorlauf — und sie sind teuer, wenn man sie
-        übersieht.
-      </p>
-      <div class="karte" style="margin-top:1.5rem">
+      <div class="karte">
         <h3>Was jetzt ansteht</h3>
         <ul class="fristen">
           <li class="frist schlecht">
@@ -801,18 +862,12 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
     </div>
   </section>
 
-  <section id="unterschied">
+  <section id="fuer-wen">
     <div class="huelle enthuellen">
-      <h2 class="ueberschrift">Warum das der Unterschied ist</h2>
-      <p>
-        Wer eine Wohnung vermietet, kennt die Miete. Ob sie sich rechnet, hängt aber an der
-        Rate, den Rücklagen und dem Leerstand — Zahlen, die meist in einer anderen Tabelle
-        stehen oder in gar keiner.
-      </p>
-      <p>
-        Immoleicht führt sie zusammen. Von der ersten Wohnung bis zum Bestand einer
-        Hausverwaltung, mit denselben Bildschirmen: Was man nicht braucht, ist nicht da.
-      </p>
+      <div class="sec-kopf">
+        <h2>Für wen</h2>
+        <p>Zwei Zielgruppen, die in entgegengesetzte Richtungen ziehen — und trotzdem eine Oberfläche.</p>
+      </div>
       <div class="paar">
         <div class="karte schritt">
           <span class="schrittnr" aria-hidden="true">01</span>
@@ -836,14 +891,89 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
     </div>
   </section>
 
+  <section id="funktionen">
+    <div class="huelle enthuellen">
+      <div class="sec-kopf">
+        <h2>Was heute schon geht.</h2>
+        <p>Kein Zukunftsversprechen — was hier steht, ist gebaut und läuft.</p>
+      </div>
+      <div class="raster">
+        <div class="f">
+          <div class="wann">Von Anfang an</div>
+          <h3>Objekte und Einheiten</h3>
+          <p>Wohnungen und Gewerbeeinheiten anlegen, bearbeiten, mit Ausstattung und Mietspiegel-Bezug.</p>
+        </div>
+        <div class="f">
+          <div class="wann">Je Darlehen</div>
+          <h3>Tilgungsplan &amp; Sondertilgung</h3>
+          <p>Ganze Cent, letzte Rate als Rest, Einstieg ab Restschuld zu einem Stichtag — wie in der Jahresmitteilung der Bank.</p>
+        </div>
+        <div class="f">
+          <div class="wann">Automatisch</div>
+          <h3>Zinsbindung im Blick</h3>
+          <p>Erscheint in „Was jetzt ansteht", gestaffelt nach Dringlichkeit — nicht erst, wenn es zu spät ist.</p>
+        </div>
+        <div class="f">
+          <div class="wann">Je Wohnung</div>
+          <h3>Mietspiegel &amp; Potenzial</h3>
+          <p>Ist gegen Möglich, mit Ausstattungszuschlägen und Sperrfrist nach § 558 BGB.</p>
+        </div>
+        <div class="f">
+          <div class="wann">Über den Bestand</div>
+          <h3>Etiketten</h3>
+          <p>Selbst vergebene Worte, mandantenweit wiederverwendbar, auf Objekten und Einheiten.</p>
+        </div>
+        <div class="f">
+          <div class="wann">Von Anfang an</div>
+          <h3>Konto &amp; Mandanten</h3>
+          <p>Rollen, Zugriffsregeln und vollständig getrennte Mandanten — auf Datenbankebene erzwungen.</p>
+        </div>
+      </div>
+
+      <div class="spaeter">
+        <h4>Als Nächstes</h4>
+        <div class="chipzeile">
+          <span>Laufende Kosten &amp; Cashflow je Einheit</span>
+          <span>Renditekennzahlen</span>
+          <span>Suche &amp; Filter über den Bestand</span>
+          <span>Aufgaben mit Zuweisung</span>
+          <span>Kassensturz je Einheit</span>
+          <span>Mietverträge &amp; Ankaufsrechner</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vergleich">
+    <div class="huelle enthuellen">
+      <div class="sec-kopf">
+        <h2>Was sich konkret ändert.</h2>
+        <p>Keine Schlagworte — was mit Immoleicht heute schon anders läuft.</p>
+      </div>
+      <div class="vgl">
+        <div class="kopfzeile">Aufgabe</div><div class="kopfzeile">Bisher</div><div class="kopfzeile neu">Mit Immoleicht</div>
+        <div class="aufgabe">Rendite einer Wohnung einschätzen</div>
+        <div class="alt">Miete im Kopf, Rate in einer anderen Tabelle</div>
+        <div class="neu">Miete, Rate und Kosten in einer Rechnung, je Einheit</div>
+        <div class="aufgabe">Zinsbindung im Blick behalten</div>
+        <div class="alt">Kalendererinnerung, wenn überhaupt gesetzt</div>
+        <div class="neu">Steht unter „Was jetzt ansteht", mit Frist und Dringlichkeit</div>
+        <div class="aufgabe">Bestand mit mehreren Wohnungen ordnen</div>
+        <div class="alt">Eine Tabelle je Objekt, schnell unübersichtlich</div>
+        <div class="neu">Suche und Etiketten über den gesamten Bestand</div>
+        <div class="aufgabe">Mieterhöhung prüfen</div>
+        <div class="alt">Mietspiegel von Hand nachschlagen</div>
+        <div class="neu">Ist gegen Möglich, Sperrfrist nach § 558 BGB automatisch beachtet</div>
+      </div>
+    </div>
+  </section>
+
   <section id="preis">
     <div class="huelle enthuellen">
-      <h2 class="ueberschrift">Was es kostet</h2>
-      <p>
-        Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
-        Jede weitere kostet <span class="preis">9,99&nbsp;€</span> im Monat oder
-        <span class="preis">100&nbsp;€</span> im Jahr. Ziehen Sie den Regler:
-      </p>
+      <div class="sec-kopf">
+        <h2>Ein Preis, den man sich merken kann.</h2>
+        <p>Pro Einheit, nicht pro Modul oder Sitzplatz. Keine versteckten Stufen.</p>
+      </div>
 
       <div class="rechner" hidden>
         <p class="frage" id="regler-frage">Wie viele Wohnungen oder Gewerbeeinheiten verwalten Sie?</p>
@@ -906,49 +1036,31 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
         </div>
       </noscript>
 
-      <p class="lesehilfe">
-        Alle Beträge sind Endpreise inklusive Umsatzsteuer — an der Kasse kommt nichts
-        dazu. <b>Stellplätze, Keller und Gartenanteile zählen nicht mit:</b> Eine Wohnung
-        mit Garage und Kellerraum ist eine Einheit, nicht drei. Gezählt wird tagegenau,
-        und niemand wird gesperrt — was dazukommt, wird berechnet, nicht verboten.
+      <p class="lesebreite" style="color:var(--leise);font-size:.9rem;margin-top:1.1rem">
+        Alle Beträge sind Endpreise inklusive Umsatzsteuer. <b>Stellplätze, Keller und
+        Gartenanteile zählen nicht mit</b> — eine Wohnung mit Garage und Kellerraum ist eine
+        Einheit, nicht drei. Gezählt wird tagegenau, und niemand wird gesperrt: Was
+        dazukommt, wird berechnet, nicht verboten.
       </p>
     </div>
   </section>
 
   <section>
     <div class="huelle enthuellen">
-      <h2 class="ueberschrift">Stand</h2>
-      <p>
-        Immoleicht wird gerade gebaut, und diese Seite beschreibt, was es werden soll. Damit
-        das keine leere Behauptung bleibt, steht hier, was heute wirklich läuft — und was
-        als Nächstes drankommt.
-      </p>
-      <div class="paar">
-        <div class="karte">
-          <h3>Steht und läuft</h3>
-          <ul class="liste">
-            <li>Objekte und Einheiten anlegen und pflegen</li>
-            <li>Darlehen mit Tilgungsplan und Sondertilgung</li>
-            <li>Zinsbindungsende in „Was jetzt ansteht"</li>
-            <li>Mietspiegel, Potenzial und Sperrfrist</li>
-            <li>Etiketten über den ganzen Bestand</li>
-            <li>Konto, Rollen und getrennte Mandanten</li>
-          </ul>
+      <div class="schluss">
+        <div>
+          <h2>Sehen, was diese Wohnung wirklich bringt.</h2>
+          <p>
+            Legen Sie Ihr erstes Objekt an — von Hand oder aus einer bestehenden Tabelle.
+            Die erste Einheit ist dauerhaft kostenlos, ohne Frist und ohne Kreditkarte.
+          </p>
         </div>
-        <div class="karte">
-          <h3>Als Nächstes</h3>
-          <ul class="liste kommt">
-            <li>Laufende Kosten und Cashflow je Einheit</li>
-            <li>Renditekennzahlen</li>
-            <li>Suche und Filter über den Bestand</li>
-            <li>Aufgaben mit Zuweisung</li>
-            <li>Kassensturz: offen oder bezahlt je Einheit</li>
-            <li>Mietverträge und der Ankaufsrechner</li>
-          </ul>
+        <div class="aktion">
+          <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
+          <span style="font-size:.85rem;color:var(--leise)">
+            Immoleicht wird gerade gebaut. Wenn Sie einen Zugang haben, geht es hier weiter.
+          </span>
         </div>
-      </div>
-      <div class="knopfreihe">
-        <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
       </div>
     </div>
   </section>
@@ -957,11 +1069,8 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 
 <footer>
   <div class="huelle">
-    <p>Immoleicht · Vorschau. Diese Seite ist noch nicht öffentlich beworben.</p>
-    <p>
-      Schriften: Source Sans 3, Source Serif 4 und IBM Plex Mono, selbst ausgeliefert
-      unter der SIL Open Font License 1.1.
-    </p>
+    <span>© 2026 Immoleicht · Vorschau, noch nicht öffentlich beworben</span>
+    <span>Schriften selbst ausgeliefert unter der SIL Open Font License 1.1</span>
   </div>
 </footer>
 

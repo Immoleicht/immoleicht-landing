@@ -24,48 +24,78 @@ preise-erzeugen.py  Prüfwerkzeug: hält die Preise an drei Stellen zusammen
 Die drei `pruefe-*`-Dateien werden **nicht ausgeliefert** — das Dockerfile kopiert nur
 `index.html`, die beiden Skripte, `schriften/` und `nginx.conf`.
 
-## Gestaltung: DESIGN-2, nicht mehr DESIGN-1
+## Gestaltung: eine eigene Sprache seit dem 22.08.2026
 
-Am 21.08.2026 nachgezogen. Bis dahin stand diese Seite auf dem Stand von `DESIGN-1`,
-und das war an drei Stellen sichtbar:
+Zwei Anläufe vorher übernahm diese Seite Farben und Schrift unverändert aus der
+Anwendung (`DESIGN-2`). Das war für ein ruhiges Verwaltungswerkzeug richtig und für
+eine Landingpage zu leise — der Auftraggeber hat das ausdrücklich zurückgewiesen
+(„das ist überhaupt keine geile Seite") und eine eigene Referenzseite mitgeschickt.
+Diese Fassung übernimmt ihren **Typografie- und Energiecharakter**, aber nicht
+ungeprüft ihren Inhalt. Was dabei bewusst **nicht** übernommen wurde, steht als Erstes
+im Kopfkommentar von `index.html`, nicht versteckt in einem Commit:
 
-- **Keine feste Schrift.** Hier stand „Avenir Next" — die liegt nur auf Apple-Geräten.
-  Unter Windows erschien Segoe UI, unter Android Roboto. Jetzt dieselben drei selbst
-  ausgelieferten Schriften wie die Anwendung: Source Sans 3, Source Serif 4, IBM Plex
-  Mono. **Selbst ausliefern ist hier nicht Geschmack:** Google Fonts von Googles Servern
-  einzubinden überträgt die IP-Adresse jedes Besuchers in die USA, und dafür gibt es
-  rechtskräftige Abmahnungen. Alle drei stehen unter der SIL Open Font License 1.1.
-- **Keine Akzentfarbe.** `DESIGN-1` hatte entschieden, dass es gar keine gibt.
-  `DESIGN-2` hat das aufgehoben — sonst sieht alles, wo man handeln kann, wie Text aus.
-  Jetzt „Tinte", ein dunkles Marineblau.
-- **Ein zu blasser Grauton.** `--leise` stand auf 49 % Helligkeit. Genau dieser Wert ist
-  im Hauptprojekt am 20.08.2026 durchgefallen — 3,77 : 1, wo WCAG AA 4,5 : 1 verlangt —
-  und wurde dort auf 41 % gesenkt; hier stand er unverändert weiter. Jetzt derselbe Wert.
+- **Der Preis bleibt unverändert** — 9,99 € je Einheit und Monat, erste Einheit
+  dauerhaft frei. Die Referenz zeigte ein anderes Modell (0 € bis 3 Einheiten, dann
+  2 €/Einheit). Eine echte Preisänderung ist laut `.claude/rules/general.md` im
+  Hauptprojekt eine von drei Sachen, die gefragt werden — nicht selbst entschieden.
+- **Keine erfundenen Fähigkeiten.** Die Referenz zeigte einen KI-Assistenten,
+  Bankanbindung, DATEV-Export — nichts davon existiert im Produkt. Jede Zahl und jede
+  Fähigkeit auf dieser Seite ist entweder gebaut (siehe `features/INDEX.md` im
+  Hauptprojekt) oder ausdrücklich als „als Nächstes" benannt.
+- **Kein Formular, das eine Zusage vortäuscht.** Die Referenz hatte ein E-Mail-Feld mit
+  der Erfolgsmeldung „Link ist unterwegs ✓" — ohne dass irgendetwas verschickt würde.
+  Das ist keine Design-, sondern eine Ehrlichkeitsfrage. Der Schlussabschnitt führt
+  stattdessen zum echten „Zur Anwendung", mit demselben ehrlichen Satz wie zuvor:
+  „Wenn Sie einen Zugang haben, geht es hier weiter."
 
-Alle 26 Text-auf-Fläche-Paare sind nachgerechnet und liegen über 4,5 : 1, in **beiden**
-Darstellungen. Die eine Regel bleibt: Farbe hat genau zwei Bedeutungen — Grün/Gelb/Rot
-sagen, wie es um eine Sache steht, Blau sagt, wo man handeln kann. Eine dritte Bedeutung
-gibt es nicht.
+### Schrift: Bricolage Grotesque und Instrument Sans, selbst ausgeliefert
 
-**Was diese Seite im Unterschied zur Anwendung nicht hat:** eine vermessene
-Ersatzschrift. Next rechnet dort aus, wie viel Platz die Ersatzschrift braucht, damit
-der Text beim Nachladen nicht umspringt. Ohne Bauschritt lässt sich das nicht ehrlich
-nachbauen — geschätzte Werte wären schlimmer als keine. Stattdessen sind die zwei
-wichtigsten Schnitte im Kopf der Datei vorgeladen.
+Beide unter der SIL Open Font License 1.1, geladen von den offiziellen Quelldateien
+(`google/fonts`-Repository) und **selbst ausgeliefert, nicht von Googles Servern** —
+das ist hier nicht Geschmack: Google Fonts von Googles Servern einzubinden überträgt
+die IP-Adresse jedes Besuchers in die USA, und dafür gibt es rechtskräftige
+Abmahnungen. IBM Plex Mono bleibt unverändert für alle Zahlen. Die vorher genutzten
+Source Sans 3 / Source Serif 4 sind aus `schriften/` entfernt, damit keine toten
+Schriftdateien mitgeliefert werden.
 
-### Die eine Ausnahme, gesammelt an einer Stelle
+### Farbe: die zwei Bedeutungen bleiben, plus eine benannte, umgezogene Ausnahme
 
-Seit dem 21.08.2026 benutzt die Seite den Akzentton an drei Stellen als reine **Fläche**,
-nicht als **Zeichen**: die schwebenden Flecken hinter der Überschrift (`.aurora`), das
-Licht, das der Maus folgt (`.spotlight`), und die großen blassen Ziffern „01"/„02" hinter
-den beiden Textkarten (`.schrittnr`). Keine der drei trägt einen Wert oder einen Zustand;
-nimmt man sie weg, geht keine Aussage verloren, nur ein Eindruck.
+Die Grundregel ist unverändert: Grün/Gelb/Rot sagen, wie es um eine Sache steht, Blau
+(„Tinte") sagt, wo man handeln kann. Neu ist **„Funke"** — ein Violett, das
+ausschließlich als reine Fläche auftritt: der Punkt im Wortzeichen, der
+Textmarker-Strich hinter dem Wort „Geld" in der Überschrift, der Glanz im Schlussband.
+Es trägt nie einen Wert, nie einen Zustand, nie eine Schaltfläche.
 
-Das steht bewusst als **eine** Sammelstelle im Kopf von `index.html`, nicht als drei
-verstreute Kommentare — wer eine vierte Stelle dieser Art einführt, findet dort, was
-schon gilt, und muss sich fragen, ob sie wirklich dieselbe Begründung trägt. Alle drei
-rechnen ausschließlich mit `--akzent-h`, nie mit den Statusfarben — genau das wäre die
-verbotene dritte Bedeutung.
+**Bewusst nicht Gelb**, wie es die Referenz als „Sonne" vorschlug: Gelb ist bei uns
+bereits „Frist bald fällig" (`--warnung`), sichtbar auf derselben Seite im Abschnitt
+„Was jetzt ansteht". Ein zweiter, rein dekorativer Gelbton hätte mit dieser Bedeutung
+kollidiert — genau die vierte Bedeutung, vor der die Regel warnt. Violett liegt fernab
+von Blau, Grün, Gelb und Rot und kollidiert mit keiner. Beide Kontrastfälle
+(Text-auf-Funke, Funke-auf-Fläche) sind nachgerechnet, hell **und** dunkel, jeweils
+über 5 : 1.
+
+Die vorige, DESIGN-2-treue Fassung nutzte den Akzent an drei Stellen rein dekorativ
+(Aurora-Flecken, Maus-Licht, Schrittziffern). Diese Fassung ersetzt Aurora und
+Maus-Licht durch den Aufmacher-Beweis (siehe unten) — geblieben und auf „Funke"
+umgezogen sind der Wortzeichen-Punkt, der Textmarker und die Schrittziffern
+„01"/„02".
+
+## Der Aufmacher-Beweis: Stapel wird zur Abrechnung
+
+Der Aufmacher zeigt in einer Bewegung, was anders ist: links liegen dieselben Zahlen als
+lose Zettel (Kaltmiete, Rate, Kosten, eine unbeantwortete Frage), rechts stehen sie als
+zwei fertige Rechnungskarten — Wohnung 3 (trägt sich) und Wohnung 1 (zahlt drauf).
+**Dieselben Beispielzahlen, die auch im Abschnitt „Für wen" stehen** — keine zweite,
+erfundene Zahl nur für den Aufmacher.
+
+**Die CSS-Grundstellung zeigt bereits das Ergebnis, nicht den Zwischenschritt.** Das ist
+zugleich der Zustand ohne JavaScript. `rechner.js` fügt nur eine kurze **Vorführung**
+hinzu: kurz auf die Zettel zurückschalten, nach 2,2 Sekunden wieder zum Ergebnis — damit
+der Unterschied als Bewegung auffällt, statt dass die Seite einfach im Endzustand
+startet. Bei `prefers-reduced-motion` fällt die Vorführung komplett aus: sofort im
+Ergebnis, kein unangekündigter Sprung. Der Umschalter „Vorher"/„Mit Immoleicht" bleibt
+in jedem Fall bedienbar — und erscheint erst mit Skript, aus demselben Grund wie der
+Darstellungsknopf: ohne Funktion wäre er ein toter Knopf.
 
 ## Der Preisregler
 
@@ -117,9 +147,12 @@ auseinander. `pruefe-seite.mjs` lässt **jede** Konsolenmeldung des Browsers dur
 so melden sich CSP-Verletzungen. Geprüft werden außerdem: Regler, Zahlenfeld über 100, der
 kostenlose Fall, Umschalten auf jährlich, Bedienung per Pfeiltaste, was eine Vorlesehilfe
 angesagt bekommt, Zielgrößen, unsinnige Eingaben, die Fortschrittslinie und die
-Kopfleisten-Elevation beim Scrollen, die hochzählenden Zahlen der Bestandsleiste, ob jeder
-angeforderte Pfad vom `Dockerfile` gedeckt ist, die Seite **ohne** JavaScript, hell und
-dunkel samt Speichern der Wahl, und waagerechtes Scrollen bei 390 px.
+Kopfleisten-Elevation beim Scrollen, die vier Fakten der Kennzahlenleiste, der
+Aufmacher-Beweis (startet bei den Zetteln, wechselt von selbst zurück, Umschalter in
+beide Richtungen, bei reduzierter Bewegung sofort im Ergebnis ohne Vorführung), ob jeder
+angeforderte Pfad vom `Dockerfile` gedeckt ist, die Seite **ohne** JavaScript (inklusive:
+der Aufmacher zeigt sofort das Ergebnis, nicht die Zettel), hell und dunkel samt
+Speichern der Wahl, und waagerechtes Scrollen bei 390 px.
 
 Jeder neue Wächter ist mit einer **Gegenprobe** belegt, nicht nur behauptet: Der
 Dockerfile-Wächter schlägt an, wenn eine `COPY`-Zeile fehlt; der Fortschritts-/
@@ -149,10 +182,13 @@ Die maßgebliche Preisregel steht im Hauptprojekt und ist dort begründet:
 `docs/architektur/preis-und-zaehlung.md`. Weicht diese Seite davon ab, hat diese Seite
 unrecht.
 
-Die Gestaltung ist **aus der Anwendung übernommen** (`immoleicht/src/app/globals.css`) —
-dieselben Farben, dieselbe Schriftregel, dieselbe Bedeutung von Farbe. Bewusst kein
-eigenes Erscheinungsbild: Sonst gäbe es zwei, und `DESIGN-2` müsste später beide
-einsammeln.
+**Veraltet, hier stehen gelassen als Beleg, dass sich das geändert hat:** Bis zum
+22.08.2026 stand hier der Satz „Die Gestaltung ist aus der Anwendung übernommen … Bewusst
+kein eigenes Erscheinungsbild." Das gilt nicht mehr — siehe „Gestaltung: eine eigene
+Sprache" oben. Die Landingpage trägt jetzt bewusst ein **eigenes** Erscheinungsbild,
+losgelöst von `DESIGN-2`. Das ist im Marketing-Umfeld normal (Produktoberfläche und
+Werbeauftritt dürfen unterschiedlich klingen) und war eine ausdrückliche Entscheidung
+des Auftraggebers, keine stillschweigende Abweichung.
 
 ## Vor der Veröffentlichung — offen
 

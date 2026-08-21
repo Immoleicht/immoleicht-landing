@@ -1,7 +1,7 @@
 /*
  * Preisregler, Darstellungswechsel und alles, was sich bewegt: die
- * Fortschrittslinie, das Maus-Licht im Aufmacher, die Kartenneigung, die
- * hochzaehlenden Zahlen der Bestandsleiste und das Einblenden beim Scrollen.
+ * Fortschrittslinie, der Aufmacher-Beweis (Stapel wird zur Abrechnung) und
+ * das Einblenden beim Scrollen.
  *
  * Laeuft mit `defer`, also nach dem Aufbau der Seite und ohne sie aufzuhalten.
  * Die Seite ist ohne dieses Skript vollstaendig lesbar: Der `<noscript>`-Block
@@ -250,106 +250,42 @@ function kopfUndFortschrittAufsetzen() {
   aktualisieren();
 }
 
-/* ── Das Licht, das der Maus folgt ────────────────────────────────────────── */
+/* ── Der Aufmacher-Beweis: Stapel wird zur Abrechnung ─────────────────────── */
 
 /*
- * Nur dort, wo eine Maus wirklich fuehrt: `hover: hover` UND `pointer: fine`
- * schliessen Touch-Geraete aus, wo es kein Vorbeifahren gibt und der Effekt
- * nur totes Gewicht waere. Weich verzoegert (Lerp statt Direktsprung), damit
- * das Licht folgt statt springt - ohne dabei eine echte Animation zu sein,
- * die `prefers-reduced-motion` ausschliessen muesste: Es bewegt sich nur, wenn
- * sich die Maus bewegt, nie von selbst.
+ * Die CSS-GRUNDSTELLUNG (keine Klasse) zeigt bereits die fertigen
+ * Rechnungskarten - das ist zugleich der Zustand ohne Skript. Dieses Skript
+ * fuegt nur eine kurze VORFUEHRUNG hinzu: kurz auf die losen Zettel
+ * zurueckschalten, dann wieder zurueck - damit der Unterschied als Bewegung
+ * sichtbar wird, statt dass die Seite einfach im Endzustand startet.
+ *
+ * Unter `prefers-reduced-motion` faellt die Vorfuehrung komplett aus: Die
+ * Seite bleibt im selben aussagekraeftigen Zustand, den auch ein Besucher
+ * ohne JavaScript sieht. Der Umschalter bleibt trotzdem bedienbar, falls
+ * jemand den Vorher-Zustand von sich aus sehen will.
  */
-function spotlightAufsetzen() {
-  const licht = document.getElementById("spotlight");
-  const aufmacher = document.querySelector(".aufmacher");
-  if (!licht || !aufmacher) return;
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+function demoAufsetzen() {
+  const demo = document.getElementById("demo");
+  const umschalter = document.getElementById("umschalter");
+  if (!demo || !umschalter) return;
+  const schalter = Array.from(umschalter.querySelectorAll("button"));
 
-  let ziel = { x: 60, y: 10 };
-  let jetzt = { x: 60, y: 10 };
-  let lauf = null;
-
-  function schritt() {
-    jetzt.x += (ziel.x - jetzt.x) * 0.15;
-    jetzt.y += (ziel.y - jetzt.y) * 0.15;
-    licht.style.setProperty("--sx", jetzt.x + "%");
-    licht.style.setProperty("--sy", jetzt.y + "%");
-    lauf =
-      Math.abs(ziel.x - jetzt.x) > 0.05 || Math.abs(ziel.y - jetzt.y) > 0.05
-        ? requestAnimationFrame(schritt)
-        : null;
+  function setze(zustand) {
+    demo.classList.toggle("zeigt-vorher", zustand === "vorher");
+    schalter.forEach((b) => {
+      const aktiv = b.dataset.zustand === zustand;
+      b.classList.toggle("aktiv", aktiv);
+      b.setAttribute("aria-pressed", String(aktiv));
+    });
   }
 
-  aufmacher.addEventListener("pointermove", (e) => {
-    const r = aufmacher.getBoundingClientRect();
-    ziel = { x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 };
-    if (!lauf) lauf = requestAnimationFrame(schritt);
-  });
-}
+  schalter.forEach((b) => b.addEventListener("click", () => setze(b.dataset.zustand)));
+  umschalter.hidden = false;
 
-/* ── Kartenneigung ────────────────────────────────────────────────────────── */
-
-/*
- * Neigt die beiden Beispiel-Rechnungen leicht zur Maus hin - ein Hinweis, dass
- * hier etwas Konkretes liegt, kein Fliesstext. Bewusst nur mit Maus UND nur
- * ohne den Wunsch nach weniger Bewegung: Ein 3D-Kippen ist Bewegung im
- * eigentlichen Sinn, anders als das langsam nachziehende Licht oben.
- */
-function neigungAufsetzen() {
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  if (ruhig.matches) return;
-
-  document.querySelectorAll(".rechnung").forEach((karte) => {
-    karte.addEventListener("pointermove", (e) => {
-      const r = karte.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      karte.style.transform =
-        `perspective(800px) rotateX(${(-y * 5).toFixed(2)}deg) ` +
-        `rotateY(${(x * 5).toFixed(2)}deg) translateY(-2px)`;
-    });
-    karte.addEventListener("pointerleave", () => {
-      karte.style.transform = "";
-    });
-  });
-}
-
-/* ── Zahlen, die beim Erscheinen hochzaehlen ──────────────────────────────── */
-
-/*
- * Die Bestandsleiste traegt das Ergebnis schon fertig im Quelltext (12, 9, 3,
- * "+ 1.240,60 €") - das ist der Text, den jeder ohne Skript und jede
- * Suchmaschine sieht. Erst beim ERSTEN Sichtbarwerden zaehlt dieses Skript von
- * 0 auf denselben Wert hoch; `laufeZu()` respektiert `prefers-reduced-motion`
- * bereits von sich aus und setzt dann direkt den Endwert.
- */
-function zaehlerAufsetzen() {
-  const felder = document.querySelectorAll(".kachel dd[data-ziel]");
-  if (!felder.length) return;
-
-  const formatierer = (feld) => {
-    const vz = feld.dataset.vorzeichen ? feld.dataset.vorzeichen + " " : "";
-    return feld.dataset.format === "euro"
-      ? (wert) => `${vz}${euro.format(wert)} €`
-      : (wert) => ganz.format(Math.round(wert));
-  };
-
-  if (!("IntersectionObserver" in window)) return; // Endwert steht schon da.
-
-  const beobachter = new IntersectionObserver(
-    (eintraege) => {
-      eintraege.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const feld = e.target;
-        laufeZu(feld, 0, Number(feld.dataset.ziel), formatierer(feld));
-        beobachter.unobserve(feld);
-      });
-    },
-    { rootMargin: "0px 0px -10% 0px" },
-  );
-
-  felder.forEach((feld) => beobachter.observe(feld));
+  if (!ruhig.matches) {
+    setze("vorher");
+    setTimeout(() => setze("nachher"), 2200);
+  }
 }
 
 /* ── Einblenden beim Scrollen ─────────────────────────────────────────────── */
@@ -382,6 +318,4 @@ reglerAufsetzen();
 darstellungAufsetzen();
 enthuellenAufsetzen();
 kopfUndFortschrittAufsetzen();
-spotlightAufsetzen();
-neigungAufsetzen();
-zaehlerAufsetzen();
+demoAufsetzen();
