@@ -11,6 +11,16 @@ FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY index.html /usr/share/nginx/html/index.html
 
+# Die Schriften werden vom EIGENEN Server ausgeliefert, nicht von Google. Das ist
+# hier nicht Geschmack: Google Fonts von Googles Servern einzubinden uebertraegt
+# die IP-Adresse jedes Besuchers in die USA, und dafuer gibt es rechtskraeftige
+# Abmahnungen. Alle drei stehen unter der SIL Open Font License 1.1; die
+# Lizenztexte werden mitkopiert, weil die Lizenz das verlangt.
+COPY schriften /usr/share/nginx/html/schriften
+
+# preise-erzeugen.py wird bewusst NICHT kopiert: Es ist ein Werkzeug fuer den
+# Menschen, der den Preis aendert, und kein Bauschritt.
+
 EXPOSE 80
 
 # Lebenszeichen ohne Abhaengigkeiten, damit der Server erkennt, ob ausgeliefert

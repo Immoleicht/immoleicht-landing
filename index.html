@@ -6,44 +6,138 @@
 <title>Immoleicht — bringt diese Wohnung Geld oder kostet sie welche?</title>
 <meta name="description" content="Immoleicht zeigt zu jeder Einheit, ob sie Überschuss oder Minus macht — Miete, Darlehensrate und Kosten in einer Rechnung. Die erste Einheit ist dauerhaft kostenlos.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#f5f7f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141715" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='25' font-size='26'>🏠</text></svg>">
+
+<!-- Nur die zwei Schnitte vorladen, die im ersten Bild wirklich vorkommen:
+     der Fliesstext und die Serife der Überschrift. Alles vorzuladen verdrängt
+     genau das, worauf es ankommt. -->
+<link rel="preload" href="/schriften/source-sans-3-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/schriften/source-serif-4-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 /*
-  Gestaltung übernommen aus dem Designsystem der Anwendung (src/app/globals.css).
-  Bewusst keine eigenen Farben und keine eigene Schrift: Sonst entstehen zwei
-  Erscheinungsbilder, die DESIGN-2 später beide einsammeln müsste.
+  Gestaltung der Landingpage — übernommen aus dem Designsystem der Anwendung
+  (`immoleicht/src/app/globals.css`), Stand DESIGN-2.
 
-  Die eine Regel, die alles zusammenhält:
-  Farbe bedeutet ausschliesslich Zustand. Grün heisst "bringt Geld", Rot heisst
-  "kostet Geld". Sonst ist nichts farbig — auch keine Schaltfläche.
+  ── WAS AM 21.08.2026 NACHGEZOGEN WURDE ─────────────────────────────────────
+
+  Diese Datei stand noch auf DESIGN-1. Der README führte das als offenen Punkt:
+  „Schrift und Akzentfarbe kommen mit DESIGN-2 im Hauptprojekt. Diese Seite erbt
+  sie, sobald die Werte feststehen." Sie stehen fest, also erbt sie sie jetzt.
+
+  Drei Dinge waren dadurch verschieden von der Anwendung:
+
+  1. KEINE FESTE SCHRIFT. Hier stand „Avenir Next", und die liegt nur auf
+     Apple-Geräten. Unter Windows erschien Segoe UI, unter Android Roboto — die
+     Seite sah auf drei Plattformen verschieden aus, und auf einem Mac fällt das
+     niemandem auf, der sie gebaut hat. Jetzt dieselben drei selbst gehosteten
+     Schriften wie die Anwendung. Selbst gehostet ist dabei nicht Geschmack:
+     Google Fonts von Googles Servern zu laden überträgt die IP-Adresse jedes
+     Besuchers in die USA, und dafür gibt es rechtskräftige Abmahnungen.
+
+  2. KEINE AKZENTFARBE. DESIGN-1 hatte entschieden, dass es gar keine gibt —
+     „Verweise tragen die Textfarbe". DESIGN-2 hat das aufgehoben, weil dann
+     alles, wo man handeln kann, wie Text aussieht. Jetzt „Tinte", ein dunkles
+     Marineblau.
+
+  3. EIN ZU BLASSER GRAUTON. `--leise` stand auf 49 % Helligkeit. Genau dieser
+     Wert ist im Hauptprojekt am 20.08.2026 gemessen durchgefallen: 3,77 : 1
+     gegen den Grund, wo WCAG AA 4,5 : 1 verlangt — und er trägt die gesamte
+     zweite Textebene. Dort wurde er auf 41 % gesenkt; hier stand er unverändert
+     weiter. Jetzt derselbe Wert wie dort.
+
+  ── DIE REGEL, DIE ALLES ZUSAMMENHÄLT ───────────────────────────────────────
+
+  Farbe hat genau ZWEI Bedeutungen, und sie werden niemals vermischt:
+
+      Akzent (Tinte)         „hier kannst du handeln"
+      Grün / Gelb / Rot      „so steht es um die Sache"
+
+  Daraus folgt zwingend, dass der Akzent weder grün noch gelb noch rot sein
+  darf. Eine dritte Bedeutung — „sieht hübsch aus" — gibt es nicht. Wer eine
+  einführt, zerstört das System.
 */
+
+/* ── Schriften ─────────────────────────────────────────────────────────────
+ * Alle drei stehen unter der SIL Open Font License 1.1 und dürfen kommerziell
+ * selbst gehostet werden. Die Lizenztexte liegen in `schriften/`.
+ *
+ * Was diese Seite im Unterschied zur Anwendung NICHT hat: eine vermessene
+ * Ersatzschrift. Next rechnet dort aus, wie viel Platz die Ersatzschrift
+ * braucht, damit der Text beim Nachladen nicht umspringt. Ohne Bauschritt lässt
+ * sich das nicht ehrlich nachbauen — geschätzte Werte wären schlimmer als
+ * keine. Stattdessen sind die zwei wichtigsten Schnitte vorgeladen (siehe Kopf),
+ * womit das Umspringen im Regelfall gar nicht erst auftritt.
+ */
+@font-face {
+  font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/schriften/source-sans-3-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/schriften/source-sans-3-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap;
+  src: url("/schriften/source-sans-3-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Serif 4"; font-style: normal; font-weight: 600; font-display: swap;
+  src: url("/schriften/source-serif-4-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/schriften/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/schriften/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+}
+
+/* ── Die Werte, Zeichen für Zeichen aus globals.css ────────────────────────── */
 :root {
   --grund:      hsl(120 7% 97%);
   --text:       hsl(144 7% 13%);
-  --leise:      hsl(143 3% 49%);
+  --leise:      hsl(143 3% 41%);
   --karte:      hsl(0 0% 100%);
   --linie:      hsl(140 6% 91%);
+  --flaeche:    hsl(140 8% 94%);
+
+  --akzent:     hsl(222 52% 36%);
+  --akzent-vg:  hsl(0 0% 100%);
+
   --positiv:    hsl(154 29% 33%);
   --positiv-fl: hsl(154 30% 93%);
+  --warnung:    hsl(36 69% 33%);
+  --warnung-fl: hsl(36 55% 93%);
   --kritisch:   hsl(6 50% 44%);
   --kritisch-fl:hsl(6 55% 95%);
+
   --radius: 0.75rem;
-  --serif: ui-serif, "Iowan Old Style", Charter, Georgia, serif;
-  --sans: "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --serif: "Source Serif 4", ui-serif, Charter, Georgia, serif;
+  --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --grund:      hsl(144 8% 9%);
-    --text:       hsl(120 7% 94%);
-    --leise:      hsl(143 4% 62%);
-    --karte:      hsl(144 7% 12%);
-    --linie:      hsl(144 6% 20%);
-    --positiv:    hsl(154 38% 62%);
-    --positiv-fl: hsl(154 22% 17%);
-    --kritisch:   hsl(6 62% 66%);
-    --kritisch-fl:hsl(6 30% 18%);
+    --grund:      hsl(140 7% 8%);
+    --text:       hsl(150 7% 92%);
+    --leise:      hsl(137 4% 57%);
+    --karte:      hsl(150 7% 11%);
+    --linie:      hsl(144 6% 16%);
+    --flaeche:    hsl(146 7% 15%);
+
+    --akzent:     hsl(219 60% 72%);
+    --akzent-vg:  hsl(150 10% 10%);
+
+    --positiv:    hsl(154 37% 57%);
+    --positiv-fl: hsl(154 30% 12%);
+    --warnung:    hsl(36 58% 58%);
+    --warnung-fl: hsl(36 40% 13%);
+    --kritisch:   hsl(7 63% 65%);
+    --kritisch-fl:hsl(7 40% 15%);
   }
 }
 
@@ -57,15 +151,24 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-.huelle { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+.huelle { max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
 
+/* ── Wortmarke, mit dem Beta-Zusatz aus DESIGN-2 ───────────────────────────── */
 .marke {
+  display: flex; align-items: center; gap: 0.5rem;
   font-family: var(--serif);
   font-size: 1.05rem;
   letter-spacing: 0.01em;
   margin: 0 0 3.5rem;
 }
 .marke b { font-weight: 600; }
+.marke .zusatz {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--leise);
+  border: 1px solid var(--linie); border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
 
 h1 {
   font-family: var(--serif);
@@ -76,7 +179,7 @@ h1 {
   text-wrap: balance;
   margin: 0 0 1rem;
 }
-.vorspann { font-size: 1.15rem; color: var(--leise); margin: 0 0 2.5rem; max-width: 34rem; }
+.vorspann { font-size: 1.15rem; color: var(--leise); margin: 0 0 2rem; max-width: 36rem; }
 
 /* Nur für Vorlesehilfen. Nicht display:none — das nähme es auch ihnen. */
 .nurvorlesen {
@@ -89,17 +192,36 @@ h1 {
   border: 0;
 }
 
+/* ── Bestandsleiste: der Blick über alles ──────────────────────────────────── */
+.bestand {
+  display: grid; gap: 1px;
+  grid-template-columns: repeat(2, 1fr);
+  background: var(--linie);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0 0 1rem;
+}
+@media (min-width: 42rem) { .bestand { grid-template-columns: repeat(4, 1fr); } }
+.kachel { background: var(--karte); padding: 0.9rem 1rem; }
+.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.15rem; }
+.kachel dd {
+  margin: 0;
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 1.25rem; font-weight: 700; line-height: 1.25;
+}
+
 /* ── Die Rechnung: das Kernstück der Seite ─────────────────────────────── */
 .rechnungen { display: grid; gap: 1rem; margin: 0 0 1rem; }
 @media (min-width: 40rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
 
-.rechnung {
+.rechnung, .karte {
   background: var(--karte);
   border: 1px solid var(--linie);
   border-radius: var(--radius);
   padding: 1.25rem 1.25rem 1rem;
 }
-.rechnung h2 {
+.rechnung h2, .karte h2 {
   font-family: var(--sans);
   font-size: 0.9rem;
   font-weight: 600;
@@ -121,6 +243,7 @@ dl { margin: 0; }
 
 .gut { color: var(--positiv); }
 .schlecht { color: var(--kritisch); }
+.bald { color: var(--warnung); }
 
 .merker {
   display: inline-block; margin-top: 0.75rem;
@@ -129,7 +252,28 @@ dl { margin: 0; }
 .merker.gut { background: var(--positiv-fl); }
 .merker.schlecht { background: var(--kritisch-fl); }
 
-.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 0 0 3.5rem; }
+.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 0 0 3.5rem; max-width: 40rem; }
+
+/* ── „Was jetzt ansteht": Fristen mit Dringlichkeit ────────────────────────── */
+.fristen { list-style: none; margin: 0; padding: 0; }
+.frist {
+  display: flex; gap: 0.85rem; align-items: baseline;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--linie);
+}
+.frist:first-child { border-top: 0; padding-top: 0; }
+.frist .wann {
+  flex: 0 0 auto;
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.82rem; font-weight: 500;
+  padding: 0.1rem 0.45rem; border-radius: 999px;
+  min-width: 7.5rem; text-align: center;
+}
+.frist.schlecht .wann { background: var(--kritisch-fl); color: var(--kritisch); }
+.frist.bald .wann { background: var(--warnung-fl); color: var(--warnung); }
+.frist.ruhig .wann { background: var(--flaeche); color: var(--leise); }
+.frist .was { font-size: 0.92rem; }
+.frist .was span { display: block; color: var(--leise); font-size: 0.85rem; }
 
 /* ── Fliesstext ────────────────────────────────────────────────────────── */
 h3 {
@@ -138,9 +282,32 @@ h3 {
   margin: 0 0 0.6rem;
 }
 section { margin-bottom: 3rem; }
-section p { margin: 0 0 1rem; max-width: 34rem; }
+section p { margin: 0 0 1rem; max-width: 36rem; }
 
-.preis { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+/*
+ * Beträge im Fliesstext. Schreibmaschinenschrift wie in der Anwendung, aber
+ * etwas kleiner: IBM Plex Mono läuft breiter als Source Sans, und ein Betrag
+ * mitten im Satz sah dadurch aus, als stünde er auseinandergezogen. Das
+ * geschützte Leerzeichen vor dem Euro-Zeichen gehört im Markup dazu, damit der
+ * Betrag nicht am Zeilenende zerreisst.
+ */
+.preis {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.92em; letter-spacing: -0.01em;
+}
+
+/* ── Zwei Spalten für „Für wen" und „Was heute schon geht" ─────────────────── */
+.paar { display: grid; gap: 1rem; margin-top: 1.25rem; }
+@media (min-width: 40rem) { .paar { grid-template-columns: 1fr 1fr; } }
+.paar h4 {
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
+  margin: 0 0 0.5rem;
+}
+.paar p { margin: 0; font-size: 0.95rem; max-width: none; }
+.liste { list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
+.liste li { padding: 0.22rem 0; }
+.liste.kommt li { color: var(--leise); }
 
 /* ── Preisrechner ──────────────────────────────────────────────────────────
  *
@@ -205,15 +372,19 @@ section p { margin: 0 0 1rem; max-width: 34rem; }
   -webkit-user-select: none;
   user-select: none;
 }
-.rechner label:hover { border-color: var(--text); }
-/* Keine Zierfarbe für "ausgewählt": die Textfarbe selbst, umgedreht. */
+.rechner label:hover { border-color: var(--akzent); }
+/*
+ * Die Auswahl trägt den Akzent, nicht die Textfarbe. DESIGN-2 weist ihm genau
+ * diese vier Aufgaben zu: Schaltflächen, Verweise im Fliesstext, AUSWAHL und
+ * Fokusrahmen. Grün wäre hier falsch — das hiesse „steht gut", nicht „gewählt".
+ */
 .rechner input:checked + label {
-  background: var(--text);
-  color: var(--grund);
-  border-color: var(--text);
+  background: var(--akzent);
+  color: var(--akzent-vg);
+  border-color: var(--akzent);
   font-weight: 600;
 }
-.rechner input:focus-visible + label { outline: 2px solid var(--text); outline-offset: 2px; }
+.rechner input:focus-visible + label { outline: 2px solid var(--akzent); outline-offset: 2px; }
 
 .ergebnis { margin-top: 0.75rem; border-top: 1px solid var(--linie); padding-top: 1rem; }
 /* Zwölf Fassungen je Wert stehen nebeneinander im Quelltext. Sichtbar ist eine. */
@@ -264,33 +435,43 @@ section p { margin: 0 0 1rem; max-width: 34rem; }
 .rechner #e1:checked ~ .ergebnis .frei-fall { display: block; }
 .rechner #e100:checked ~ .ergebnis .viele { display: block; }
 
-/* Keine Zierfarbe: Verweise tragen die Textfarbe, wie in der Anwendung. */
-a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; border-radius: 3px; }
+/* ── Verweise und Schaltflächen tragen den Akzent ──────────────────────────── */
+a { color: var(--akzent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:focus-visible { outline: 2px solid var(--akzent); outline-offset: 3px; border-radius: 3px; }
 
 .zugang {
   display: inline-block; margin-top: 0.4rem;
-  border: 1px solid var(--text); border-radius: var(--radius);
-  padding: 0.6rem 1.1rem; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  background: var(--akzent); color: var(--akzent-vg);
+  border: 1px solid var(--akzent); border-radius: var(--radius);
+  padding: 0.65rem 1.2rem; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  min-height: 2.75rem;                        /* 44 px Zielgrösse, WCAG 2.5.8 */
 }
-.zugang:hover { background: var(--text); color: var(--grund); }
+.zugang:hover { filter: brightness(1.15); }
 
 footer {
   border-top: 1px solid var(--linie); padding-top: 1.5rem;
   color: var(--leise); font-size: 0.85rem;
 }
+footer p { margin: 0 0 0.4rem; }
 </style>
 </head>
 <body>
 <main class="huelle">
 
-  <p class="marke"><b>Immoleicht</b></p>
+  <p class="marke"><b>Immoleicht</b> <span class="zusatz">Beta</span></p>
 
   <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
   <p class="vorspann">
     Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
     bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
   </p>
+
+  <dl class="bestand">
+    <div class="kachel"><dt>Einheiten</dt><dd>12</dd></div>
+    <div class="kachel"><dt>tragen sich</dt><dd class="gut">9</dd></div>
+    <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht">3</dd></div>
+    <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut">+ 1.240,60 €</dd></div>
+  </dl>
 
   <div class="rechnungen">
 
@@ -318,9 +499,43 @@ footer {
 
   </div>
   <p class="lesehilfe">
-    Beispielzahlen. Farbe hat in Immoleicht genau eine Bedeutung: Sie sagt, wie es um
-    eine Sache steht — nie, dass etwas hübsch aussehen soll.
+    Beispielzahlen. Farbe hat in Immoleicht genau zwei Bedeutungen: Grün, Gelb und Rot
+    sagen, wie es um eine Sache steht — Blau sagt, wo man handeln kann. Eine dritte
+    Bedeutung, „sieht hübsch aus", gibt es nicht.
   </p>
+
+  <section>
+    <h3>Und was als Nächstes ansteht</h3>
+    <p>
+      Der zweite Satz, den eine Software über einen Bestand sagen können muss: nicht nur,
+      wie es heute steht, sondern was demnächst zu entscheiden ist. Fristen im Mietrecht
+      und in der Finanzierung kommen mit Vorlauf — und sie sind teuer, wenn man sie
+      übersieht.
+    </p>
+    <div class="karte">
+      <h2>Was jetzt ansteht</h2>
+      <ul class="fristen">
+        <li class="frist schlecht">
+          <span class="wann">in 4 Monaten</span>
+          <span class="was">Zinsbindung endet
+            <span>Lindenstraße 4 · Restschuld 184.200 € · Anschluss jetzt verhandeln</span>
+          </span>
+        </li>
+        <li class="frist bald">
+          <span class="wann">in 9 Monaten</span>
+          <span class="was">Mieterhöhung möglich
+            <span>Wohnung 1 · Sperrfrist nach § 558 BGB läuft ab</span>
+          </span>
+        </li>
+        <li class="frist ruhig">
+          <span class="wann">in 3 Jahren</span>
+          <span class="was">Zinsbindung endet
+            <span>Wohnung 3 · früh genug, aber im Blick</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
 
   <section>
     <h3>Warum das der Unterschied ist</h3>
@@ -336,11 +551,37 @@ footer {
   </section>
 
   <section>
+    <h3>Für wen</h3>
+    <p>
+      Zwei Zielgruppen, die in entgegengesetzte Richtungen ziehen — und trotzdem eine
+      Oberfläche. Sie entfaltet sich mit dem Bestand, statt zweimal zu existieren.
+    </p>
+    <div class="paar">
+      <div class="karte">
+        <h4>Die erste Wohnung</h4>
+        <p>
+          Wer eine Eigentumswohnung besitzt, sieht keine Objektebene und keine Hausliste —
+          nur seine Wohnung. Jeder Bildschirm erklärt sich selbst, kein leeres Formular
+          fragt nach Dingen, die es hier nicht gibt. Und die erste Einheit kostet nichts.
+        </p>
+      </div>
+      <div class="karte">
+        <h4>Der Bestand einer Verwaltung</h4>
+        <p>
+          Ab der zweiten Handvoll erscheint, was vorher im Weg gewesen wäre: Suche statt
+          Scrollen, Etiketten, seitenweise Listen. Die Summen darüber gelten trotzdem für
+          den ganzen Bestand, nicht für die sichtbare Seite.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
     <h3>Was es kostet</h3>
     <p>
       Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
-      Jede weitere kostet <span class="preis">9,99 €</span> im Monat oder
-      <span class="preis">100 €</span> im Jahr. Rechnen Sie nach:
+      Jede weitere kostet <span class="preis">9,99&nbsp;€</span> im Monat oder
+      <span class="preis">100&nbsp;€</span> im Jahr. Rechnen Sie nach:
     </p>
 
     <div class="rechner">
@@ -426,14 +667,46 @@ footer {
   <section>
     <h3>Stand</h3>
     <p>
-      Immoleicht wird gerade gebaut. Diese Seite beschreibt, was es werden soll — nicht,
-      was es heute schon kann. Wenn Sie einen Zugang haben, geht es hier weiter:
+      Immoleicht wird gerade gebaut, und diese Seite beschreibt, was es werden soll. Damit
+      das keine leere Behauptung bleibt, steht hier, was heute wirklich läuft — und was
+      als Nächstes drankommt.
+    </p>
+    <div class="paar">
+      <div class="karte">
+        <h4>Steht und läuft</h4>
+        <ul class="liste">
+          <li>Objekte und Einheiten anlegen und pflegen</li>
+          <li>Darlehen mit Tilgungsplan und Sondertilgung</li>
+          <li>Zinsbindungsende in „Was jetzt ansteht"</li>
+          <li>Mietspiegel, Potenzial und Sperrfrist</li>
+          <li>Etiketten über den ganzen Bestand</li>
+          <li>Konto, Rollen und getrennte Mandanten</li>
+        </ul>
+      </div>
+      <div class="karte">
+        <h4>Als Nächstes</h4>
+        <ul class="liste kommt">
+          <li>Laufende Kosten und Cashflow je Einheit</li>
+          <li>Renditekennzahlen</li>
+          <li>Suche und Filter über den Bestand</li>
+          <li>Aufgaben mit Zuweisung</li>
+          <li>Kassensturz: offen oder bezahlt je Einheit</li>
+          <li>Mietverträge und der Ankaufsrechner</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:1.25rem">
+      Wenn Sie einen Zugang haben, geht es hier weiter:
     </p>
     <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
   </section>
 
   <footer>
     <p>Immoleicht · Vorschau. Diese Seite ist noch nicht öffentlich beworben.</p>
+    <p>
+      Schriften: Source Sans 3, Source Serif 4 und IBM Plex Mono, selbst ausgeliefert
+      unter der SIL Open Font License 1.1.
+    </p>
   </footer>
 
 </main>
