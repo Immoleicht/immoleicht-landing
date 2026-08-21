@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
 """
-Erzeugt die Zahlen des Preisrechners in `index.html`.
+Haelt die Preise an den drei Stellen zusammen, an denen sie stehen muessen.
 
-WOFUER DAS DA IST — UND WOFUER NICHT
+WARUM ES DREI STELLEN SIND — UND WARUM DAS NICHT ZU VERMEIDEN IST
 
-Das ist **kein Bauschritt**. Das Dockerfile kopiert `index.html` und `nginx.conf`,
-sonst nichts; diese Datei wird nie ausgeliefert und nie ausgefuehrt, wenn die
-Seite gebaut wird. Die Seite bleibt eine einzelne HTML-Datei ohne Werkzeugkette.
+    1. rechner.js      die drei Zahlen, aus denen der Regler alles rechnet
+    2. index.html      die Tabelle im <noscript>-Block, fuer Besucher ohne Skript
+    3. index.html      der Satz "9,99 EUR im Monat oder 100 EUR im Jahr"
 
-Sie existiert, weil der Rechner **72 Zahlen** enthaelt: je zwoelf Stufen mal
-sechs Werte (Einheiten, zahlbare Einheiten, Monatspreis, Jahrespreis, der
-Jahrespreis auf den Monat gerechnet, und die Ersparnis). Aendert sich der Preis,
-sind das 72 Handgriffe — und Handarbeit an 72 Zahlen ist genau die Stelle, an der
-ein falscher Betrag auf einer Preisseite steht, ohne dass es jemand merkt.
+Eine einzige Stelle waere schoener und geht nicht: Wer kein JavaScript hat,
+bekommt keine gerechneten Zahlen, sondern nur, was als Text dasteht. Genau
+deshalb muessen die Zahlen doppelt vorkommen — und genau deshalb braucht es
+etwas, das sie gegeneinander haelt.
 
-    python3 preise-erzeugen.py          # gibt die drei Bloecke aus
-    python3 preise-erzeugen.py --pruefe # prueft, ob index.html dazu passt
+    python3 preise-erzeugen.py            # erzeugt die <noscript>-Tabelle
+    python3 preise-erzeugen.py --pruefe   # haelt alle drei Stellen gegeneinander
 
-Der Preis selbst steht in `docs/architektur/preis-und-zaehlung.md` des
-Hauptprojekts und ist dort begruendet. Hier stehen nur die beiden Zahlen, aus
-denen alles andere folgt.
+Massgeblich ist und bleibt `docs/architektur/preis-und-zaehlung.md` im
+Hauptprojekt. Weichen diese Dateien davon ab, haben diese Dateien unrecht.
 """
 
 import re
@@ -32,14 +30,14 @@ from pathlib import Path
 # das, was der Kunde zahlt.
 MONAT_JE_EINHEIT = 9.99
 JAHR_JE_EINHEIT = 100.00
-
-# Die erste Einheit ist je Mandant dauerhaft kostenlos.
 FREI = 1
 
-# Die Stufen des Rechners. Bewusst keine gleichmaessige Leiter: Unten steht
-# jede Zahl einzeln, weil dort die Zielgruppe sitzt, die eine oder zwei
-# Wohnungen hat und genau nachrechnen will. Oben genuegen Sprungmarken.
-STUFEN = [1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 50, 100]
+# Die Zeilen der Ersatztabelle. Bewusst weniger als frueher: Sie ist kein
+# Rechner, sondern ein Notnagel — sie soll die Groessenordnung zeigen, nicht
+# jeden Fall treffen.
+ZEILEN = [1, 2, 3, 5, 10, 20, 50, 100]
+
+HIER = Path(__file__).parent
 
 
 def euro(betrag: float) -> str:
@@ -48,99 +46,76 @@ def euro(betrag: float) -> str:
     return ganz.replace(",", ".") + "," + komma
 
 
-def werte(n: int) -> dict[str, str]:
+def werte(n: int) -> tuple[str, str]:
     zahlbar = max(0, n - FREI)
-    monat = zahlbar * MONAT_JE_EINHEIT
-    jahr = zahlbar * JAHR_JE_EINHEIT
-    return {
-        "anzahl": str(n),
-        "zahlbar": str(zahlbar),
-        "monat": euro(monat),
-        "jahr": euro(jahr),
-        # Der Jahrespreis auf den Monat gerechnet — die Zahl, die den Vergleich
-        # ueberhaupt erst moeglich macht. Ohne sie stehen 9,99 im Monat neben
-        # 100 im Jahr, und niemand rechnet das im Kopf.
-        "jahr_monat": euro(jahr / 12),
-        # Was die Jahreszahlung gegenueber zwoelf Monatszahlungen spart.
-        "ersparnis": euro(monat * 12 - jahr),
-    }
+    return euro(zahlbar * MONAT_JE_EINHEIT), euro(zahlbar * JAHR_JE_EINHEIT)
 
 
-def block_stufen() -> str:
-    """Die Auswahl: ein verstecktes Radiofeld je Stufe, dahinter sein Schildchen."""
+def tabelle() -> str:
     zeilen = []
-    for n in STUFEN:
-        w = werte(n)
-        letzte = n == STUFEN[-1]
-        sichtbar = f"{n}+" if letzte else str(n)
-        einheit = "Einheit" if n == 1 else "Einheiten"
-        if n == 1:
-            vorlesen = f"{n} {einheit} — dauerhaft kostenlos"
-        else:
-            mehr = " oder mehr" if letzte else ""
-            vorlesen = (
-                f"{n} {einheit}{mehr} — {w['monat']} Euro im Monat, "
-                f"oder {w['jahr']} Euro im Jahr"
-            )
-        gewaehlt = " checked" if n == 1 else ""
-        zeilen.append(
-            f'        <input type="radio" name="anzahl" id="e{n}"{gewaehlt}>\n'
-            f'        <label for="e{n}">{sichtbar}'
-            f'<span class="nurvorlesen"> {vorlesen}</span></label>'
-        )
+    for n in ZEILEN:
+        monat, jahr = werte(n)
+        zeilen.append(f"              <tr><td>{n}</td><td>{monat} €</td><td>{jahr} €</td></tr>")
     return "\n".join(zeilen)
 
 
-def block_werte(schluessel: str) -> str:
-    """Alle zwoelf Fassungen eines Wertes nebeneinander. Sichtbar ist immer eine."""
-    return "".join(f'<i class="w{n}">{werte(n)[schluessel]}</i>' for n in STUFEN)
-
-
-def block_regeln() -> str:
-    """Je Stufe eine CSS-Regel — sie zeigt alle sechs Werte dieser Stufe auf einmal."""
-    return "\n".join(
-        f".rechner #e{n}:checked ~ .ergebnis .w{n} {{ display: inline; }}" for n in STUFEN
-    )
-
-
-def pruefe(pfad: Path) -> int:
-    """Steht in index.html wirklich das, was hier herauskommt?
-
-    Prueft nicht den Text drumherum, sondern nur die Zahlen: jede Stufe muss
-    ihre sechs Werte in genau dieser Schreibweise enthalten.
-    """
-    html = pfad.read_text(encoding="utf-8")
+def pruefe() -> int:
+    js = (HIER / "rechner.js").read_text(encoding="utf-8")
+    html = (HIER / "index.html").read_text(encoding="utf-8")
     fehler = []
-    for n in STUFEN:
-        for schluessel, wert in werte(n).items():
-            if f'<i class="w{n}">{wert}</i>' not in html:
-                fehler.append(f"  Stufe {n}, {schluessel}: {wert!r} fehlt")
-        if f'id="e{n}"' not in html:
-            fehler.append(f"  Stufe {n}: Auswahlfeld id=e{n} fehlt")
-        if f".rechner #e{n}:checked" not in html:
-            fehler.append(f"  Stufe {n}: CSS-Regel fehlt")
 
-    # Gegenprobe: keine Stufe darf uebrig sein, die es hier nicht mehr gibt.
-    for gefunden in set(re.findall(r'name="anzahl" id="e(\d+)"', html)):
-        if int(gefunden) not in STUFEN:
-            fehler.append(f"  Stufe {gefunden} steht in index.html, aber nicht in STUFEN")
+    # 1. Die Konstanten im Skript.
+    for name, soll in (
+        ("MONAT_JE_EINHEIT", MONAT_JE_EINHEIT),
+        ("JAHR_JE_EINHEIT", JAHR_JE_EINHEIT),
+        ("FREI", FREI),
+    ):
+        treffer = re.search(rf"^const {name} = ([\d.]+);", js, re.MULTILINE)
+        if not treffer:
+            fehler.append(f"  rechner.js: {name} nicht gefunden")
+        elif float(treffer.group(1)) != float(soll):
+            fehler.append(f"  rechner.js: {name} ist {treffer.group(1)}, erwartet {soll}")
+
+    # 2. Jede Zeile der Ersatztabelle.
+    for n in ZEILEN:
+        monat, jahr = werte(n)
+        zeile = f"<tr><td>{n}</td><td>{monat} €</td><td>{jahr} €</td></tr>"
+        if zeile not in html:
+            fehler.append(f"  index.html <noscript>: Zeile fuer {n} fehlt oder stimmt nicht")
+
+    # 3. Gegenprobe: keine Zeile in der Tabelle, die hier nicht vorgesehen ist.
+    noscript = re.search(r"<noscript>(.*?)</noscript>", html, re.DOTALL)
+    if not noscript:
+        fehler.append("  index.html: kein <noscript>-Block — Besucher ohne Skript sehen keinen Preis")
+    else:
+        gefunden = {int(m) for m in re.findall(r"<tr><td>(\d+)</td>", noscript.group(1))}
+        for n in sorted(gefunden - set(ZEILEN)):
+            fehler.append(f"  index.html <noscript>: Zeile {n} steht dort, aber nicht in ZEILEN")
+
+    # 4. Der Satz im Fliesstext.
+    satz_monat = euro(MONAT_JE_EINHEIT).rstrip("0").rstrip(",") if False else euro(MONAT_JE_EINHEIT)
+    if f'<span class="preis">{satz_monat}&nbsp;€</span>' not in html:
+        fehler.append(f"  index.html: der Satz nennt nicht {satz_monat} € im Monat")
+    if '<span class="preis">100&nbsp;€</span>' not in html:
+        fehler.append("  index.html: der Satz nennt nicht 100 € im Jahr")
+
+    # 5. Der Nachlass am Jahresknopf muss zur Rechnung passen.
+    nachlass = round((1 - JAHR_JE_EINHEIT / (MONAT_JE_EINHEIT * 12)) * 100)
+    if f"−{nachlass} %" not in html:
+        fehler.append(f"  index.html: der Jahresknopf muss −{nachlass} % nennen")
 
     if fehler:
-        print("index.html passt NICHT zu den Preisen:", *fehler, sep="\n")
+        print("Die Preise laufen auseinander:", *fehler, sep="\n")
         return 1
-    print(f"index.html passt: {len(STUFEN)} Stufen, alle Zahlen stimmen.")
+    print(
+        f"Alle drei Stellen stimmen ueberein: {MONAT_JE_EINHEIT} €/Monat, "
+        f"{JAHR_JE_EINHEIT:.0f} €/Jahr, {FREI} frei, Nachlass {nachlass} %."
+    )
     return 0
 
 
 if __name__ == "__main__":
-    hier = Path(__file__).parent
     if "--pruefe" in sys.argv:
-        sys.exit(pruefe(hier / "index.html"))
-
-    print("── Auswahl ──\n")
-    print(block_stufen())
-    for schluessel in ("anzahl", "zahlbar", "monat", "jahr", "jahr_monat", "ersparnis"):
-        print(f"\n── Werte: {schluessel} ──\n")
-        print(block_werte(schluessel))
-    print("\n── CSS-Regeln ──\n")
-    print(block_regeln())
+        sys.exit(pruefe())
+    print("── Tabelle fuer den <noscript>-Block ──\n")
+    print(tabelle())

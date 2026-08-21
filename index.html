@@ -10,43 +10,18 @@
 <meta name="theme-color" content="#141715" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='25' font-size='26'>🏠</text></svg>">
 
-<!-- Nur die zwei Schnitte vorladen, die im ersten Bild wirklich vorkommen:
-     der Fliesstext und die Serife der Überschrift. Alles vorzuladen verdrängt
-     genau das, worauf es ankommt. -->
+<!-- Nur die zwei Schnitte vorladen, die im ersten Bild wirklich vorkommen. -->
 <link rel="preload" href="/schriften/source-sans-3-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/schriften/source-serif-4-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 
+<!-- Blockierend und mit Absicht: setzt Darstellung und `js`-Klasse, BEVOR
+     gezeichnet wird. Mit `defer` blitzte die helle Seite kurz auf. -->
+<script src="/darstellung.js"></script>
+
 <style>
 /*
-  Gestaltung der Landingpage — übernommen aus dem Designsystem der Anwendung
+  Landingpage immoleicht.com — Gestaltung aus dem Designsystem der Anwendung
   (`immoleicht/src/app/globals.css`), Stand DESIGN-2.
-
-  ── WAS AM 21.08.2026 NACHGEZOGEN WURDE ─────────────────────────────────────
-
-  Diese Datei stand noch auf DESIGN-1. Der README führte das als offenen Punkt:
-  „Schrift und Akzentfarbe kommen mit DESIGN-2 im Hauptprojekt. Diese Seite erbt
-  sie, sobald die Werte feststehen." Sie stehen fest, also erbt sie sie jetzt.
-
-  Drei Dinge waren dadurch verschieden von der Anwendung:
-
-  1. KEINE FESTE SCHRIFT. Hier stand „Avenir Next", und die liegt nur auf
-     Apple-Geräten. Unter Windows erschien Segoe UI, unter Android Roboto — die
-     Seite sah auf drei Plattformen verschieden aus, und auf einem Mac fällt das
-     niemandem auf, der sie gebaut hat. Jetzt dieselben drei selbst gehosteten
-     Schriften wie die Anwendung. Selbst gehostet ist dabei nicht Geschmack:
-     Google Fonts von Googles Servern zu laden überträgt die IP-Adresse jedes
-     Besuchers in die USA, und dafür gibt es rechtskräftige Abmahnungen.
-
-  2. KEINE AKZENTFARBE. DESIGN-1 hatte entschieden, dass es gar keine gibt —
-     „Verweise tragen die Textfarbe". DESIGN-2 hat das aufgehoben, weil dann
-     alles, wo man handeln kann, wie Text aussieht. Jetzt „Tinte", ein dunkles
-     Marineblau.
-
-  3. EIN ZU BLASSER GRAUTON. `--leise` stand auf 49 % Helligkeit. Genau dieser
-     Wert ist im Hauptprojekt am 20.08.2026 gemessen durchgefallen: 3,77 : 1
-     gegen den Grund, wo WCAG AA 4,5 : 1 verlangt — und er trägt die gesamte
-     zweite Textebene. Dort wurde er auf 41 % gesenkt; hier stand er unverändert
-     weiter. Jetzt derselbe Wert wie dort.
 
   ── DIE REGEL, DIE ALLES ZUSAMMENHÄLT ───────────────────────────────────────
 
@@ -56,20 +31,29 @@
       Grün / Gelb / Rot      „so steht es um die Sache"
 
   Daraus folgt zwingend, dass der Akzent weder grün noch gelb noch rot sein
-  darf. Eine dritte Bedeutung — „sieht hübsch aus" — gibt es nicht. Wer eine
-  einführt, zerstört das System.
+  darf. Eine dritte Bedeutung — „sieht hübsch aus" — gibt es nicht.
+
+  ── EINE AUSNAHME, BENANNT STATT VERSTECKT ──────────────────────────────────
+
+  Der schwache Schein hinter der Überschrift (`.glanz`) trägt den Akzentton bei
+  10 % Deckkraft. Das ist KEINE dritte Bedeutung: Es ist Fläche, kein Zeichen —
+  es steht an keinem Wert, an keinem Zustand und an keiner Schaltfläche, und
+  nimmt man es weg, geht keine Aussage verloren. Es ist die einzige Stelle
+  dieser Art, und sie steht hier, damit die nächste nicht unbemerkt dazukommt.
+
+  ── DREI STÄNDE DER DARSTELLUNG ─────────────────────────────────────────────
+
+  Wie das System, hell, dunkel — dieselben drei wie in der Anwendung
+  (`DESIGN-3`). Die Reihenfolge der Regeln unten ist wichtig: Erst hell als
+  Grundlage, dann das System (aber nur, wenn nicht ausdrücklich hell gewählt
+  wurde), dann die ausdrückliche Wahl „dunkel". Andersherum gewänne das System
+  gegen den Nutzer.
 */
 
 /* ── Schriften ─────────────────────────────────────────────────────────────
- * Alle drei stehen unter der SIL Open Font License 1.1 und dürfen kommerziell
- * selbst gehostet werden. Die Lizenztexte liegen in `schriften/`.
- *
- * Was diese Seite im Unterschied zur Anwendung NICHT hat: eine vermessene
- * Ersatzschrift. Next rechnet dort aus, wie viel Platz die Ersatzschrift
- * braucht, damit der Text beim Nachladen nicht umspringt. Ohne Bauschritt lässt
- * sich das nicht ehrlich nachbauen — geschätzte Werte wären schlimmer als
- * keine. Stattdessen sind die zwei wichtigsten Schnitte vorgeladen (siehe Kopf),
- * womit das Umspringen im Regelfall gar nicht erst auftritt.
+ * Alle drei unter der SIL Open Font License 1.1, selbst ausgeliefert. Das ist
+ * nicht Geschmack: Google Fonts von Googles Servern zu laden überträgt die
+ * IP-Adresse jedes Besuchers in die USA.
  */
 @font-face {
   font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap;
@@ -96,52 +80,87 @@
   src: url("/schriften/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
 }
 
-/* ── Die Werte, Zeichen für Zeichen aus globals.css ────────────────────────── */
+/*
+ * Die Werte stehen als HSL-DREIERGRUPPE, nicht als fertige Farbe. Nur so lässt
+ * sich derselbe Ton an einer Stelle mit Deckkraft benutzen — `hsl(var(--x) / .1)`
+ * — ohne ihn ein zweites Mal hinzuschreiben. Zwei Schreibweisen desselben Tons
+ * laufen sonst beim ersten Ändern auseinander.
+ */
 :root {
-  --grund:      hsl(120 7% 97%);
-  --text:       hsl(144 7% 13%);
-  --leise:      hsl(143 3% 41%);
-  --karte:      hsl(0 0% 100%);
-  --linie:      hsl(140 6% 91%);
-  --flaeche:    hsl(140 8% 94%);
+  --grund-h:      120 7% 97%;
+  --text-h:       144 7% 13%;
+  --leise-h:      143 3% 41%;
+  --karte-h:      0 0% 100%;
+  --linie-h:      140 6% 91%;
+  --flaeche-h:    140 8% 94%;
+  --akzent-h:     222 52% 36%;
+  --akzent-vg-h:  0 0% 100%;
+  --positiv-h:    154 29% 33%;
+  --positiv-fl-h: 154 30% 93%;
+  --warnung-h:    36 69% 33%;
+  --warnung-fl-h: 36 55% 93%;
+  --kritisch-h:   6 50% 44%;
+  --kritisch-fl-h:6 55% 95%;
+  --schatten: 0 0% 0%;
 
-  --akzent:     hsl(222 52% 36%);
-  --akzent-vg:  hsl(0 0% 100%);
-
-  --positiv:    hsl(154 29% 33%);
-  --positiv-fl: hsl(154 30% 93%);
-  --warnung:    hsl(36 69% 33%);
-  --warnung-fl: hsl(36 55% 93%);
-  --kritisch:   hsl(6 50% 44%);
-  --kritisch-fl:hsl(6 55% 95%);
+  --grund: hsl(var(--grund-h));
+  --text: hsl(var(--text-h));
+  --leise: hsl(var(--leise-h));
+  --karte: hsl(var(--karte-h));
+  --linie: hsl(var(--linie-h));
+  --flaeche: hsl(var(--flaeche-h));
+  --akzent: hsl(var(--akzent-h));
+  --akzent-vg: hsl(var(--akzent-vg-h));
+  --positiv: hsl(var(--positiv-h));
+  --positiv-fl: hsl(var(--positiv-fl-h));
+  --warnung: hsl(var(--warnung-h));
+  --warnung-fl: hsl(var(--warnung-fl-h));
+  --kritisch: hsl(var(--kritisch-h));
+  --kritisch-fl: hsl(var(--kritisch-fl-h));
 
   --radius: 0.75rem;
   --serif: "Source Serif 4", ui-serif, Charter, Georgia, serif;
   --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --grund:      hsl(140 7% 8%);
-    --text:       hsl(150 7% 92%);
-    --leise:      hsl(137 4% 57%);
-    --karte:      hsl(150 7% 11%);
-    --linie:      hsl(144 6% 16%);
-    --flaeche:    hsl(146 7% 15%);
-
-    --akzent:     hsl(219 60% 72%);
-    --akzent-vg:  hsl(150 10% 10%);
-
-    --positiv:    hsl(154 37% 57%);
-    --positiv-fl: hsl(154 30% 12%);
-    --warnung:    hsl(36 58% 58%);
-    --warnung-fl: hsl(36 40% 13%);
-    --kritisch:   hsl(7 63% 65%);
-    --kritisch-fl:hsl(7 40% 15%);
+  :root:not([data-darstellung="hell"]) {
+    --grund-h:      140 7% 8%;
+    --text-h:       150 7% 92%;
+    --leise-h:      137 4% 57%;
+    --karte-h:      150 7% 11%;
+    --linie-h:      144 6% 16%;
+    --flaeche-h:    146 7% 15%;
+    --akzent-h:     219 60% 72%;
+    --akzent-vg-h:  150 10% 10%;
+    --positiv-h:    154 37% 57%;
+    --positiv-fl-h: 154 30% 12%;
+    --warnung-h:    36 58% 58%;
+    --warnung-fl-h: 36 40% 13%;
+    --kritisch-h:   7 63% 65%;
+    --kritisch-fl-h:7 40% 15%;
   }
+}
+:root[data-darstellung="dunkel"] {
+  --grund-h:      140 7% 8%;
+  --text-h:       150 7% 92%;
+  --leise-h:      137 4% 57%;
+  --karte-h:      150 7% 11%;
+  --linie-h:      144 6% 16%;
+  --flaeche-h:    146 7% 15%;
+  --akzent-h:     219 60% 72%;
+  --akzent-vg-h:  150 10% 10%;
+  --positiv-h:    154 37% 57%;
+  --positiv-fl-h: 154 30% 12%;
+  --warnung-h:    36 58% 58%;
+  --warnung-fl-h: 36 40% 13%;
+  --kritisch-h:   7 63% 65%;
+  --kritisch-fl-h:7 40% 15%;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--grund);
@@ -151,122 +170,216 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-.huelle { max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
 
-/* ── Wortmarke, mit dem Beta-Zusatz aus DESIGN-2 ───────────────────────────── */
+/*
+ * Das `hidden`-Attribut muss stärker sein als jede Regel hier.
+ *
+ * Gemessen am 21.08.2026: Der Darstellungsknopf trägt `hidden`, bis das Skript
+ * ihn freigibt — er soll ohne JavaScript gar nicht erscheinen, weil er dann
+ * nichts täte. Er erschien trotzdem. Grund: `.knopf-klein` setzt
+ * `display: inline-flex`, und JEDE eigene display-Regel schlägt das
+ * `[hidden] { display: none }` des Browsers. Das Attribut sah richtig aus und
+ * wirkte nicht — die schlechteste Kombination.
+ *
+ * Deshalb hier einmal zentral und mit `!important`. Es ist die eine Stelle im
+ * Projekt, an der das berechtigt ist: `hidden` ist keine Gestaltungsfrage,
+ * sondern eine Aussage über Anwesenheit.
+ */
+[hidden] { display: none !important; }
+.huelle { max-width: 54rem; margin: 0 auto; padding: 0 1.25rem; }
+
+/* Nur für Vorlesehilfen. Nicht display:none — das nähme es auch ihnen. */
+.nurvorlesen {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.sprungmarke {
+  position: absolute; left: 0.5rem; top: -4rem;
+  background: var(--akzent); color: var(--akzent-vg);
+  padding: 0.6rem 1rem; border-radius: var(--radius); z-index: 20;
+  text-decoration: none; font-weight: 600;
+  transition: top 0.15s;
+}
+.sprungmarke:focus { top: 0.5rem; }
+
+/* ── Kopfleiste ────────────────────────────────────────────────────────────── */
+.kopf {
+  position: sticky; top: 0; z-index: 10;
+  background: hsl(var(--grund-h) / 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid hsl(var(--linie-h) / 0.7);
+}
+.kopf .huelle {
+  display: flex; align-items: center; gap: 0.75rem;
+  min-height: 3.75rem;
+}
 .marke {
   display: flex; align-items: center; gap: 0.5rem;
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-  margin: 0 0 3.5rem;
+  font-family: var(--serif); font-size: 1.05rem; letter-spacing: 0.01em;
+  margin: 0; margin-right: auto;
 }
 .marke b { font-weight: 600; }
 .marke .zusatz {
   font-family: var(--sans);
-  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
   color: var(--leise);
   border: 1px solid var(--linie); border-radius: 999px;
   padding: 0.1rem 0.45rem;
 }
 
-h1 {
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: clamp(2rem, 6vw, 3rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-  margin: 0 0 1rem;
+/* Der Umschalter erscheint erst, wenn das Skript läuft — sonst wäre es ein
+   Knopf, der nichts tut. Bis dahin gilt die Einstellung des Systems. */
+.knopf-klein {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.75rem; height: 2.75rem;             /* 44 px Zielgrösse, WCAG 2.5.8 */
+  border: 1px solid var(--linie); border-radius: 999px;
+  background: transparent; color: var(--text);
+  cursor: pointer; font-size: 1rem; line-height: 1;
 }
-.vorspann { font-size: 1.15rem; color: var(--leise); margin: 0 0 2rem; max-width: 36rem; }
+.knopf-klein:hover { border-color: var(--akzent); }
+.knopf-klein:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+.knopf-klein::before { content: "◐"; }
+.knopf-klein[data-wahl="hell"]::before { content: "☀"; }
+.knopf-klein[data-wahl="dunkel"]::before { content: "☾"; }
 
-/* Nur für Vorlesehilfen. Nicht display:none — das nähme es auch ihnen. */
-.nurvorlesen {
-  position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ── Bestandsleiste: der Blick über alles ──────────────────────────────────── */
-.bestand {
-  display: grid; gap: 1px;
-  grid-template-columns: repeat(2, 1fr);
-  background: var(--linie);
-  border: 1px solid var(--linie);
+/* ── Schaltflächen ─────────────────────────────────────────────────────────── */
+.zugang, .zugang-leise {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.75rem;                         /* 44 px Zielgrösse, WCAG 2.5.8 */
+  padding: 0.6rem 1.15rem;
   border-radius: var(--radius);
-  overflow: hidden;
-  margin: 0 0 1rem;
+  text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  white-space: nowrap;
 }
-@media (min-width: 42rem) { .bestand { grid-template-columns: repeat(4, 1fr); } }
-.kachel { background: var(--karte); padding: 0.9rem 1rem; }
-.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.15rem; }
-.kachel dd {
-  margin: 0;
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 1.25rem; font-weight: 700; line-height: 1.25;
+.zugang { background: var(--akzent); color: var(--akzent-vg); border: 1px solid var(--akzent); }
+.zugang:hover { filter: brightness(1.15); }
+.zugang-leise { border: 1px solid var(--linie); color: var(--text); }
+.zugang-leise:hover { border-color: var(--akzent); }
+.knopfreihe { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; }
+
+/* ── Aufmacher ─────────────────────────────────────────────────────────────── */
+/*
+ * `overflow: hidden` ist hier kein Beiwerk, sondern die Behebung eines
+ * gemessenen Fehlers: Der Schein ragt absichtlich seitlich über den Text
+ * hinaus (`-20%`) und machte damit die ganze Seite auf einem 390 px breiten
+ * Handy waagerecht scrollbar — 468 px Inhalt in 390 px Fenster.
+ *
+ * Vorher stand dagegen `overflow-x: hidden` am `body`. Das ist die verbreitete
+ * Abhilfe und die schlechtere: Sie versteckt JEDEN künftigen Überstand
+ * gleich mit, und dann findet die Prüfung den nächsten echten Layoutfehler
+ * nicht mehr. Geklemmt wird deshalb dort, wo der Überstand entsteht.
+ */
+.aufmacher { position: relative; overflow: hidden; padding: 4.5rem 0 0; }
+/*
+ * Fläche, kein Zeichen — siehe die benannte Ausnahme oben. Liegt hinter allem
+ * und fängt keine Klicks ab.
+ */
+.glanz {
+  position: absolute; inset: 0 -20% auto; height: 34rem;
+  background: radial-gradient(60% 60% at 25% 0%, hsl(var(--akzent-h) / 0.10), transparent 70%);
+  pointer-events: none; z-index: -1;
+}
+.augenbraue {
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--leise); margin: 0 0 1rem;
+}
+h1 {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(2.25rem, 7vw, 3.75rem);
+  line-height: 1.08; letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 1.15rem; max-width: 20ch;
+}
+.vorspann { font-size: 1.2rem; color: var(--leise); margin: 0; max-width: 38rem; }
+
+/* ── Abschnitte und Einblenden ────────────────────────────────────────────── */
+section { padding: 3.5rem 0; }
+h2.ueberschrift {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(1.5rem, 3.5vw, 2rem); letter-spacing: -0.015em;
+  margin: 0 0 0.6rem;
+}
+section p { margin: 0 0 1rem; max-width: 38rem; }
+section p:last-child { margin-bottom: 0; }
+
+/*
+ * Die Bewegung hängt an der Klasse `js`, die `darstellung.js` setzt. Ohne
+ * Skript greift keine dieser Regeln, und die Seite ist von Anfang an sichtbar.
+ * Inhalte per CSS zu verstecken und per JavaScript zu zeigen wäre die
+ * häufigste Art, eine Seite unbrauchbar zu machen.
+ */
+.js .enthuellen { opacity: 0; transform: translateY(14px); }
+.js .enthuellen.sichtbar {
+  opacity: 1; transform: none;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .enthuellen { opacity: 1; transform: none; transition: none; }
 }
 
-/* ── Die Rechnung: das Kernstück der Seite ─────────────────────────────── */
-.rechnungen { display: grid; gap: 1rem; margin: 0 0 1rem; }
-@media (min-width: 40rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
-
-.rechnung, .karte {
+/* ── Karten ────────────────────────────────────────────────────────────────── */
+.karte, .rechnung {
   background: var(--karte);
   border: 1px solid var(--linie);
   border-radius: var(--radius);
-  padding: 1.25rem 1.25rem 1rem;
+  padding: 1.25rem;
 }
-.rechnung h2, .karte h2 {
-  font-family: var(--sans);
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0 0 0.85rem;
+.rechnung { transition: border-color 0.2s, transform 0.2s; }
+@media (hover: hover) {
+  .rechnung:hover { border-color: hsl(var(--akzent-h) / 0.45); transform: translateY(-2px); }
 }
-.rechnung h2 span { display: block; font-weight: 400; color: var(--leise); font-size: 0.82rem; }
+@media (prefers-reduced-motion: reduce) { .rechnung:hover { transform: none; } }
+
+.rechnung h3, .karte h3 {
+  font-family: var(--sans); font-size: 0.9rem; font-weight: 600; margin: 0 0 0.85rem;
+}
+.rechnung h3 span { display: block; font-weight: 400; color: var(--leise); font-size: 0.82rem; }
 
 .zeile { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.3rem 0; }
 .zeile dt { color: var(--leise); font-size: 0.9rem; }
 .zeile dd { margin: 0; font-family: var(--mono); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
-
 dl { margin: 0; }
-.summe {
-  margin-top: 0.65rem; padding-top: 0.7rem;
-  border-top: 1px solid var(--linie);
-}
+.summe { margin-top: 0.65rem; padding-top: 0.7rem; border-top: 1px solid var(--linie); }
 .summe dt { color: var(--text); font-weight: 600; font-size: 0.9rem; }
 .summe dd { font-weight: 700; font-size: 1.05rem; }
 
 .gut { color: var(--positiv); }
 .schlecht { color: var(--kritisch); }
-.bald { color: var(--warnung); }
 
-.merker {
-  display: inline-block; margin-top: 0.75rem;
-  font-size: 0.78rem; padding: 0.15rem 0.5rem; border-radius: 999px;
-}
+.merker { display: inline-block; margin-top: 0.75rem; font-size: 0.78rem; padding: 0.15rem 0.5rem; border-radius: 999px; }
 .merker.gut { background: var(--positiv-fl); }
 .merker.schlecht { background: var(--kritisch-fl); }
 
-.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 0 0 3.5rem; max-width: 40rem; }
+.lesehilfe { color: var(--leise); font-size: 0.88rem; margin: 1rem 0 0; max-width: 42rem; }
 
-/* ── „Was jetzt ansteht": Fristen mit Dringlichkeit ────────────────────────── */
-.fristen { list-style: none; margin: 0; padding: 0; }
-.frist {
-  display: flex; gap: 0.85rem; align-items: baseline;
-  padding: 0.6rem 0;
-  border-top: 1px solid var(--linie);
+/* ── Bestandsleiste ───────────────────────────────────────────────────────── */
+.bestand {
+  display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr);
+  background: var(--linie); border: 1px solid var(--linie);
+  border-radius: var(--radius); overflow: hidden; margin: 0 0 1rem;
 }
+@media (min-width: 44rem) { .bestand { grid-template-columns: repeat(4, 1fr); } }
+.kachel { background: var(--karte); padding: 0.9rem 1rem; }
+.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.15rem; }
+.kachel dd {
+  margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 1.25rem; font-weight: 700; line-height: 1.25;
+}
+
+.rechnungen { display: grid; gap: 1rem; }
+@media (min-width: 44rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
+
+/* ── Fristen ──────────────────────────────────────────────────────────────── */
+.fristen { list-style: none; margin: 0; padding: 0; }
+.frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.65rem 0; border-top: 1px solid var(--linie); }
 .frist:first-child { border-top: 0; padding-top: 0; }
 .frist .wann {
-  flex: 0 0 auto;
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 0.82rem; font-weight: 500;
-  padding: 0.1rem 0.45rem; border-radius: 999px;
+  flex: 0 0 auto; font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 0.8rem; font-weight: 500;
+  padding: 0.12rem 0.5rem; border-radius: 999px;
   min-width: 7.5rem; text-align: center;
 }
 .frist.schlecht .wann { background: var(--kritisch-fl); color: var(--kritisch); }
@@ -275,440 +388,444 @@ dl { margin: 0; }
 .frist .was { font-size: 0.92rem; }
 .frist .was span { display: block; color: var(--leise); font-size: 0.85rem; }
 
-/* ── Fliesstext ────────────────────────────────────────────────────────── */
-h3 {
-  font-family: var(--serif); font-weight: 600;
-  font-size: 1.35rem; letter-spacing: -0.01em;
-  margin: 0 0 0.6rem;
-}
-section { margin-bottom: 3rem; }
-section p { margin: 0 0 1rem; max-width: 36rem; }
-
-/*
- * Beträge im Fliesstext. Schreibmaschinenschrift wie in der Anwendung, aber
- * etwas kleiner: IBM Plex Mono läuft breiter als Source Sans, und ein Betrag
- * mitten im Satz sah dadurch aus, als stünde er auseinandergezogen. Das
- * geschützte Leerzeichen vor dem Euro-Zeichen gehört im Markup dazu, damit der
- * Betrag nicht am Zeilenende zerreisst.
- */
-.preis {
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 0.92em; letter-spacing: -0.01em;
-}
-
-/* ── Zwei Spalten für „Für wen" und „Was heute schon geht" ─────────────────── */
-.paar { display: grid; gap: 1rem; margin-top: 1.25rem; }
-@media (min-width: 40rem) { .paar { grid-template-columns: 1fr 1fr; } }
-.paar h4 {
+/* ── Zwei Spalten ─────────────────────────────────────────────────────────── */
+.paar { display: grid; gap: 1rem; margin-top: 1.5rem; }
+@media (min-width: 44rem) { .paar { grid-template-columns: 1fr 1fr; } }
+.paar h3 {
   font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
-  margin: 0 0 0.5rem;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise); margin: 0 0 0.5rem;
 }
 .paar p { margin: 0; font-size: 0.95rem; max-width: none; }
 .liste { list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
 .liste li { padding: 0.22rem 0; }
 .liste.kommt li { color: var(--leise); }
 
-/* ── Preisrechner ──────────────────────────────────────────────────────────
+/* ── Preisregler ───────────────────────────────────────────────────────────
  *
- * WARUM DIESER RECHNER OHNE JAVASCRIPT AUSKOMMT
+ * WAS SICH AM 21.08.2026 GEÄNDERT HAT — UND WAS ES GEKOSTET HAT
  *
- * Nicht aus Sparsamkeit, sondern weil er sonst gar nicht liefe: `nginx.conf`
- * setzt `script-src 'none'`. Ein eingebettetes Skript würde örtlich beim
- * Öffnen der Datei tadellos rechnen und im Betrieb wortlos nichts tun — die
- * Sorte Fehler, die niemand sieht, weil die Seite aussieht wie immer.
+ * Hier standen zwölf feste Stufen als versteckte Radiofelder, gesteuert allein
+ * durch CSS. Der Grund dafür war zwingend: `nginx.conf` setzte
+ * `script-src 'none'`, ein Skript hätte im Betrieb wortlos nichts getan.
  *
- * Stattdessen: zwölf versteckte Radiofelder, und je Stufe eine CSS-Regel, die
- * die passenden Zahlen einblendet. Alle Beträge stehen als Text im Quelltext.
- * Das hat einen zweiten Vorteil, der zum Rest des Projekts passt — die Zahl,
- * aus der die Rechnung entsteht, ist nachzählbar und kann zur Laufzeit nicht
- * anders herauskommen als hier geschrieben.
+ * Der Wunsch war ein echter Schieberegler mit freier Zahl. Das geht ohne
+ * JavaScript nicht — ein `input type=range` kann seinen Wert nicht an CSS
+ * weiterreichen. Also ist die Sicherheitsregel geändert worden, und zwar so
+ * eng wie möglich: `script-src 'self'`. Skripte nur als eigene Datei von
+ * diesem Server, weiterhin KEIN `'unsafe-inline'` — der Riegel gegen
+ * eingeschleusten Code bleibt zu. Die Begründung steht in `nginx.conf`.
  *
- * Der Preis dafür sind feste Stufen statt eines freien Feldes. Wer wirklich
- * einen Schieberegler mit beliebiger Zahl will, braucht eine eigene
- * `rechner.js` und `script-src 'self'` in `nginx.conf` — beides bewusst nicht
- * getan, solange die Stufen die Zielgruppe abdecken.
- *
- * Die 72 Zahlen erzeugt `preise-erzeugen.py`. Sie von Hand zu pflegen ist der
- * sichere Weg zu einem falschen Betrag auf einer Preisseite.
+ * Was die Seite dafür behält: Sie ist ohne Skript vollständig lesbar. Im
+ * `<noscript>`-Block steht dieselbe Rechnung als Tabelle.
  */
 .rechner {
-  position: relative;                 /* Bezug für die versteckten Radiofelder */
-  display: flex; flex-wrap: wrap; gap: 0.4rem;
-  background: var(--karte);
-  border: 1px solid var(--linie);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  margin: 0 0 0.85rem;
+  background: var(--karte); border: 1px solid var(--linie);
+  border-radius: var(--radius); padding: 1.5rem;
 }
-/* Frage und Ergebnis nehmen die ganze Breite; dazwischen fliessen die Schildchen. */
-.frage, .ergebnis { flex: 0 0 100%; }
-.frage { font-size: 0.9rem; font-weight: 600; margin: 0; max-width: none; }
+.frage { font-size: 0.95rem; font-weight: 600; margin: 0 0 1rem; max-width: none; }
 
-/*
- * Unsichtbar, aber NICHT `display: none` und nicht `visibility: hidden` — beides
- * nähme dem Feld den Tastaturfokus, und dann wäre der Rechner nur mit der Maus
- * bedienbar. So bleibt die Auswahl eine gewöhnliche Radiogruppe: Tabulator
- * hinein, Pfeiltasten durch die Stufen.
- */
-.rechner input {
-  position: absolute;
-  width: 1px; height: 1px;
-  opacity: 0;
-  pointer-events: none;
+.reglerzeile { display: flex; align-items: center; gap: 1rem; }
+.schiene {
+  -webkit-appearance: none; appearance: none;
+  flex: 1 1 auto; min-width: 0;
+  height: 2.75rem;                              /* 44 px Zielgrösse, WCAG 2.5.8 */
+  background: transparent; cursor: pointer;
 }
-.rechner label {
-  display: inline-flex; align-items: center; justify-content: center;
-  /* Wachsen dürfen sie, schrumpfen nicht: So füllen die zwölf Stufen die Zeile
-     gleichmässig aus, statt dass „100+" allein in einer zweiten Zeile steht. */
-  flex: 1 1 auto;
-  min-width: 2.75rem; min-height: 2.75rem;   /* 44 px Zielgrösse, WCAG 2.5.8 */
-  padding: 0 0.5rem;
-  border: 1px solid var(--linie);
-  border-radius: var(--radius);
-  font-size: 0.95rem;
+/* Die Schiene füllt sich bis zum Griff. `--fuellung` setzt rechner.js. */
+.schiene::-webkit-slider-runnable-track {
+  height: 0.5rem; border-radius: 999px;
+  background: linear-gradient(to right,
+    var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+}
+.schiene::-moz-range-track {
+  height: 0.5rem; border-radius: 999px;
+  background: linear-gradient(to right,
+    var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+}
+.schiene::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: var(--karte); border: 3px solid var(--akzent);
+  margin-top: -0.55rem;
+  box-shadow: 0 1px 4px hsl(var(--schatten) / 0.22);
+  transition: transform 0.12s;
+}
+.schiene::-moz-range-thumb {
+  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: var(--karte); border: 3px solid var(--akzent);
+  box-shadow: 0 1px 4px hsl(var(--schatten) / 0.22);
+}
+.schiene:active::-webkit-slider-thumb { transform: scale(1.12); }
+.schiene:focus-visible { outline: none; }
+.schiene:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--akzent-h) / 0.3); }
+.schiene:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--akzent-h) / 0.3); }
+@media (prefers-reduced-motion: reduce) {
+  .schiene::-webkit-slider-thumb { transition: none; }
+  .schiene:active::-webkit-slider-thumb { transform: none; }
+}
+
+.zahlfeld {
+  width: 5.5rem; min-height: 2.75rem; padding: 0.4rem 0.5rem;
+  text-align: center;
+  font-family: var(--mono); font-size: 1.05rem; font-weight: 600;
   font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
+  color: var(--text); background: var(--grund);
+  border: 1px solid var(--linie); border-radius: 0.6rem;
 }
-.rechner label:hover { border-color: var(--akzent); }
+.zahlfeld:focus-visible { outline: 2px solid var(--akzent); outline-offset: 1px; }
 /*
- * Die Auswahl trägt den Akzent, nicht die Textfarbe. DESIGN-2 weist ihm genau
- * diese vier Aufgaben zu: Schaltflächen, Verweise im Fliesstext, AUSWAHL und
- * Fokusrahmen. Grün wäre hier falsch — das hiesse „steht gut", nicht „gewählt".
+ * `max-width: none` ist hier nicht Kosmetik: `section p` begrenzt Absätze auf
+ * 38 rem Lesebreite, und das traf auch diese Zeile. Die „100" landete dadurch
+ * bei zwei Dritteln der Schiene statt an ihrem Ende — eine Skala, die an der
+ * falschen Stelle endet, ist schlimmer als gar keine.
+ *
+ * Das `padding-right` hält die rechte Marke über dem Ende der Schiene, nicht
+ * über dem Zahlenfeld daneben: 5,5 rem Feldbreite plus 1 rem Abstand.
  */
-.rechner input:checked + label {
-  background: var(--akzent);
-  color: var(--akzent-vg);
-  border-color: var(--akzent);
-  font-weight: 600;
+.spanne {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; color: var(--leise);
+  font-family: var(--mono);
+  margin-top: -0.35rem; padding-right: 6.5rem; max-width: none;
 }
-.rechner input:focus-visible + label { outline: 2px solid var(--akzent); outline-offset: 2px; }
 
-.ergebnis { margin-top: 0.75rem; border-top: 1px solid var(--linie); padding-top: 1rem; }
-/* Zwölf Fassungen je Wert stehen nebeneinander im Quelltext. Sichtbar ist eine. */
-.ergebnis i { display: none; font-style: normal; }
+/* Monatlich oder jährlich */
+.taktwahl {
+  display: inline-flex; gap: 0.25rem; margin: 1.5rem 0 0;
+  padding: 0.25rem; background: var(--flaeche); border-radius: 999px;
+}
+.taktwahl button {
+  min-height: 2.5rem; padding: 0.4rem 1rem;
+  border: 0; border-radius: 999px;
+  background: transparent; color: var(--text);
+  font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+}
+/* Der Akzent trägt die Auswahl — eine der vier Aufgaben, die DESIGN-2 ihm gibt. */
+.taktwahl button.aktiv { background: var(--akzent); color: var(--akzent-vg); font-weight: 600; }
+.taktwahl button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+.taktwahl .nachlass { font-size: 0.78rem; opacity: 0.85; margin-left: 0.35rem; }
 
-.tarife { display: grid; gap: 0.75rem; margin-top: 1rem; }
-@media (min-width: 34rem) { .tarife { grid-template-columns: 1fr 1fr; } }
-.tarif {
-  border: 1px solid var(--linie); border-radius: var(--radius);
-  padding: 0.85rem 1rem;
-}
-.tarif h4 {
-  margin: 0 0 0.2rem;
-  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
-}
-.tarif .betrag {
+.ergebnis { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--linie); }
+.betrag-gross {
   display: block;
-  font-family: var(--mono); font-size: 1.3rem; font-weight: 700;
-  font-variant-numeric: tabular-nums; line-height: 1.3;
+  font-family: var(--mono); font-weight: 700;
+  font-size: clamp(2.5rem, 9vw, 3.75rem); line-height: 1;
+  letter-spacing: -0.035em; font-variant-numeric: tabular-nums;
 }
-.tarif .dazu { display: block; font-size: 0.85rem; color: var(--leise); }
+.betrag-zeile { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; max-width: none; }
+/*
+ * Kein Leerzeichen zwischen Betrag und Euro-Zeichen, sondern ein gesetzter
+ * Abstand. In IBM Plex Mono ist jedes Zeichen gleich breit, auch das
+ * Leerzeichen — bei 60 px Schriftgrösse klaffte dadurch eine Lücke von einer
+ * halben Ziffernbreite zwischen Zahl und Währung.
+ */
+.waehrung { margin-left: 0.14em; }
+.takt { font-size: 1.05rem; color: var(--leise); }
+.jahresvorteil {
+  font-size: 0.82rem; font-weight: 600;
+  padding: 0.15rem 0.55rem; border-radius: 999px;
+  background: var(--positiv-fl); color: var(--positiv);
+}
+.nebensatz { display: block; color: var(--leise); font-size: 0.95rem; margin-top: 0.35rem; }
+.herleitung {
+  display: block; margin-top: 1rem;
+  font-family: var(--mono); font-size: 0.85rem; color: var(--leise);
+  font-variant-numeric: tabular-nums;
+}
+.viele {
+  margin: 1rem 0 0; padding: 0.75rem 0.9rem;
+  background: var(--flaeche); border-radius: 0.6rem;
+  font-size: 0.88rem; color: var(--leise); max-width: none;
+}
 
-/* Sonderfälle: die kostenlose erste Einheit, und der Bestand jenseits der Leiter. */
-.frei-fall, .viele { display: none; }
-.frei-fall { margin: 1rem 0 0; }
-.viele { margin: 1rem 0 0; font-size: 0.88rem; color: var(--leise); }
-.frei-betrag { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; }
+/* Ohne Skript: dieselbe Rechnung als Tabelle. */
+.ohneskript table { border-collapse: collapse; width: 100%; max-width: 30rem; font-size: 0.92rem; }
+.ohneskript th, .ohneskript td {
+  text-align: right; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--linie);
+  font-variant-numeric: tabular-nums;
+}
+.ohneskript th { color: var(--leise); font-weight: 600; font-size: 0.8rem; }
+.ohneskript th:first-child, .ohneskript td:first-child { text-align: left; }
+.ohneskript td { font-family: var(--mono); }
 
-/* Je Stufe eine Regel — sie blendet alle sechs Zahlen dieser Stufe zugleich ein.
-   Erzeugt von preise-erzeugen.py. */
-.rechner #e1:checked ~ .ergebnis .w1 { display: inline; }
-.rechner #e2:checked ~ .ergebnis .w2 { display: inline; }
-.rechner #e3:checked ~ .ergebnis .w3 { display: inline; }
-.rechner #e4:checked ~ .ergebnis .w4 { display: inline; }
-.rechner #e5:checked ~ .ergebnis .w5 { display: inline; }
-.rechner #e6:checked ~ .ergebnis .w6 { display: inline; }
-.rechner #e8:checked ~ .ergebnis .w8 { display: inline; }
-.rechner #e10:checked ~ .ergebnis .w10 { display: inline; }
-.rechner #e15:checked ~ .ergebnis .w15 { display: inline; }
-.rechner #e20:checked ~ .ergebnis .w20 { display: inline; }
-.rechner #e50:checked ~ .ergebnis .w50 { display: inline; }
-.rechner #e100:checked ~ .ergebnis .w100 { display: inline; }
+.preis { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.92em; letter-spacing: -0.01em; }
 
-/* Bei einer einzigen Einheit gibt es nichts zu vergleichen: Statt zweier
-   Zahlweisen steht dort der Satz, um den es geht. */
-.rechner #e1:checked ~ .ergebnis .tarife { display: none; }
-.rechner #e1:checked ~ .ergebnis .frei-fall { display: block; }
-.rechner #e100:checked ~ .ergebnis .viele { display: block; }
-
-/* ── Verweise und Schaltflächen tragen den Akzent ──────────────────────────── */
+/* ── Verweise ─────────────────────────────────────────────────────────────── */
 a { color: var(--akzent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:focus-visible { outline: 2px solid var(--akzent); outline-offset: 3px; border-radius: 3px; }
 
-.zugang {
-  display: inline-block; margin-top: 0.4rem;
-  background: var(--akzent); color: var(--akzent-vg);
-  border: 1px solid var(--akzent); border-radius: var(--radius);
-  padding: 0.65rem 1.2rem; text-decoration: none; font-weight: 600; font-size: 0.95rem;
-  min-height: 2.75rem;                        /* 44 px Zielgrösse, WCAG 2.5.8 */
-}
-.zugang:hover { filter: brightness(1.15); }
-
-footer {
-  border-top: 1px solid var(--linie); padding-top: 1.5rem;
-  color: var(--leise); font-size: 0.85rem;
-}
-footer p { margin: 0 0 0.4rem; }
+footer { border-top: 1px solid var(--linie); padding: 2rem 0 3rem; color: var(--leise); font-size: 0.85rem; }
+footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 </style>
 </head>
 <body>
-<main class="huelle">
 
-  <p class="marke"><b>Immoleicht</b> <span class="zusatz">Beta</span></p>
+<a class="sprungmarke" href="#inhalt">Zum Inhalt springen</a>
 
-  <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
-  <p class="vorspann">
-    Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
-    bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
-  </p>
-
-  <dl class="bestand">
-    <div class="kachel"><dt>Einheiten</dt><dd>12</dd></div>
-    <div class="kachel"><dt>tragen sich</dt><dd class="gut">9</dd></div>
-    <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht">3</dd></div>
-    <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut">+ 1.240,60 €</dd></div>
-  </dl>
-
-  <div class="rechnungen">
-
-    <article class="rechnung">
-      <h2>Wohnung 3 <span>2. OG links · 68 m²</span></h2>
-      <dl>
-        <div class="zeile"><dt>Kaltmiete</dt><dd>+ 780,00</dd></div>
-        <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
-        <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
-        <div class="zeile summe"><dt>Überschuss</dt><dd class="gut">+ 22,60 €</dd></div>
-      </dl>
-      <span class="merker gut">trägt sich</span>
-    </article>
-
-    <article class="rechnung">
-      <h2>Wohnung 1 <span>Erdgeschoss · 71 m²</span></h2>
-      <dl>
-        <div class="zeile"><dt>Kaltmiete</dt><dd>+ 540,00</dd></div>
-        <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
-        <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
-        <div class="zeile summe"><dt>Fehlbetrag</dt><dd class="schlecht">− 217,40 €</dd></div>
-      </dl>
-      <span class="merker schlecht">zahlt drauf</span>
-    </article>
-
+<header class="kopf">
+  <div class="huelle">
+    <p class="marke"><b>Immoleicht</b> <span class="zusatz">Beta</span></p>
+    <button type="button" id="darstellung" class="knopf-klein" hidden
+            aria-label="Darstellung umschalten"></button>
+    <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
   </div>
-  <p class="lesehilfe">
-    Beispielzahlen. Farbe hat in Immoleicht genau zwei Bedeutungen: Grün, Gelb und Rot
-    sagen, wie es um eine Sache steht — Blau sagt, wo man handeln kann. Eine dritte
-    Bedeutung, „sieht hübsch aus", gibt es nicht.
-  </p>
+</header>
+
+<main id="inhalt">
+
+  <div class="aufmacher">
+    <div class="glanz" aria-hidden="true"></div>
+    <div class="huelle">
+      <p class="augenbraue">Cashflow-Copilot für Immobilien</p>
+      <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
+      <p class="vorspann">
+        Verwaltungssoftware weiß, wer wo wohnt. Immoleicht weiß, was am Monatsende übrig
+        bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
+      </p>
+      <div class="knopfreihe">
+        <a class="zugang" href="#preis">Preis berechnen</a>
+        <a class="zugang-leise" href="#unterschied">Was es anders macht</a>
+      </div>
+    </div>
+  </div>
 
   <section>
-    <h3>Und was als Nächstes ansteht</h3>
-    <p>
-      Der zweite Satz, den eine Software über einen Bestand sagen können muss: nicht nur,
-      wie es heute steht, sondern was demnächst zu entscheiden ist. Fristen im Mietrecht
-      und in der Finanzierung kommen mit Vorlauf — und sie sind teuer, wenn man sie
-      übersieht.
-    </p>
-    <div class="karte">
-      <h2>Was jetzt ansteht</h2>
-      <ul class="fristen">
-        <li class="frist schlecht">
-          <span class="wann">in 4 Monaten</span>
-          <span class="was">Zinsbindung endet
-            <span>Lindenstraße 4 · Restschuld 184.200 € · Anschluss jetzt verhandeln</span>
-          </span>
-        </li>
-        <li class="frist bald">
-          <span class="wann">in 9 Monaten</span>
-          <span class="was">Mieterhöhung möglich
-            <span>Wohnung 1 · Sperrfrist nach § 558 BGB läuft ab</span>
-          </span>
-        </li>
-        <li class="frist ruhig">
-          <span class="wann">in 3 Jahren</span>
-          <span class="was">Zinsbindung endet
-            <span>Wohnung 3 · früh genug, aber im Blick</span>
-          </span>
-        </li>
-      </ul>
+    <div class="huelle enthuellen">
+      <dl class="bestand">
+        <div class="kachel"><dt>Einheiten</dt><dd>12</dd></div>
+        <div class="kachel"><dt>tragen sich</dt><dd class="gut">9</dd></div>
+        <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht">3</dd></div>
+        <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut">+ 1.240,60 €</dd></div>
+      </dl>
+
+      <div class="rechnungen">
+        <article class="rechnung">
+          <h3>Wohnung 3 <span>2. OG links · 68 m²</span></h3>
+          <dl>
+            <div class="zeile"><dt>Kaltmiete</dt><dd>+ 780,00</dd></div>
+            <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
+            <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
+            <div class="zeile summe"><dt>Überschuss</dt><dd class="gut">+ 22,60 €</dd></div>
+          </dl>
+          <span class="merker gut">trägt sich</span>
+        </article>
+
+        <article class="rechnung">
+          <h3>Wohnung 1 <span>Erdgeschoss · 71 m²</span></h3>
+          <dl>
+            <div class="zeile"><dt>Kaltmiete</dt><dd>+ 540,00</dd></div>
+            <div class="zeile"><dt>Darlehensrate</dt><dd>− 612,40</dd></div>
+            <div class="zeile"><dt>Rücklage und Kosten</dt><dd>− 145,00</dd></div>
+            <div class="zeile summe"><dt>Fehlbetrag</dt><dd class="schlecht">− 217,40 €</dd></div>
+          </dl>
+          <span class="merker schlecht">zahlt drauf</span>
+        </article>
+      </div>
+
+      <p class="lesehilfe">
+        Beispielzahlen. Farbe hat in Immoleicht genau zwei Bedeutungen: Grün, Gelb und Rot
+        sagen, wie es um eine Sache steht — Blau sagt, wo man handeln kann.
+      </p>
     </div>
   </section>
 
   <section>
-    <h3>Warum das der Unterschied ist</h3>
-    <p>
-      Wer eine Wohnung vermietet, kennt die Miete. Ob sie sich rechnet, hängt aber an der
-      Rate, den Rücklagen und dem Leerstand — Zahlen, die meist in einer anderen Tabelle
-      stehen oder in gar keiner.
-    </p>
-    <p>
-      Immoleicht führt sie zusammen. Von der ersten Wohnung bis zum Bestand einer
-      Hausverwaltung, mit denselben Bildschirmen: Was man nicht braucht, ist nicht da.
-    </p>
-  </section>
-
-  <section>
-    <h3>Für wen</h3>
-    <p>
-      Zwei Zielgruppen, die in entgegengesetzte Richtungen ziehen — und trotzdem eine
-      Oberfläche. Sie entfaltet sich mit dem Bestand, statt zweimal zu existieren.
-    </p>
-    <div class="paar">
-      <div class="karte">
-        <h4>Die erste Wohnung</h4>
-        <p>
-          Wer eine Eigentumswohnung besitzt, sieht keine Objektebene und keine Hausliste —
-          nur seine Wohnung. Jeder Bildschirm erklärt sich selbst, kein leeres Formular
-          fragt nach Dingen, die es hier nicht gibt. Und die erste Einheit kostet nichts.
-        </p>
-      </div>
-      <div class="karte">
-        <h4>Der Bestand einer Verwaltung</h4>
-        <p>
-          Ab der zweiten Handvoll erscheint, was vorher im Weg gewesen wäre: Suche statt
-          Scrollen, Etiketten, seitenweise Listen. Die Summen darüber gelten trotzdem für
-          den ganzen Bestand, nicht für die sichtbare Seite.
-        </p>
+    <div class="huelle enthuellen">
+      <h2 class="ueberschrift">Und was als Nächstes ansteht</h2>
+      <p>
+        Der zweite Satz, den eine Software über einen Bestand sagen können muss: nicht nur,
+        wie es heute steht, sondern was demnächst zu entscheiden ist. Fristen im Mietrecht
+        und in der Finanzierung kommen mit Vorlauf — und sie sind teuer, wenn man sie
+        übersieht.
+      </p>
+      <div class="karte" style="margin-top:1.5rem">
+        <h3>Was jetzt ansteht</h3>
+        <ul class="fristen">
+          <li class="frist schlecht">
+            <span class="wann">in 4 Monaten</span>
+            <span class="was">Zinsbindung endet
+              <span>Lindenstraße 4 · Restschuld 184.200 € · Anschluss jetzt verhandeln</span>
+            </span>
+          </li>
+          <li class="frist bald">
+            <span class="wann">in 9 Monaten</span>
+            <span class="was">Mieterhöhung möglich
+              <span>Wohnung 1 · Sperrfrist nach § 558 BGB läuft ab</span>
+            </span>
+          </li>
+          <li class="frist ruhig">
+            <span class="wann">in 3 Jahren</span>
+            <span class="was">Zinsbindung endet
+              <span>Wohnung 3 · früh genug, aber im Blick</span>
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section>
-    <h3>Was es kostet</h3>
-    <p>
-      Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
-      Jede weitere kostet <span class="preis">9,99&nbsp;€</span> im Monat oder
-      <span class="preis">100&nbsp;€</span> im Jahr. Rechnen Sie nach:
-    </p>
+  <section id="unterschied">
+    <div class="huelle enthuellen">
+      <h2 class="ueberschrift">Warum das der Unterschied ist</h2>
+      <p>
+        Wer eine Wohnung vermietet, kennt die Miete. Ob sie sich rechnet, hängt aber an der
+        Rate, den Rücklagen und dem Leerstand — Zahlen, die meist in einer anderen Tabelle
+        stehen oder in gar keiner.
+      </p>
+      <p>
+        Immoleicht führt sie zusammen. Von der ersten Wohnung bis zum Bestand einer
+        Hausverwaltung, mit denselben Bildschirmen: Was man nicht braucht, ist nicht da.
+      </p>
+      <div class="paar">
+        <div class="karte">
+          <h3>Die erste Wohnung</h3>
+          <p>
+            Wer eine Eigentumswohnung besitzt, sieht keine Objektebene und keine Hausliste —
+            nur seine Wohnung. Jeder Bildschirm erklärt sich selbst, kein leeres Formular
+            fragt nach Dingen, die es hier nicht gibt. Und die erste Einheit kostet nichts.
+          </p>
+        </div>
+        <div class="karte">
+          <h3>Der Bestand einer Verwaltung</h3>
+          <p>
+            Ab der zweiten Handvoll erscheint, was vorher im Weg gewesen wäre: Suche statt
+            Scrollen, Etiketten, seitenweise Listen. Die Summen darüber gelten trotzdem für
+            den ganzen Bestand, nicht für die sichtbare Seite.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <div class="rechner">
-      <p class="frage" id="frage">Wie viele Wohnungen oder Gewerbeeinheiten verwalten Sie?</p>
+  <section id="preis">
+    <div class="huelle enthuellen">
+      <h2 class="ueberschrift">Was es kostet</h2>
+      <p>
+        Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
+        Jede weitere kostet <span class="preis">9,99&nbsp;€</span> im Monat oder
+        <span class="preis">100&nbsp;€</span> im Jahr. Ziehen Sie den Regler:
+      </p>
 
-      <input type="radio" name="anzahl" id="e1" checked>
-      <label for="e1">1<span class="nurvorlesen"> 1 Einheit — dauerhaft kostenlos</span></label>
-      <input type="radio" name="anzahl" id="e2">
-      <label for="e2">2<span class="nurvorlesen"> 2 Einheiten — 9,99 Euro im Monat, oder 100,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e3">
-      <label for="e3">3<span class="nurvorlesen"> 3 Einheiten — 19,98 Euro im Monat, oder 200,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e4">
-      <label for="e4">4<span class="nurvorlesen"> 4 Einheiten — 29,97 Euro im Monat, oder 300,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e5">
-      <label for="e5">5<span class="nurvorlesen"> 5 Einheiten — 39,96 Euro im Monat, oder 400,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e6">
-      <label for="e6">6<span class="nurvorlesen"> 6 Einheiten — 49,95 Euro im Monat, oder 500,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e8">
-      <label for="e8">8<span class="nurvorlesen"> 8 Einheiten — 69,93 Euro im Monat, oder 700,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e10">
-      <label for="e10">10<span class="nurvorlesen"> 10 Einheiten — 89,91 Euro im Monat, oder 900,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e15">
-      <label for="e15">15<span class="nurvorlesen"> 15 Einheiten — 139,86 Euro im Monat, oder 1.400,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e20">
-      <label for="e20">20<span class="nurvorlesen"> 20 Einheiten — 189,81 Euro im Monat, oder 1.900,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e50">
-      <label for="e50">50<span class="nurvorlesen"> 50 Einheiten — 489,51 Euro im Monat, oder 4.900,00 Euro im Jahr</span></label>
-      <input type="radio" name="anzahl" id="e100">
-      <label for="e100">100+<span class="nurvorlesen"> 100 Einheiten oder mehr — 989,01 Euro im Monat, oder 9.900,00 Euro im Jahr</span></label>
+      <div class="rechner" hidden>
+        <p class="frage" id="regler-frage">Wie viele Wohnungen oder Gewerbeeinheiten verwalten Sie?</p>
 
-      <div class="ergebnis">
-        <dl>
-          <div class="zeile">
-            <dt>Einheiten</dt>
-            <dd><i class="w1">1</i><i class="w2">2</i><i class="w3">3</i><i class="w4">4</i><i class="w5">5</i><i class="w6">6</i><i class="w8">8</i><i class="w10">10</i><i class="w15">15</i><i class="w20">20</i><i class="w50">50</i><i class="w100">100</i></dd>
-          </div>
-          <div class="zeile">
-            <dt>davon dauerhaft kostenlos</dt>
-            <dd>− 1</dd>
-          </div>
-          <div class="zeile summe">
-            <dt>Sie zahlen für</dt>
-            <dd><i class="w1">0</i><i class="w2">1</i><i class="w3">2</i><i class="w4">3</i><i class="w5">4</i><i class="w6">5</i><i class="w8">7</i><i class="w10">9</i><i class="w15">14</i><i class="w20">19</i><i class="w50">49</i><i class="w100">99</i> Einheiten</dd>
-          </div>
-        </dl>
+        <div class="reglerzeile">
+          <input type="range" class="schiene" id="regler"
+                 min="1" max="100" step="1" value="12"
+                 aria-labelledby="regler-frage">
+          <input type="number" class="zahlfeld" id="zahl"
+                 min="1" max="9999" step="1" value="12"
+                 aria-label="Anzahl der Einheiten, auch über 100 eintragbar">
+        </div>
+        <p class="spanne" aria-hidden="true"><span>1</span><span>100</span></p>
 
-        <div class="tarife">
-          <div class="tarif">
-            <h4>Monatlich</h4>
-            <span class="betrag"><i class="w1">0,00</i><i class="w2">9,99</i><i class="w3">19,98</i><i class="w4">29,97</i><i class="w5">39,96</i><i class="w6">49,95</i><i class="w8">69,93</i><i class="w10">89,91</i><i class="w15">139,86</i><i class="w20">189,81</i><i class="w50">489,51</i><i class="w100">989,01</i> €</span>
-            <span class="dazu">im Monat</span>
-            <span class="dazu">9,99&nbsp;€ je zahlbarer Einheit</span>
-          </div>
-          <div class="tarif">
-            <h4>Jährlich</h4>
-            <span class="betrag"><i class="w1">0,00</i><i class="w2">8,33</i><i class="w3">16,67</i><i class="w4">25,00</i><i class="w5">33,33</i><i class="w6">41,67</i><i class="w8">58,33</i><i class="w10">75,00</i><i class="w15">116,67</i><i class="w20">158,33</i><i class="w50">408,33</i><i class="w100">825,00</i> €</span>
-            <span class="dazu">im Monat, jährlich gezahlt</span>
-            <span class="dazu"><i class="w1">0,00</i><i class="w2">100,00</i><i class="w3">200,00</i><i class="w4">300,00</i><i class="w5">400,00</i><i class="w6">500,00</i><i class="w8">700,00</i><i class="w10">900,00</i><i class="w15">1.400,00</i><i class="w20">1.900,00</i><i class="w50">4.900,00</i><i class="w100">9.900,00</i>&nbsp;€ im Jahr — spart <i class="w1">0,00</i><i class="w2">19,88</i><i class="w3">39,76</i><i class="w4">59,64</i><i class="w5">79,52</i><i class="w6">99,40</i><i class="w8">139,16</i><i class="w10">178,92</i><i class="w15">278,32</i><i class="w20">377,72</i><i class="w50">974,12</i><i class="w100">1.968,12</i>&nbsp;€</span>
-          </div>
+        <div class="taktwahl" role="group" aria-label="Zahlweise">
+          <button type="button" data-takt="monat" class="aktiv" aria-pressed="true">Monatlich</button>
+          <button type="button" data-takt="jahr" aria-pressed="false">
+            Jährlich<span class="nachlass">−17 %</span>
+          </button>
         </div>
 
-        <p class="frei-fall">
-          <span class="frei-betrag">0,00 €</span><br>
-          Eine Wohnung, keine Rechnung. Die erste Einheit bleibt kostenlos, solange es
-          Immoleicht gibt — kein Testzeitraum, der abläuft.
-        </p>
-
-        <p class="viele">
-          Ab etwa hundert Einheiten lohnt sich ein Gespräch: Für größere Bestände
-          stimmen wir Pakete ab. Bis dahin gilt genau diese Rechnung, ohne Obergrenze.
-        </p>
+        <div class="ergebnis">
+          <p class="betrag-zeile" style="margin:0">
+            <span class="betrag-gross"><span id="betrag">109,89</span><span class="waehrung">€</span></span>
+            <span class="takt" id="takt">im Monat</span>
+            <span class="jahresvorteil" id="jahresvorteil" hidden></span>
+          </p>
+          <span class="nebensatz" id="nebensatz"></span>
+          <span class="herleitung" id="herleitung"></span>
+          <p class="viele" id="viele" hidden>
+            Ab etwa hundert Einheiten lohnt sich ein Gespräch: Für größere Bestände stimmen
+            wir Pakete ab. Bis dahin gilt genau diese Rechnung, ohne Obergrenze.
+          </p>
+        </div>
       </div>
-    </div>
 
-    <p class="lesehilfe">
-      Alle Beträge sind Endpreise inklusive Umsatzsteuer — an der Kasse kommt nichts
-      dazu. <b>Stellplätze, Keller und Gartenanteile zählen nicht mit:</b> Eine Wohnung
-      mit Garage und Kellerraum ist eine Einheit, nicht drei. Gezählt wird tagegenau,
-      und niemand wird gesperrt — was dazukommt, wird berechnet, nicht verboten.
-    </p>
+      <noscript>
+        <div class="rechner ohneskript">
+          <p class="frage">Preis je Bestandsgröße</p>
+          <p style="font-size:.9rem;color:var(--leise);margin-top:-.5rem">
+            Der Regler braucht JavaScript. Dieselbe Rechnung als Tabelle — die erste Einheit
+            ist überall schon abgezogen.
+          </p>
+          <table>
+            <thead>
+              <tr><th>Einheiten</th><th>im Monat</th><th>im Jahr</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>0,00 €</td><td>0,00 €</td></tr>
+              <tr><td>2</td><td>9,99 €</td><td>100,00 €</td></tr>
+              <tr><td>3</td><td>19,98 €</td><td>200,00 €</td></tr>
+              <tr><td>5</td><td>39,96 €</td><td>400,00 €</td></tr>
+              <tr><td>10</td><td>89,91 €</td><td>900,00 €</td></tr>
+              <tr><td>20</td><td>189,81 €</td><td>1.900,00 €</td></tr>
+              <tr><td>50</td><td>489,51 €</td><td>4.900,00 €</td></tr>
+              <tr><td>100</td><td>989,01 €</td><td>9.900,00 €</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </noscript>
+
+      <p class="lesehilfe">
+        Alle Beträge sind Endpreise inklusive Umsatzsteuer — an der Kasse kommt nichts
+        dazu. <b>Stellplätze, Keller und Gartenanteile zählen nicht mit:</b> Eine Wohnung
+        mit Garage und Kellerraum ist eine Einheit, nicht drei. Gezählt wird tagegenau,
+        und niemand wird gesperrt — was dazukommt, wird berechnet, nicht verboten.
+      </p>
+    </div>
   </section>
 
   <section>
-    <h3>Stand</h3>
-    <p>
-      Immoleicht wird gerade gebaut, und diese Seite beschreibt, was es werden soll. Damit
-      das keine leere Behauptung bleibt, steht hier, was heute wirklich läuft — und was
-      als Nächstes drankommt.
-    </p>
-    <div class="paar">
-      <div class="karte">
-        <h4>Steht und läuft</h4>
-        <ul class="liste">
-          <li>Objekte und Einheiten anlegen und pflegen</li>
-          <li>Darlehen mit Tilgungsplan und Sondertilgung</li>
-          <li>Zinsbindungsende in „Was jetzt ansteht"</li>
-          <li>Mietspiegel, Potenzial und Sperrfrist</li>
-          <li>Etiketten über den ganzen Bestand</li>
-          <li>Konto, Rollen und getrennte Mandanten</li>
-        </ul>
+    <div class="huelle enthuellen">
+      <h2 class="ueberschrift">Stand</h2>
+      <p>
+        Immoleicht wird gerade gebaut, und diese Seite beschreibt, was es werden soll. Damit
+        das keine leere Behauptung bleibt, steht hier, was heute wirklich läuft — und was
+        als Nächstes drankommt.
+      </p>
+      <div class="paar">
+        <div class="karte">
+          <h3>Steht und läuft</h3>
+          <ul class="liste">
+            <li>Objekte und Einheiten anlegen und pflegen</li>
+            <li>Darlehen mit Tilgungsplan und Sondertilgung</li>
+            <li>Zinsbindungsende in „Was jetzt ansteht"</li>
+            <li>Mietspiegel, Potenzial und Sperrfrist</li>
+            <li>Etiketten über den ganzen Bestand</li>
+            <li>Konto, Rollen und getrennte Mandanten</li>
+          </ul>
+        </div>
+        <div class="karte">
+          <h3>Als Nächstes</h3>
+          <ul class="liste kommt">
+            <li>Laufende Kosten und Cashflow je Einheit</li>
+            <li>Renditekennzahlen</li>
+            <li>Suche und Filter über den Bestand</li>
+            <li>Aufgaben mit Zuweisung</li>
+            <li>Kassensturz: offen oder bezahlt je Einheit</li>
+            <li>Mietverträge und der Ankaufsrechner</li>
+          </ul>
+        </div>
       </div>
-      <div class="karte">
-        <h4>Als Nächstes</h4>
-        <ul class="liste kommt">
-          <li>Laufende Kosten und Cashflow je Einheit</li>
-          <li>Renditekennzahlen</li>
-          <li>Suche und Filter über den Bestand</li>
-          <li>Aufgaben mit Zuweisung</li>
-          <li>Kassensturz: offen oder bezahlt je Einheit</li>
-          <li>Mietverträge und der Ankaufsrechner</li>
-        </ul>
+      <div class="knopfreihe">
+        <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
       </div>
     </div>
-    <p style="margin-top:1.25rem">
-      Wenn Sie einen Zugang haben, geht es hier weiter:
-    </p>
-    <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
   </section>
 
-  <footer>
+</main>
+
+<footer>
+  <div class="huelle">
     <p>Immoleicht · Vorschau. Diese Seite ist noch nicht öffentlich beworben.</p>
     <p>
       Schriften: Source Sans 3, Source Serif 4 und IBM Plex Mono, selbst ausgeliefert
       unter der SIL Open Font License 1.1.
     </p>
-  </footer>
+  </div>
+</footer>
 
-</main>
+<script src="/rechner.js" defer></script>
 </body>
 </html>
