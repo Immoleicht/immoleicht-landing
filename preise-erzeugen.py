@@ -92,12 +92,12 @@ def pruefe() -> int:
         for n in sorted(gefunden - set(ZEILEN)):
             fehler.append(f"  index.html <noscript>: Zeile {n} steht dort, aber nicht in ZEILEN")
 
-    # 4. Der Satz im Fliesstext.
-    satz_monat = euro(MONAT_JE_EINHEIT).rstrip("0").rstrip(",") if False else euro(MONAT_JE_EINHEIT)
-    if f'<span class="preis">{satz_monat}&nbsp;€</span>' not in html:
-        fehler.append(f"  index.html: der Satz nennt nicht {satz_monat} € im Monat")
-    if '<span class="preis">100&nbsp;€</span>' not in html:
-        fehler.append("  index.html: der Satz nennt nicht 100 € im Jahr")
+    # 4. Die Kennzahlenleiste — seit der Neugestaltung vom 22.08.2026 die
+    # Stelle im Fliesstext-Rang, an der der Monatspreis ausserhalb des
+    # Rechners noch einmal genannt wird.
+    satz_monat = euro(MONAT_JE_EINHEIT)
+    if f'<div class="n">{satz_monat}<small>€</small></div>' not in html:
+        fehler.append(f"  index.html: die Kennzahlenleiste nennt nicht {satz_monat} € im Monat")
 
     # 5. Der Nachlass am Jahresknopf muss zur Rechnung passen.
     nachlass = round((1 - JAHR_JE_EINHEIT / (MONAT_JE_EINHEIT * 12)) * 100)
