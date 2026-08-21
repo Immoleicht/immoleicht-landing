@@ -139,7 +139,38 @@ const browser = await chromium.launch();
   await seite.close();
 }
 
-/* ── 3. Hell, dunkel, wie das System ─────────────────────────────────────── */
+/* ── 3. Fortschrittslinie, schwebende Kopfleiste, hochzaehlende Zahlen ───── */
+{
+  const seite = await browser.newPage({
+    viewport: { width: 1100, height: 900 },
+    reducedMotion: "reduce",
+  });
+  lauschen(seite, "Bewegung");
+  await seite.goto(U, { waitUntil: "networkidle" });
+
+  melde("Fortschritt startet bei 0", await seite.locator("#fortschritt").evaluate((e) => e.style.width), "0%");
+  melde("Kopfleiste startet ohne Schatten", await seite.locator(".kopf").evaluate((e) => e.classList.contains("schwebt")), false);
+
+  await seite.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await seite.waitForTimeout(50); // ein scroll-Ereignis reicht, kein Zeitablauf noetig
+
+  const breite = await seite.locator("#fortschritt").evaluate((e) => parseFloat(e.style.width));
+  melde("Fortschritt bewegt sich beim Scrollen", breite > 50, true);
+  melde("Kopfleiste bekommt Schatten", await seite.locator(".kopf").evaluate((e) => e.classList.contains("schwebt")), true);
+
+  // Bei reducedMotion setzt laufeZu() sofort den Endwert - hier wird also
+  // geprueft, dass die ANIMIERTEN Zahlen am Ende exakt das zeigen, was auch
+  // ohne Skript im Quelltext steht (siehe die Werte in index.html).
+  const zahlen = await seite.locator(".kachel dd").allInnerTexts();
+  melde("Bestandsleiste: Einheiten", zahlen[0], "12");
+  melde("Bestandsleiste: tragen sich", zahlen[1], "9");
+  melde("Bestandsleiste: zahlen drauf", zahlen[2], "3");
+  melde("Bestandsleiste: Ueberschuss", zahlen[3], "+ 1.240,60 €");
+
+  await seite.close();
+}
+
+/* ── 4. Hell, dunkel, wie das System ─────────────────────────────────────── */
 {
   const seite = await browser.newPage({ colorScheme: "light", reducedMotion: "reduce" });
   lauschen(seite, "Darstellung");
@@ -169,7 +200,7 @@ const browser = await chromium.launch();
   await seite.close();
 }
 
-/* ── 4. Ohne JavaScript muss die Seite lesbar bleiben ────────────────────── */
+/* ── 5. Ohne JavaScript muss die Seite lesbar bleiben ────────────────────── */
 {
   const kontext = await browser.newContext({ javaScriptEnabled: false });
   const seite = await kontext.newPage();
@@ -194,7 +225,7 @@ const browser = await chromium.launch();
   await kontext.close();
 }
 
-/* ── 5. Handy ────────────────────────────────────────────────────────────── */
+/* ── 6. Handy ────────────────────────────────────────────────────────────── */
 {
   const seite = await browser.newPage({ viewport: { width: 390, height: 844 } });
   lauschen(seite, "Handy");
@@ -207,7 +238,7 @@ const browser = await chromium.launch();
   await seite.close();
 }
 
-/* ── 6. Wird ueberhaupt alles ausgeliefert, was die Seite anfordert? ─────── */
+/* ── 7. Wird ueberhaupt alles ausgeliefert, was die Seite anfordert? ─────── */
 /*
  * Der Pruefserver liefert das ganze Verzeichnis aus, das Betriebsabbild nur,
  * was im Dockerfile steht. Eine vergessene COPY-Zeile faellt oertlich deshalb
@@ -247,7 +278,7 @@ const browser = await chromium.launch();
   if (!offen) console.log(`  Dockerfile deckt alle ${angefordert.size} angeforderten Pfade.`);
 }
 
-/* ── 7. Bilder fuer den Menschen ─────────────────────────────────────────── */
+/* ── 8. Bilder fuer den Menschen ─────────────────────────────────────────── */
 if (BILDER) {
   for (const schema of ["light", "dark"]) {
     // `reducedMotion` statt "Klasse setzen und hoffen": Bei eingeschalteter

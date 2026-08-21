@@ -53,6 +53,20 @@ der Text beim Nachladen nicht umspringt. Ohne Bauschritt lässt sich das nicht e
 nachbauen — geschätzte Werte wären schlimmer als keine. Stattdessen sind die zwei
 wichtigsten Schnitte im Kopf der Datei vorgeladen.
 
+### Die eine Ausnahme, gesammelt an einer Stelle
+
+Seit dem 21.08.2026 benutzt die Seite den Akzentton an drei Stellen als reine **Fläche**,
+nicht als **Zeichen**: die schwebenden Flecken hinter der Überschrift (`.aurora`), das
+Licht, das der Maus folgt (`.spotlight`), und die großen blassen Ziffern „01"/„02" hinter
+den beiden Textkarten (`.schrittnr`). Keine der drei trägt einen Wert oder einen Zustand;
+nimmt man sie weg, geht keine Aussage verloren, nur ein Eindruck.
+
+Das steht bewusst als **eine** Sammelstelle im Kopf von `index.html`, nicht als drei
+verstreute Kommentare — wer eine vierte Stelle dieser Art einführt, findet dort, was
+schon gilt, und muss sich fragen, ob sie wirklich dieselbe Begründung trägt. Alle drei
+rechnen ausschließlich mit `--akzent-h`, nie mit den Statusfarben — genau das wäre die
+verbotene dritte Bedeutung.
+
 ## Der Preisregler
 
 Im Abschnitt „Was es kostet" steht ein Schieberegler von 1 bis 100 Einheiten, daneben ein
@@ -102,8 +116,15 @@ abzuschreiben — zwei Fassungen derselben Policy liefen sonst beim ersten Ände
 auseinander. `pruefe-seite.mjs` lässt **jede** Konsolenmeldung des Browsers durchfallen;
 so melden sich CSP-Verletzungen. Geprüft werden außerdem: Regler, Zahlenfeld über 100, der
 kostenlose Fall, Umschalten auf jährlich, Bedienung per Pfeiltaste, was eine Vorlesehilfe
-angesagt bekommt, Zielgrößen, unsinnige Eingaben, die Seite **ohne** JavaScript, hell und
+angesagt bekommt, Zielgrößen, unsinnige Eingaben, die Fortschrittslinie und die
+Kopfleisten-Elevation beim Scrollen, die hochzählenden Zahlen der Bestandsleiste, ob jeder
+angeforderte Pfad vom `Dockerfile` gedeckt ist, die Seite **ohne** JavaScript, hell und
 dunkel samt Speichern der Wahl, und waagerechtes Scrollen bei 390 px.
+
+Jeder neue Wächter ist mit einer **Gegenprobe** belegt, nicht nur behauptet: Der
+Dockerfile-Wächter schlägt an, wenn eine `COPY`-Zeile fehlt; der Fortschritts-/
+Kopfleisten-Wächter schlägt an, wenn `kopfUndFortschrittAufsetzen()` nicht läuft. Beide
+Male gemessen, nicht vermutet — sonst wäre es eine Zusage ohne Zähne.
 
 `node` liegt im Hauptprojekt (dieses Repo hat kein npm); der Pfad zu Playwright steht oben
 in `pruefe-seite.mjs`.
