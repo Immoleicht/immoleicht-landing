@@ -33,13 +33,22 @@
   Daraus folgt zwingend, dass der Akzent weder grün noch gelb noch rot sein
   darf. Eine dritte Bedeutung — „sieht hübsch aus" — gibt es nicht.
 
-  ── EINE AUSNAHME, BENANNT STATT VERSTECKT ──────────────────────────────────
+  ── DIE EINE AUSNAHME, UND WARUM SIE HIER GESAMMELT STEHT ───────────────────
 
-  Der schwache Schein hinter der Überschrift (`.glanz`) trägt den Akzentton bei
-  10 % Deckkraft. Das ist KEINE dritte Bedeutung: Es ist Fläche, kein Zeichen —
-  es steht an keinem Wert, an keinem Zustand und an keiner Schaltfläche, und
-  nimmt man es weg, geht keine Aussage verloren. Es ist die einzige Stelle
-  dieser Art, und sie steht hier, damit die nächste nicht unbemerkt dazukommt.
+  Ein Schein, ein wanderndes Licht, ein Wasserzeichen — drei Stellen, die den
+  Akzentton als reine FLÄCHE benutzen, nicht als ZEICHEN. Keine trägt einen
+  Wert, einen Zustand oder eine Handlung; keine ersetzt eine Schaltfläche.
+  Nimmt man sie weg, geht keine Aussage verloren — nur ein Eindruck.
+
+      .aurora   die schwebenden Flecken hinter der Überschrift
+      .spotlight das Licht, das der Maus im Aufmacher folgt
+      .schrittnr die großen blassen Ziffern „01"/„02"
+
+  Das ist bewusst EINE Sammelstelle statt drei verstreuter Ausnahmen: Wer eine
+  vierte hinzufügt, findet hier, was schon gilt — und muss sich fragen, ob sie
+  wirklich dieselbe Begründung trägt. Alle drei rechnen ausschließlich mit
+  `--akzent-h`, nie mit `--positiv-h`, `--warnung-h` oder `--kritisch-h`: Genau
+  das wäre die vierte, verbotene Bedeutung.
 
   ── DREI STÄNDE DER DARSTELLUNG ─────────────────────────────────────────────
 
@@ -119,6 +128,7 @@
   --kritisch-fl: hsl(var(--kritisch-fl-h));
 
   --radius: 0.75rem;
+  --radius-lg: 1.25rem;
   --serif: "Source Serif 4", ui-serif, Charter, Georgia, serif;
   --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -170,6 +180,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
+::selection { background: hsl(var(--akzent-h) / 0.25); color: var(--text); }
 
 /*
  * Das `hidden`-Attribut muss stärker sein als jede Regel hier.
@@ -197,19 +208,43 @@ body {
 .sprungmarke {
   position: absolute; left: 0.5rem; top: -4rem;
   background: var(--akzent); color: var(--akzent-vg);
-  padding: 0.6rem 1rem; border-radius: var(--radius); z-index: 20;
+  padding: 0.6rem 1rem; border-radius: var(--radius); z-index: 40;
   text-decoration: none; font-weight: 600;
   transition: top 0.15s;
 }
 .sprungmarke:focus { top: 0.5rem; }
 
+/*
+ * Leseweite Andeutung des Fortschritts, keine Statusfarbe: Sie misst nur, wie
+ * weit gescrollt wurde — nichts an ihr steht für „gut" oder „schlecht". Der
+ * Akzent ist hier deshalb richtig, nicht grün oder rot.
+ *
+ * Liegt ÜBER der Kopfleiste (`z-index: 40 > 10`), damit sie unabhängig vom
+ * Scrollstand als dünne Linie an der Fensteroberkante sichtbar bleibt.
+ */
+.fortschritt {
+  position: fixed; inset: 0 auto auto 0; z-index: 40;
+  height: 2px; width: 0%;
+  background: var(--akzent);
+  transition: width 0.12s linear;
+}
+@media (prefers-reduced-motion: reduce) { .fortschritt { transition: none; } }
+
 /* ── Kopfleiste ────────────────────────────────────────────────────────────── */
 .kopf {
   position: sticky; top: 0; z-index: 10;
-  background: hsl(var(--grund-h) / 0.82);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid hsl(var(--linie-h) / 0.7);
+  background: hsl(var(--grund-h) / 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+/* Gesetzt von rechner.js, sobald gescrollt wurde — eine ruhige Elevation statt
+   einer dauerhaften Kante, damit die Kopfleiste erst beim Wegscrollen des
+   Aufmachers eine eigene Ebene bekommt. */
+.kopf.schwebt {
+  border-bottom-color: hsl(var(--linie-h) / 0.7);
+  box-shadow: 0 12px 32px -20px hsl(var(--schatten) / 0.35);
 }
 .kopf .huelle {
   display: flex; align-items: center; gap: 0.75rem;
@@ -237,8 +272,10 @@ body {
   border: 1px solid var(--linie); border-radius: 999px;
   background: transparent; color: var(--text);
   cursor: pointer; font-size: 1rem; line-height: 1;
+  transition: border-color 0.15s, transform 0.15s;
 }
 .knopf-klein:hover { border-color: var(--akzent); }
+@media (hover: hover) { .knopf-klein:active { transform: scale(0.92); } }
 .knopf-klein:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 .knopf-klein::before { content: "◐"; }
 .knopf-klein[data-wahl="hell"]::before { content: "☀"; }
@@ -248,57 +285,106 @@ body {
 .zugang, .zugang-leise {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 2.75rem;                         /* 44 px Zielgrösse, WCAG 2.5.8 */
-  padding: 0.6rem 1.15rem;
+  padding: 0.6rem 1.25rem;
   border-radius: var(--radius);
   text-decoration: none; font-weight: 600; font-size: 0.95rem;
   white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
 }
-.zugang { background: var(--akzent); color: var(--akzent-vg); border: 1px solid var(--akzent); }
-.zugang:hover { filter: brightness(1.15); }
+.zugang {
+  background: var(--akzent); color: var(--akzent-vg); border: 1px solid var(--akzent);
+  box-shadow: 0 1px 2px hsl(var(--akzent-h) / 0.3), 0 10px 24px -12px hsl(var(--akzent-h) / 0.55);
+}
+.zugang:hover { filter: brightness(1.12); }
 .zugang-leise { border: 1px solid var(--linie); color: var(--text); }
 .zugang-leise:hover { border-color: var(--akzent); }
-.knopfreihe { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; }
+@media (hover: hover) {
+  .zugang:hover, .zugang-leise:hover { transform: translateY(-1px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zugang:hover, .zugang-leise:hover { transform: none; }
+}
+.knopfreihe { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.85rem; }
 
 /* ── Aufmacher ─────────────────────────────────────────────────────────────── */
 /*
  * `overflow: hidden` ist hier kein Beiwerk, sondern die Behebung eines
  * gemessenen Fehlers: Der Schein ragt absichtlich seitlich über den Text
- * hinaus (`-20%`) und machte damit die ganze Seite auf einem 390 px breiten
- * Handy waagerecht scrollbar — 468 px Inhalt in 390 px Fenster.
+ * hinaus und machte damit die ganze Seite auf einem 390 px breiten Handy
+ * waagerecht scrollbar — 468 px Inhalt in 390 px Fenster.
  *
  * Vorher stand dagegen `overflow-x: hidden` am `body`. Das ist die verbreitete
- * Abhilfe und die schlechtere: Sie versteckt JEDEN künftigen Überstand
- * gleich mit, und dann findet die Prüfung den nächsten echten Layoutfehler
- * nicht mehr. Geklemmt wird deshalb dort, wo der Überstand entsteht.
+ * Abhilfe und die schlechtere: Sie versteckt JEDEN künftigen Überstand gleich
+ * mit, und dann findet die Prüfung den nächsten echten Layoutfehler nicht
+ * mehr. Geklemmt wird deshalb dort, wo der Überstand entsteht — und das gilt
+ * jetzt für drei schwebende Flecken statt für einen.
  */
-.aufmacher { position: relative; overflow: hidden; padding: 4.5rem 0 0; }
-/*
- * Fläche, kein Zeichen — siehe die benannte Ausnahme oben. Liegt hinter allem
- * und fängt keine Klicks ab.
- */
-.glanz {
-  position: absolute; inset: 0 -20% auto; height: 34rem;
-  background: radial-gradient(60% 60% at 25% 0%, hsl(var(--akzent-h) / 0.10), transparent 70%);
-  pointer-events: none; z-index: -1;
+.aufmacher { position: relative; overflow: hidden; padding: 5.5rem 0 4.5rem; }
+
+/* Fläche, kein Zeichen — siehe die Sammelstelle der Ausnahme oben. */
+.aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(64px);
+  background: radial-gradient(circle, hsl(var(--akzent-h) / 0.32), transparent 72%);
 }
+.blob-1 { width: 32rem; height: 32rem; top: -13rem; left: -9rem; animation: schweben-a 24s ease-in-out infinite; }
+.blob-2 { width: 24rem; height: 24rem; top: -8rem; right: -7rem; opacity: 0.7; animation: schweben-b 28s ease-in-out infinite; }
+.blob-3 { width: 18rem; height: 18rem; bottom: -11rem; left: 32%; opacity: 0.55; animation: schweben-c 32s ease-in-out infinite; }
+@keyframes schweben-a { 0%, 100% { translate: 0 0; } 50% { translate: 2.5rem 2rem; } }
+@keyframes schweben-b { 0%, 100% { translate: 0 0; } 50% { translate: -2rem 2.5rem; } }
+@keyframes schweben-c { 0%, 100% { translate: 0 0; } 50% { translate: 1.5rem -2rem; } }
+@media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
+
+/* Das Licht, das der Maus folgt — nur wo eine Maus wirklich führt, siehe die
+   Begründung bei `spotlightAufsetzen()` in rechner.js. Ohne Skript bleibt
+   `--sx`/`--sy` auf ihrem Vorgabewert stehen: ein ruhiger, zentrierter Schein. */
+.spotlight {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity 0.4s ease;
+  background: radial-gradient(38rem circle at var(--sx, 60%) var(--sy, 10%),
+    hsl(var(--akzent-h) / 0.14), transparent 68%);
+}
+@media (hover: hover) and (pointer: fine) { .js .spotlight { opacity: 1; } }
+
 .augenbraue {
   font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--leise); margin: 0 0 1rem;
+  color: var(--leise); margin: 0 0 1.1rem;
 }
 h1 {
   font-family: var(--serif); font-weight: 600;
-  font-size: clamp(2.25rem, 7vw, 3.75rem);
-  line-height: 1.08; letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 7.5vw, 4.25rem);
+  line-height: 1.05; letter-spacing: -0.025em;
   text-wrap: balance;
-  margin: 0 0 1.15rem; max-width: 20ch;
+  margin: 0 0 1.25rem; max-width: 19ch;
 }
-.vorspann { font-size: 1.2rem; color: var(--leise); margin: 0; max-width: 38rem; }
+.vorspann { font-size: 1.22rem; color: var(--leise); margin: 0; max-width: 36rem; }
+
+/*
+ * Kinetische Ankunft: Augenbraue, Überschrift, Vorspann und Knopfreihe
+ * erscheinen einmalig und leicht versetzt beim Laden — vier direkte Kinder,
+ * vier Verzögerungen. Anders als `.enthuellen` ist das NICHT an Sichtbarkeit
+ * beim Scrollen gebunden, sondern an den ersten Aufbau der Seite: Der
+ * Aufmacher ist ohnehin sofort im Bild.
+ *
+ * Gebunden an `.js`, das VOR dem ersten Zeichnen gesetzt wird (siehe Kopf der
+ * Datei) — ohne Skript ist gar keine dieser Regeln aktiv, und alles steht von
+ * Anfang an sichtbar da, statt umgekehrt unsichtbar zu bleiben.
+ */
+.js .kinetisch > * {
+  opacity: 0; transform: translateY(12px);
+  animation: erscheinen 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.js .kinetisch > *:nth-child(1) { animation-delay: 0.02s; }
+.js .kinetisch > *:nth-child(2) { animation-delay: 0.12s; }
+.js .kinetisch > *:nth-child(3) { animation-delay: 0.26s; }
+.js .kinetisch > *:nth-child(4) { animation-delay: 0.40s; }
+@keyframes erscheinen { to { opacity: 1; transform: none; } }
 
 /* ── Abschnitte und Einblenden ────────────────────────────────────────────── */
-section { padding: 3.5rem 0; }
+section { padding: 3.75rem 0; }
 h2.ueberschrift {
   font-family: var(--serif); font-weight: 600;
-  font-size: clamp(1.5rem, 3.5vw, 2rem); letter-spacing: -0.015em;
+  font-size: clamp(1.6rem, 3.5vw, 2.15rem); letter-spacing: -0.015em;
   margin: 0 0 0.6rem;
 }
 section p { margin: 0 0 1rem; max-width: 38rem; }
@@ -318,20 +404,38 @@ section p:last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .enthuellen { opacity: 1; transform: none; transition: none; }
+  .js .kinetisch > * { opacity: 1; transform: none; animation: none; }
 }
 
-/* ── Karten ────────────────────────────────────────────────────────────────── */
-.karte, .rechnung {
-  background: var(--karte);
-  border: 1px solid var(--linie);
-  border-radius: var(--radius);
-  padding: 1.25rem;
+/* ── Karten: leicht durchscheinend, mit weichem Schatten statt harter Kante ──
+ *
+ * Die Deckkraft steht bei 0,92 statt bei 1 — spürbar als Tiefe, ohne die
+ * gemessenen Kontrastwerte zu gefährden: Hinter jeder Karte liegt außerhalb
+ * des Aufmachers durchgehend die flache Grundfläche `--grund`, nie die
+ * schwebenden Flecken. Der Unterschied zu voller Deckkraft ist damit eine
+ * Frage des Schattens und der leichten Sättigung, nicht der Lesbarkeit.
+ */
+.karte, .rechnung, .rechner {
+  background: hsl(var(--karte-h) / 0.92);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid hsl(var(--linie-h) / 0.85);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 1px 1px hsl(var(--schatten) / 0.03), 0 16px 40px -26px hsl(var(--schatten) / 0.4);
 }
-.rechnung { transition: border-color 0.2s, transform 0.2s; }
+.rechnung {
+  padding: 1.35rem 1.35rem 1.15rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  transform-style: preserve-3d; will-change: transform;
+}
 @media (hover: hover) {
-  .rechnung:hover { border-color: hsl(var(--akzent-h) / 0.45); transform: translateY(-2px); }
+  .rechnung:hover {
+    border-color: hsl(var(--akzent-h) / 0.4);
+    box-shadow: 0 1px 1px hsl(var(--schatten) / 0.04), 0 22px 44px -22px hsl(var(--schatten) / 0.45);
+  }
 }
-@media (prefers-reduced-motion: reduce) { .rechnung:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rechnung { transform: none !important; } }
 
 .rechnung h3, .karte h3 {
   font-family: var(--sans); font-size: 0.9rem; font-weight: 600; margin: 0 0 0.85rem;
@@ -359,17 +463,17 @@ dl { margin: 0; }
 .bestand {
   display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr);
   background: var(--linie); border: 1px solid var(--linie);
-  border-radius: var(--radius); overflow: hidden; margin: 0 0 1rem;
+  border-radius: var(--radius-lg); overflow: hidden; margin: 0 0 1rem;
 }
 @media (min-width: 44rem) { .bestand { grid-template-columns: repeat(4, 1fr); } }
-.kachel { background: var(--karte); padding: 0.9rem 1rem; }
-.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.15rem; }
+.kachel { background: var(--karte); padding: 1rem 1.1rem; }
+.kachel dt { font-size: 0.8rem; color: var(--leise); margin: 0 0 0.2rem; }
 .kachel dd {
   margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 1.25rem; font-weight: 700; line-height: 1.25;
+  font-size: 1.4rem; font-weight: 700; line-height: 1.25;
 }
 
-.rechnungen { display: grid; gap: 1rem; }
+.rechnungen { display: grid; gap: 1rem; perspective: 1200px; }
 @media (min-width: 44rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
 
 /* ── Fristen ──────────────────────────────────────────────────────────────── */
@@ -388,7 +492,7 @@ dl { margin: 0; }
 .frist .was { font-size: 0.92rem; }
 .frist .was span { display: block; color: var(--leise); font-size: 0.85rem; }
 
-/* ── Zwei Spalten ─────────────────────────────────────────────────────────── */
+/* ── Zwei Spalten, editorial mit großer blasser Schrittziffer ─────────────── */
 .paar { display: grid; gap: 1rem; margin-top: 1.5rem; }
 @media (min-width: 44rem) { .paar { grid-template-columns: 1fr 1fr; } }
 .paar h3 {
@@ -399,6 +503,18 @@ dl { margin: 0; }
 .liste { list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
 .liste li { padding: 0.22rem 0; }
 .liste.kommt li { color: var(--leise); }
+
+/* Wasserzeichen, kein Zeichen — siehe die Sammelstelle der Ausnahme oben.
+   `aria-hidden` UND aus dem Textfluss genommen: Eine Vorlesehilfe soll „01"
+   nicht wie einen eigenen Absatz vorlesen. */
+.schritt { position: relative; overflow: hidden; }
+.schrittnr {
+  position: absolute; top: -0.65rem; right: -0.15rem;
+  font-family: var(--mono); font-weight: 700;
+  font-size: 4.25rem; line-height: 1;
+  color: hsl(var(--akzent-h) / 0.12);
+  pointer-events: none; user-select: none;
+}
 
 /* ── Preisregler ───────────────────────────────────────────────────────────
  *
@@ -418,11 +534,9 @@ dl { margin: 0; }
  * Was die Seite dafür behält: Sie ist ohne Skript vollständig lesbar. Im
  * `<noscript>`-Block steht dieselbe Rechnung als Tabelle.
  */
-.rechner {
-  background: var(--karte); border: 1px solid var(--linie);
-  border-radius: var(--radius); padding: 1.5rem;
-}
-.frage { font-size: 0.95rem; font-weight: 600; margin: 0 0 1rem; max-width: none; }
+.rechner { padding: 1.75rem 1.5rem; }
+@media (min-width: 44rem) { .rechner { padding: 2.25rem; } }
+.frage { font-size: 0.95rem; font-weight: 600; margin: 0 0 1.1rem; max-width: none; }
 
 .reglerzeile { display: flex; align-items: center; gap: 1rem; }
 .schiene {
@@ -444,16 +558,16 @@ dl { margin: 0; }
 }
 .schiene::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  width: 1.7rem; height: 1.7rem; border-radius: 50%;
   background: var(--karte); border: 3px solid var(--akzent);
-  margin-top: -0.55rem;
-  box-shadow: 0 1px 4px hsl(var(--schatten) / 0.22);
+  margin-top: -0.6rem;
+  box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
   transition: transform 0.12s;
 }
 .schiene::-moz-range-thumb {
-  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  width: 1.7rem; height: 1.7rem; border-radius: 50%;
   background: var(--karte); border: 3px solid var(--akzent);
-  box-shadow: 0 1px 4px hsl(var(--schatten) / 0.22);
+  box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
 }
 .schiene:active::-webkit-slider-thumb { transform: scale(1.12); }
 .schiene:focus-visible { outline: none; }
@@ -491,7 +605,7 @@ dl { margin: 0; }
 
 /* Monatlich oder jährlich */
 .taktwahl {
-  display: inline-flex; gap: 0.25rem; margin: 1.5rem 0 0;
+  display: inline-flex; gap: 0.25rem; margin: 1.75rem 0 0;
   padding: 0.25rem; background: var(--flaeche); border-radius: 999px;
 }
 .taktwahl button {
@@ -500,24 +614,40 @@ dl { margin: 0; }
   background: transparent; color: var(--text);
   font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
   cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 /* Der Akzent trägt die Auswahl — eine der vier Aufgaben, die DESIGN-2 ihm gibt. */
 .taktwahl button.aktiv { background: var(--akzent); color: var(--akzent-vg); font-weight: 600; }
 .taktwahl button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 .taktwahl .nachlass { font-size: 0.78rem; opacity: 0.85; margin-left: 0.35rem; }
 
-.ergebnis { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--linie); }
+/*
+ * `isolation: isolate` öffnet einen eigenen Stapelkontext: Das Leuchten
+ * (`z-index: -1`) bleibt darin gefangen, statt hinter spätere Abschnitte der
+ * Seite zu rutschen. Dieselbe Absicherung, die vorher `.aufmacher` über
+ * `position: relative` erledigte.
+ */
+.ergebnis { position: relative; isolation: isolate; margin-top: 1.75rem; padding-top: 1.4rem; border-top: 1px solid var(--linie); }
+/* Fläche, kein Zeichen. Die Deckkraft setzt rechner.js aus `--fuellung` — je
+   mehr Einheiten, desto kräftiger der Schein hinter der eigenen Zahl. Reiner
+   Rückmelde-Effekt zur Reglerbewegung, kein Statuszeichen. */
+.ergebnis-gluehen {
+  position: absolute; inset: -1.5rem -1.5rem auto -1.5rem; height: 9rem;
+  background: radial-gradient(60% 100% at 15% 15%, hsl(var(--akzent-h) / 0.5), transparent 72%);
+  z-index: -1; pointer-events: none; opacity: 0.12;
+  transition: opacity 0.25s ease;
+}
 .betrag-gross {
   display: block;
   font-family: var(--mono); font-weight: 700;
-  font-size: clamp(2.5rem, 9vw, 3.75rem); line-height: 1;
+  font-size: clamp(2.75rem, 9vw, 4.25rem); line-height: 1;
   letter-spacing: -0.035em; font-variant-numeric: tabular-nums;
 }
 .betrag-zeile { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; max-width: none; }
 /*
  * Kein Leerzeichen zwischen Betrag und Euro-Zeichen, sondern ein gesetzter
  * Abstand. In IBM Plex Mono ist jedes Zeichen gleich breit, auch das
- * Leerzeichen — bei 60 px Schriftgrösse klaffte dadurch eine Lücke von einer
+ * Leerzeichen — bei großer Schriftgrösse klaffte dadurch eine Lücke von einer
  * halben Ziffernbreite zwischen Zahl und Währung.
  */
 .waehrung { margin-left: 0.14em; }
@@ -561,6 +691,7 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 </head>
 <body>
 
+<div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
 <a class="sprungmarke" href="#inhalt">Zum Inhalt springen</a>
 
 <header class="kopf">
@@ -575,8 +706,13 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
 <main id="inhalt">
 
   <div class="aufmacher">
-    <div class="glanz" aria-hidden="true"></div>
-    <div class="huelle">
+    <div class="aurora" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+    <div class="spotlight" id="spotlight" aria-hidden="true"></div>
+    <div class="huelle kinetisch">
       <p class="augenbraue">Cashflow-Copilot für Immobilien</p>
       <h1>Bringt diese Wohnung Geld — oder kostet sie welche?</h1>
       <p class="vorspann">
@@ -593,10 +729,10 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
   <section>
     <div class="huelle enthuellen">
       <dl class="bestand">
-        <div class="kachel"><dt>Einheiten</dt><dd>12</dd></div>
-        <div class="kachel"><dt>tragen sich</dt><dd class="gut">9</dd></div>
-        <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht">3</dd></div>
-        <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut">+ 1.240,60 €</dd></div>
+        <div class="kachel"><dt>Einheiten</dt><dd class="zahl" data-ziel="12" data-format="ganz">12</dd></div>
+        <div class="kachel"><dt>tragen sich</dt><dd class="gut zahl" data-ziel="9" data-format="ganz">9</dd></div>
+        <div class="kachel"><dt>zahlen drauf</dt><dd class="schlecht zahl" data-ziel="3" data-format="ganz">3</dd></div>
+        <div class="kachel"><dt>Überschuss im Monat</dt><dd class="gut zahl" data-ziel="1240.6" data-format="euro" data-vorzeichen="+">+ 1.240,60 €</dd></div>
       </dl>
 
       <div class="rechnungen">
@@ -678,7 +814,8 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
         Hausverwaltung, mit denselben Bildschirmen: Was man nicht braucht, ist nicht da.
       </p>
       <div class="paar">
-        <div class="karte">
+        <div class="karte schritt">
+          <span class="schrittnr" aria-hidden="true">01</span>
           <h3>Die erste Wohnung</h3>
           <p>
             Wer eine Eigentumswohnung besitzt, sieht keine Objektebene und keine Hausliste —
@@ -686,7 +823,8 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
             fragt nach Dingen, die es hier nicht gibt. Und die erste Einheit kostet nichts.
           </p>
         </div>
-        <div class="karte">
+        <div class="karte schritt">
+          <span class="schrittnr" aria-hidden="true">02</span>
           <h3>Der Bestand einer Verwaltung</h3>
           <p>
             Ab der zweiten Handvoll erscheint, was vorher im Weg gewesen wäre: Suche statt
@@ -728,6 +866,7 @@ footer p { margin: 0 0 0.4rem; max-width: 42rem; }
         </div>
 
         <div class="ergebnis">
+          <div class="ergebnis-gluehen" id="gluehen" aria-hidden="true"></div>
           <p class="betrag-zeile" style="margin:0">
             <span class="betrag-gross"><span id="betrag">109,89</span><span class="waehrung">€</span></span>
             <span class="takt" id="takt">im Monat</span>
