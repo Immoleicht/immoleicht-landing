@@ -78,6 +78,17 @@ h1 {
 }
 .vorspann { font-size: 1.15rem; color: var(--leise); margin: 0 0 2.5rem; max-width: 34rem; }
 
+/* Nur für Vorlesehilfen. Nicht display:none — das nähme es auch ihnen. */
+.nurvorlesen {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── Die Rechnung: das Kernstück der Seite ─────────────────────────────── */
 .rechnungen { display: grid; gap: 1rem; margin: 0 0 1rem; }
 @media (min-width: 40rem) { .rechnungen { grid-template-columns: 1fr 1fr; } }
@@ -130,6 +141,128 @@ section { margin-bottom: 3rem; }
 section p { margin: 0 0 1rem; max-width: 34rem; }
 
 .preis { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ── Preisrechner ──────────────────────────────────────────────────────────
+ *
+ * WARUM DIESER RECHNER OHNE JAVASCRIPT AUSKOMMT
+ *
+ * Nicht aus Sparsamkeit, sondern weil er sonst gar nicht liefe: `nginx.conf`
+ * setzt `script-src 'none'`. Ein eingebettetes Skript würde örtlich beim
+ * Öffnen der Datei tadellos rechnen und im Betrieb wortlos nichts tun — die
+ * Sorte Fehler, die niemand sieht, weil die Seite aussieht wie immer.
+ *
+ * Stattdessen: zwölf versteckte Radiofelder, und je Stufe eine CSS-Regel, die
+ * die passenden Zahlen einblendet. Alle Beträge stehen als Text im Quelltext.
+ * Das hat einen zweiten Vorteil, der zum Rest des Projekts passt — die Zahl,
+ * aus der die Rechnung entsteht, ist nachzählbar und kann zur Laufzeit nicht
+ * anders herauskommen als hier geschrieben.
+ *
+ * Der Preis dafür sind feste Stufen statt eines freien Feldes. Wer wirklich
+ * einen Schieberegler mit beliebiger Zahl will, braucht eine eigene
+ * `rechner.js` und `script-src 'self'` in `nginx.conf` — beides bewusst nicht
+ * getan, solange die Stufen die Zielgruppe abdecken.
+ *
+ * Die 72 Zahlen erzeugt `preise-erzeugen.py`. Sie von Hand zu pflegen ist der
+ * sichere Weg zu einem falschen Betrag auf einer Preisseite.
+ */
+.rechner {
+  position: relative;                 /* Bezug für die versteckten Radiofelder */
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin: 0 0 0.85rem;
+}
+/* Frage und Ergebnis nehmen die ganze Breite; dazwischen fliessen die Schildchen. */
+.frage, .ergebnis { flex: 0 0 100%; }
+.frage { font-size: 0.9rem; font-weight: 600; margin: 0; max-width: none; }
+
+/*
+ * Unsichtbar, aber NICHT `display: none` und nicht `visibility: hidden` — beides
+ * nähme dem Feld den Tastaturfokus, und dann wäre der Rechner nur mit der Maus
+ * bedienbar. So bleibt die Auswahl eine gewöhnliche Radiogruppe: Tabulator
+ * hinein, Pfeiltasten durch die Stufen.
+ */
+.rechner input {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.rechner label {
+  display: inline-flex; align-items: center; justify-content: center;
+  /* Wachsen dürfen sie, schrumpfen nicht: So füllen die zwölf Stufen die Zeile
+     gleichmässig aus, statt dass „100+" allein in einer zweiten Zeile steht. */
+  flex: 1 1 auto;
+  min-width: 2.75rem; min-height: 2.75rem;   /* 44 px Zielgrösse, WCAG 2.5.8 */
+  padding: 0 0.5rem;
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.rechner label:hover { border-color: var(--text); }
+/* Keine Zierfarbe für "ausgewählt": die Textfarbe selbst, umgedreht. */
+.rechner input:checked + label {
+  background: var(--text);
+  color: var(--grund);
+  border-color: var(--text);
+  font-weight: 600;
+}
+.rechner input:focus-visible + label { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.ergebnis { margin-top: 0.75rem; border-top: 1px solid var(--linie); padding-top: 1rem; }
+/* Zwölf Fassungen je Wert stehen nebeneinander im Quelltext. Sichtbar ist eine. */
+.ergebnis i { display: none; font-style: normal; }
+
+.tarife { display: grid; gap: 0.75rem; margin-top: 1rem; }
+@media (min-width: 34rem) { .tarife { grid-template-columns: 1fr 1fr; } }
+.tarif {
+  border: 1px solid var(--linie); border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+}
+.tarif h4 {
+  margin: 0 0 0.2rem;
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
+}
+.tarif .betrag {
+  display: block;
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; line-height: 1.3;
+}
+.tarif .dazu { display: block; font-size: 0.85rem; color: var(--leise); }
+
+/* Sonderfälle: die kostenlose erste Einheit, und der Bestand jenseits der Leiter. */
+.frei-fall, .viele { display: none; }
+.frei-fall { margin: 1rem 0 0; }
+.viele { margin: 1rem 0 0; font-size: 0.88rem; color: var(--leise); }
+.frei-betrag { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; }
+
+/* Je Stufe eine Regel — sie blendet alle sechs Zahlen dieser Stufe zugleich ein.
+   Erzeugt von preise-erzeugen.py. */
+.rechner #e1:checked ~ .ergebnis .w1 { display: inline; }
+.rechner #e2:checked ~ .ergebnis .w2 { display: inline; }
+.rechner #e3:checked ~ .ergebnis .w3 { display: inline; }
+.rechner #e4:checked ~ .ergebnis .w4 { display: inline; }
+.rechner #e5:checked ~ .ergebnis .w5 { display: inline; }
+.rechner #e6:checked ~ .ergebnis .w6 { display: inline; }
+.rechner #e8:checked ~ .ergebnis .w8 { display: inline; }
+.rechner #e10:checked ~ .ergebnis .w10 { display: inline; }
+.rechner #e15:checked ~ .ergebnis .w15 { display: inline; }
+.rechner #e20:checked ~ .ergebnis .w20 { display: inline; }
+.rechner #e50:checked ~ .ergebnis .w50 { display: inline; }
+.rechner #e100:checked ~ .ergebnis .w100 { display: inline; }
+
+/* Bei einer einzigen Einheit gibt es nichts zu vergleichen: Statt zweier
+   Zahlweisen steht dort der Satz, um den es geht. */
+.rechner #e1:checked ~ .ergebnis .tarife { display: none; }
+.rechner #e1:checked ~ .ergebnis .frei-fall { display: block; }
+.rechner #e100:checked ~ .ergebnis .viele { display: block; }
 
 /* Keine Zierfarbe: Verweise tragen die Textfarbe, wie in der Anwendung. */
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
@@ -206,11 +339,87 @@ footer {
     <h3>Was es kostet</h3>
     <p>
       Die <b>erste Einheit ist dauerhaft kostenlos</b> — ohne Frist und ohne Kreditkarte.
-      Jede weitere kostet <span class="preis">9,99 €</span> im Monat.
+      Jede weitere kostet <span class="preis">9,99 €</span> im Monat oder
+      <span class="preis">100 €</span> im Jahr. Rechnen Sie nach:
     </p>
-    <p>
-      Wer eine Eigentumswohnung verwaltet, zahlt also nichts. Wer hundert verwaltet, zahlt
-      für neunundneunzig.
+
+    <div class="rechner">
+      <p class="frage" id="frage">Wie viele Wohnungen oder Gewerbeeinheiten verwalten Sie?</p>
+
+      <input type="radio" name="anzahl" id="e1" checked>
+      <label for="e1">1<span class="nurvorlesen"> 1 Einheit — dauerhaft kostenlos</span></label>
+      <input type="radio" name="anzahl" id="e2">
+      <label for="e2">2<span class="nurvorlesen"> 2 Einheiten — 9,99 Euro im Monat, oder 100,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e3">
+      <label for="e3">3<span class="nurvorlesen"> 3 Einheiten — 19,98 Euro im Monat, oder 200,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e4">
+      <label for="e4">4<span class="nurvorlesen"> 4 Einheiten — 29,97 Euro im Monat, oder 300,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e5">
+      <label for="e5">5<span class="nurvorlesen"> 5 Einheiten — 39,96 Euro im Monat, oder 400,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e6">
+      <label for="e6">6<span class="nurvorlesen"> 6 Einheiten — 49,95 Euro im Monat, oder 500,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e8">
+      <label for="e8">8<span class="nurvorlesen"> 8 Einheiten — 69,93 Euro im Monat, oder 700,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e10">
+      <label for="e10">10<span class="nurvorlesen"> 10 Einheiten — 89,91 Euro im Monat, oder 900,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e15">
+      <label for="e15">15<span class="nurvorlesen"> 15 Einheiten — 139,86 Euro im Monat, oder 1.400,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e20">
+      <label for="e20">20<span class="nurvorlesen"> 20 Einheiten — 189,81 Euro im Monat, oder 1.900,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e50">
+      <label for="e50">50<span class="nurvorlesen"> 50 Einheiten — 489,51 Euro im Monat, oder 4.900,00 Euro im Jahr</span></label>
+      <input type="radio" name="anzahl" id="e100">
+      <label for="e100">100+<span class="nurvorlesen"> 100 Einheiten oder mehr — 989,01 Euro im Monat, oder 9.900,00 Euro im Jahr</span></label>
+
+      <div class="ergebnis">
+        <dl>
+          <div class="zeile">
+            <dt>Einheiten</dt>
+            <dd><i class="w1">1</i><i class="w2">2</i><i class="w3">3</i><i class="w4">4</i><i class="w5">5</i><i class="w6">6</i><i class="w8">8</i><i class="w10">10</i><i class="w15">15</i><i class="w20">20</i><i class="w50">50</i><i class="w100">100</i></dd>
+          </div>
+          <div class="zeile">
+            <dt>davon dauerhaft kostenlos</dt>
+            <dd>− 1</dd>
+          </div>
+          <div class="zeile summe">
+            <dt>Sie zahlen für</dt>
+            <dd><i class="w1">0</i><i class="w2">1</i><i class="w3">2</i><i class="w4">3</i><i class="w5">4</i><i class="w6">5</i><i class="w8">7</i><i class="w10">9</i><i class="w15">14</i><i class="w20">19</i><i class="w50">49</i><i class="w100">99</i> Einheiten</dd>
+          </div>
+        </dl>
+
+        <div class="tarife">
+          <div class="tarif">
+            <h4>Monatlich</h4>
+            <span class="betrag"><i class="w1">0,00</i><i class="w2">9,99</i><i class="w3">19,98</i><i class="w4">29,97</i><i class="w5">39,96</i><i class="w6">49,95</i><i class="w8">69,93</i><i class="w10">89,91</i><i class="w15">139,86</i><i class="w20">189,81</i><i class="w50">489,51</i><i class="w100">989,01</i> €</span>
+            <span class="dazu">im Monat</span>
+            <span class="dazu">9,99&nbsp;€ je zahlbarer Einheit</span>
+          </div>
+          <div class="tarif">
+            <h4>Jährlich</h4>
+            <span class="betrag"><i class="w1">0,00</i><i class="w2">8,33</i><i class="w3">16,67</i><i class="w4">25,00</i><i class="w5">33,33</i><i class="w6">41,67</i><i class="w8">58,33</i><i class="w10">75,00</i><i class="w15">116,67</i><i class="w20">158,33</i><i class="w50">408,33</i><i class="w100">825,00</i> €</span>
+            <span class="dazu">im Monat, jährlich gezahlt</span>
+            <span class="dazu"><i class="w1">0,00</i><i class="w2">100,00</i><i class="w3">200,00</i><i class="w4">300,00</i><i class="w5">400,00</i><i class="w6">500,00</i><i class="w8">700,00</i><i class="w10">900,00</i><i class="w15">1.400,00</i><i class="w20">1.900,00</i><i class="w50">4.900,00</i><i class="w100">9.900,00</i>&nbsp;€ im Jahr — spart <i class="w1">0,00</i><i class="w2">19,88</i><i class="w3">39,76</i><i class="w4">59,64</i><i class="w5">79,52</i><i class="w6">99,40</i><i class="w8">139,16</i><i class="w10">178,92</i><i class="w15">278,32</i><i class="w20">377,72</i><i class="w50">974,12</i><i class="w100">1.968,12</i>&nbsp;€</span>
+          </div>
+        </div>
+
+        <p class="frei-fall">
+          <span class="frei-betrag">0,00 €</span><br>
+          Eine Wohnung, keine Rechnung. Die erste Einheit bleibt kostenlos, solange es
+          Immoleicht gibt — kein Testzeitraum, der abläuft.
+        </p>
+
+        <p class="viele">
+          Ab etwa hundert Einheiten lohnt sich ein Gespräch: Für größere Bestände
+          stimmen wir Pakete ab. Bis dahin gilt genau diese Rechnung, ohne Obergrenze.
+        </p>
+      </div>
+    </div>
+
+    <p class="lesehilfe">
+      Alle Beträge sind Endpreise inklusive Umsatzsteuer — an der Kasse kommt nichts
+      dazu. <b>Stellplätze, Keller und Gartenanteile zählen nicht mit:</b> Eine Wohnung
+      mit Garage und Kellerraum ist eine Einheit, nicht drei. Gezählt wird tagegenau,
+      und niemand wird gesperrt — was dazukommt, wird berechnet, nicht verboten.
     </p>
   </section>
 
