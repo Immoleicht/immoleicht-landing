@@ -311,6 +311,22 @@ Ausgangswerte sind ja bereits korrekt. Erst eine zweite Prüfung, die den
 **Zwischenstand** kurz nach dem Sichtbarwerden misst (die erste Zeile muss kürzer als
 der Endwert sein, weil gerade getippt wird), schlägt an, wenn die Funktion fehlt.
 
+## „Vorschläge, die Sie bestätigen" — die ehrliche Fassung des KI-Chats aus der Vorlage
+
+Die Referenzseite zeigte einen KI-Chat, der selbständig drei Handwerkeranfragen
+verschickt. Das gibt es nicht, und es wird auch nicht so gebaut: Das Hauptprojekt hat am
+22.08.2026 ausdrücklich entschieden, dass die KI **keine** Handwerkeranfrage selbst
+versendet — „sie schreibt den Entwurf, ein Mensch gibt frei" — und dass jeder
+KI-Vorschlag als Vorschlag in „Heute" landet, mit Sicherheitswert, dort bestätigt statt
+automatisch übernommen.
+
+Der Abschnitt `#ki-vorschau` zeigt genau diese **bereits entschiedene** Regel als Bild,
+nicht als Behauptung, es gäbe sie schon: eine Karte im Chat-Look (Sprechblase,
+Sicherheitswert, zwei Reaktionen), oben ausdrücklich beschriftet „Vorschau — so ist es
+geplant, noch nicht gebaut". Bewusst **kein** `<button>` für „Übernehmen"/„Ablehnen" —
+ein Element, das wie ein Knopf aussieht und nichts auslöst, ist ein toter Knopf. Beide
+stehen als einfacher Text, nicht fokussierbar, nicht als Steuerelement angesagt.
+
 ## Zusammenhang
 
 | | |
