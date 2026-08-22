@@ -49,41 +49,47 @@
   Idee eines animierten „Stapel wird zur Abrechnung"-Aufmachers — hier mit
   echten Beispielzahlen aus der übrigen Seite, nicht mit erfundenen.
 
-  ── FARBE HAT WEITERHIN GENAU ZWEI BEDEUTUNGEN, PLUS EINE BENANNTE AUSNAHME ──
+  ── DRITTER STAND, 22.08.2026: DAS CORPORATE DESIGN IST JETZT REAL ──────────
 
-      Akzent (Tinte)         „hier kannst du handeln"
-      Grün / Gelb / Rot      „so steht es um die Sache"
+  Hier stand bis dahin ein selbst gefundener Kompromiss zur Farbfrage: erst
+  Violett statt Gelb, weil Gelb schon `--warn` besetzt hielt; dann, auf
+  ausdrücklichen Wunsch, doch Gelb — mit einer selbst ausgedachten Trennung
+  über Helligkeit und Sättigung, und der Regel „Funke steht nie auf einer
+  Schaltfläche", damit sich Gelb nicht mit der blauen Handlungsfarbe reibt.
 
-  Neu dazugekommen ist „Funke" — ein Gelb, das AUSSCHLIESSLICH als reine
-  Fläche auftritt: der Punkt im Wortzeichen, der Textmarker hinter einem Wort
-  in der Überschrift, der Glanz im Schlussband. Es trägt nie einen Wert, nie
-  einen Zustand, nie eine Schaltfläche.
+  Dieselbe Frage ist inzwischen an anderer Stelle echt und verbindlich
+  beantwortet worden — und zwar ANDERS, als der eigene Kompromiss es tat:
+  Der Corporate-Design-Auftrag vom 22.08.2026
+  (`immobilien-software/docs/eingang/2026-08-22-corporate-design-und-
+  funktionsordnung.md`, umgesetzt in PR #207, verankert in
+  `features/DESIGN-1-designsystem.md` mit CI-Wächtern) legt für die ganze
+  Anwendung fest: „Gelb ist Marke und Handlung, höchstens eine Fläche pro
+  Bildschirm, nie Warnung. Blau ist Struktur und Navigation, nie ein
+  Zustand. Grün, Orange und Rot bedeuten ausschließlich Zustand." Dafür
+  wurde `--warn` dort auf ein Orange-Braun verschoben — die Kollision ist
+  damit an der Quelle aufgelöst, nicht mehr hier notdürftig auseinander-
+  gehalten.
 
-  ── ZWEITER STAND, DERSELBE TAG: GELB DOCH, ABER WEIT WEG VOM WARNTON ────────
-
-  Hier stand zuerst Violett, mit der Begründung, dass Gelb bereits
-  `--warnung` besetzt („Frist bald fällig", sichtbar im Abschnitt „Was jetzt
-  ansteht"). Der Auftraggeber hat das Violett gesehen und ausdrücklich Gelb
-  zurückgefordert — er mag genau den Sonnenton der Referenzseite. Das ist eine
-  Markenfrage, keine Sicherheitsfrage, und sie gehört ihm.
-
-  Die Kollisionssorge ist damit nicht verschwunden, nur anders gelöst: `--funke`
-  ist ein HELLES, SATTES, LEUCHTENDES Gelb — ein Textmarker-Ton, groß und
-  auffällig. `--warnung` ist ein DUNKLES, GEDECKTES Ocker, das ausschließlich
-  als kleine Schrift auf blassem Grund in der Fristen-Liste auftaucht. Gleiche
-  Farbfamilie, aber Helligkeit, Sättigung und Verwendungsort liegen bewusst
-  weit auseinander — und „Funke" bleibt an KEINER Schaltfläche, damit die
-  Handlungsfarbe (Blau) ihre Bedeutung nicht teilen muss. Wo genau die beiden
-  Gelbtöne stehen, steht jetzt direkt bei den Farbwerten unten.
+  Diese Seite übernimmt seither die EXAKTEN Werte der Anwendung, nicht mehr
+  eigene Annäherungen: die elf Marken- und Flächenfarben, die drei
+  Zustandsfarben mit je drei Tönen (Grundton für den Betrag bei 3:1,
+  „-ink"-Ton für das Wort im Chip bei 4,5:1 — siehe die Fristen-Liste und
+  die Ergebniskarten weiter unten), die drei Schriften und den Aufbau der
+  Wortmarke (`.marke`, siehe dort). Zwei Punkte bleiben ehrlich vermerkt:
+  Die Canvas-Vorlage der Design-Sitzung selbst (`claude.ai/design/p/…`) ließ
+  sich hier nicht öffnen (403) — Grundlage ist deshalb der geschriebene
+  Auftrag samt seinen Hex-Werten, nicht ein Blick auf die Vorlage. Und der
+  Punkt der Wortmarke ist nach „0,4× Versalhöhe, obere Kante" gesetzt, aber
+  nicht pixelgenau gegen die Vorlage nachgemessen.
 */
 
 /* ── Schriften ─────────────────────────────────────────────────────────────
- * Bricolage Grotesque (Überschriften) und Instrument Sans (Fließtext) stehen
- * unter der SIL Open Font License 1.1 — selbst geladen von den offiziellen
- * Quelldateien und selbst ausgeliefert, NICHT von Googles Servern. Das ist
- * hier nicht Geschmack: Google Fonts von Googles Servern einzubinden
- * überträgt die IP-Adresse jedes Besuchers in die USA, und dafür gibt es
- * rechtskräftige Abmahnungen. IBM Plex Mono bleibt unverändert für Zahlen.
+ * Bricolage Grotesque (Überschriften), Instrument Sans (Fließtext) und
+ * JetBrains Mono (Beträge, Kennzahlen) stehen unter der SIL Open Font
+ * License 1.1 — selbst geladen von den offiziellen Quelldateien und selbst
+ * ausgeliefert, NICHT von Googles Servern. Das ist hier nicht Geschmack:
+ * Google Fonts von Googles Servern einzubinden überträgt die IP-Adresse
+ * jedes Besuchers in die USA, und dafür gibt es rechtskräftige Abmahnungen.
  */
 @font-face {
   font-family: "Instrument Sans"; font-style: normal; font-weight: 400; font-display: swap;
@@ -98,6 +104,10 @@
   src: url("/schriften/instrument-600.woff2") format("woff2");
 }
 @font-face {
+  font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("/schriften/bricolage-300.woff2") format("woff2");
+}
+@font-face {
   font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 500; font-display: swap;
   src: url("/schriften/bricolage-500.woff2") format("woff2");
 }
@@ -110,12 +120,12 @@
   src: url("/schriften/bricolage-800.woff2") format("woff2");
 }
 @font-face {
-  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
-  src: url("/schriften/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/schriften/jetbrains-400.woff2") format("woff2");
 }
 @font-face {
-  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap;
-  src: url("/schriften/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/schriften/jetbrains-500.woff2") format("woff2");
 }
 
 /*
@@ -123,118 +133,153 @@
  * Begründung im Kopfkommentar der vorigen Fassung: nur so lässt sich derselbe
  * Ton an einer Stelle mit Deckkraft benutzen, ohne ihn zweimal hinzuschreiben.
  */
+/*
+ * Diese Werte sind KEINE eigene Auslegung mehr. Sie sind Zahl für Zahl aus
+ * `docs/eingang/2026-08-22-corporate-design-und-funktionsordnung.md` und
+ * `features/DESIGN-1-designsystem.md` im Hauptprojekt übernommen — dem
+ * Corporate-Design-Auftrag, der am 22.08.2026 parallel zu dieser Seite lief
+ * und jetzt fest in `globals.css` der Anwendung verankert ist, mit eigenen
+ * Wächtern gegen jede Abweichung. Diese Landingpage benutzt dieselbe Marke,
+ * nicht eine eigene Interpretation davon.
+ *
+ * Namen sind identisch zu den Tokens dort (`--sun`, `--deep`, `--ink`, …),
+ * bewusst NICHT eigene Namen daneben — zwei Vokabulare für dieselbe Farbe
+ * laufen sonst beim ersten Ändern auseinander, genau die Falle, vor der
+ * `docs/architektur/benennung.md` warnt. Einzige Ergänzung: `--deep-vg` (Text
+ * auf gefülltem Blau) — die Vorlage kennt nur die helle Fassung, hier selbst
+ * nachgerechnet für den Dunkelmodus, siehe Kommentar dort.
+ */
 :root {
-  --grund-h:      120 7% 97%;
-  --text-h:       144 7% 13%;
-  --leise-h:      143 3% 41%;
-  --karte-h:      0 0% 100%;
-  --linie-h:      140 6% 91%;
-  --flaeche-h:    140 8% 94%;
-  --akzent-h:     222 52% 36%;
-  --akzent-vg-h:  0 0% 100%;
-  --positiv-h:    154 29% 33%;
-  --positiv-fl-h: 154 30% 93%;
-  --warnung-h:    36 69% 33%;
-  --warnung-fl-h: 36 55% 93%;
-  --kritisch-h:   6 50% 44%;
-  --kritisch-fl-h:6 55% 95%;
+  --paper-h:      210 33% 99%;   /* #FBFCFD */
+  --ink-h:        213 33% 21%;   /* #243447 */
+  --ink-2-h:      212 20% 29%;   /* #3C4A5A */
+  --mute-h:       213 10% 44%;   /* #646E7A */
+  --white-h:      0 0% 100%;     /* #FFFFFF */
+  --line-h:       210 21% 89%;   /* #DDE3E9 */
+  --line-stark-h: 212 14% 56%;   /* #7E8D9E — Rand von Bedienelementen, WCAG 1.4.11 */
+  --sky-h:        206 72% 94%;   /* #E6F2FB */
+  --deep-h:       214 40% 31%;   /* #2F4A6D */
+  --deep-2-h:     214 38% 39%;   /* #3E5F8A */
+  --deep-vg-h:    0 0% 100%;     /* Weiss — 9,05 : 1 auf --deep hell, selbst nachgerechnet */
+  --ok-h:         153 55% 40%;   /* #2E9E6B */
+  --ok-soft-h:    150 47% 93%;   /* #E3F5EC */
+  --ok-ink-h:     152 56% 27%;   /* #1E6B47 */
+  --warn-h:       28 75% 41%;    /* #B8651A — orange-braun, NICHT Gelb */
+  --warn-soft-h:  29 76% 94%;    /* #FBEEE2 */
+  --warn-ink-h:   28 78% 30%;    /* #8A4A11 */
+  --bad-h:        9 57% 39%;     /* #9B3B2A */
+  --bad-soft-h:   11 73% 94%;    /* #FBE9E5 */
+  --bad-ink-h:    9 63% 30%;     /* #7E2C1D */
   /*
-   * Die Ausnahme, siehe Kopfkommentar: reine Fläche, nie ein Zeichen.
-   *
-   * 22.08.2026, zweite Fassung: Gelb statt Violett, auf ausdrücklichen
-   * Wunsch des Auftraggebers — er hat die Referenzseite genau wegen ihres
-   * Sonnengelbs gemocht. Damit es trotzdem nicht mit `--warnung` kollidiert
-   * (auch Gelb, „Frist bald fällig", sichtbar auf derselben Seite), liegen
-   * beide bewusst weit auseinander: „Funke" ist hell, satt und leuchtend —
-   * ein Textmarker-Ton. `--warnung` ist dunkel und gedeckt (ockerfarben) und
-   * erscheint ausschließlich als kleine Schrift auf blassem Grund in der
-   * Fristen-Liste. Gleicher Farbfamilie, aber auf den ersten Blick nicht zu
-   * verwechseln — und „Funke" bleibt an KEINER Schaltfläche, damit die
-   * Handlungsfarbe (Blau) ihre Bedeutung nicht teilen muss.
+   * Die Ausnahme, siehe Kopfkommentar: reine Fläche, nie ein Zeichen — und
+   * seit dem 22.08.2026 keine Ausnahme mehr, sondern die MARKE selbst. Die
+   * alte Sorge, Gelb kollidiere mit einem gelben Warnton, ist durch die
+   * Vorlage selbst aufgehoben: `--warn` ist dort orange-braun, nicht gelb.
+   * Gelb bedeutet jetzt genau eine Sache im ganzen Produkt: „hier ist die
+   * empfohlene Handlung" — höchstens eine gelbe Fläche pro Bildschirm.
    */
-  --funke-h:      45 95% 60%;
-  --funke-vg-h:   38 55% 22%;
-  --funke-fl-h:   45 90% 94%;
-  --schatten: 0 0% 0%;
+  --sun-h:        44 100% 68%;   /* #FFD35C — unveraendert in beiden Darstellungen */
+  --sun-ink-h:    44 100% 24%;   /* #785800 */
+  --sun-soft-h:   44 100% 93%;   /* #FFF6DD */
+  --schatten-h:   210 38% 13%;   /* #15222F — Schatten sind schieferfarben, nie schwarz */
 
-  --grund: hsl(var(--grund-h));
-  --text: hsl(var(--text-h));
-  --leise: hsl(var(--leise-h));
-  --karte: hsl(var(--karte-h));
-  --linie: hsl(var(--linie-h));
-  --flaeche: hsl(var(--flaeche-h));
-  --akzent: hsl(var(--akzent-h));
-  --akzent-vg: hsl(var(--akzent-vg-h));
-  --positiv: hsl(var(--positiv-h));
-  --positiv-fl: hsl(var(--positiv-fl-h));
-  --warnung: hsl(var(--warnung-h));
-  --warnung-fl: hsl(var(--warnung-fl-h));
-  --kritisch: hsl(var(--kritisch-h));
-  --kritisch-fl: hsl(var(--kritisch-fl-h));
-  --funke: hsl(var(--funke-h));
-  --funke-vg: hsl(var(--funke-vg-h));
-  --funke-fl: hsl(var(--funke-fl-h));
+  --paper: hsl(var(--paper-h));
+  --ink: hsl(var(--ink-h));
+  --ink-2: hsl(var(--ink-2-h));
+  --mute: hsl(var(--mute-h));
+  --white: hsl(var(--white-h));
+  --line: hsl(var(--line-h));
+  --line-stark: hsl(var(--line-stark-h));
+  --sky: hsl(var(--sky-h));
+  --deep: hsl(var(--deep-h));
+  --deep-2: hsl(var(--deep-2-h));
+  --deep-vg: hsl(var(--deep-vg-h));
+  --ok: hsl(var(--ok-h));
+  --ok-soft: hsl(var(--ok-soft-h));
+  --ok-ink: hsl(var(--ok-ink-h));
+  --warn: hsl(var(--warn-h));
+  --warn-soft: hsl(var(--warn-soft-h));
+  --warn-ink: hsl(var(--warn-ink-h));
+  --bad: hsl(var(--bad-h));
+  --bad-soft: hsl(var(--bad-soft-h));
+  --bad-ink: hsl(var(--bad-ink-h));
+  --sun: hsl(var(--sun-h));
+  --sun-ink: hsl(var(--sun-ink-h));
+  --sun-soft: hsl(var(--sun-soft-h));
+  --schatten: hsl(var(--schatten-h));
 
   --radius: 0.85rem;
-  --radius-lg: 1.5rem;
+  --radius-lg: 1.125rem;   /* 18px — der Standard-Kartenradius aus A.3 */
   --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-darstellung="hell"]) {
-    --grund-h:      140 7% 8%;
-    --text-h:       150 7% 92%;
-    --leise-h:      137 4% 57%;
-    --karte-h:      150 7% 11%;
-    --linie-h:      144 6% 16%;
-    --flaeche-h:    146 7% 15%;
-    --akzent-h:     219 60% 72%;
-    --akzent-vg-h:  150 10% 10%;
-    --positiv-h:    154 37% 57%;
-    --positiv-fl-h: 154 30% 12%;
-    --warnung-h:    36 58% 58%;
-    --warnung-fl-h: 36 40% 13%;
-    --kritisch-h:   7 63% 65%;
-    --kritisch-fl-h:7 40% 15%;
-    --funke-h:      45 90% 66%;
-    --funke-vg-h:   38 55% 18%;
-    --funke-fl-h:   45 45% 20%;
+    --paper-h:      212 36% 9%;    /* #0F1720 */
+    --ink-h:        210 39% 93%;   /* #E6EDF4 */
+    --ink-2-h:      212 22% 77%;   /* #B8C4D2 */
+    --mute-h:       213 14% 60%;   /* #8B98A8 */
+    --white-h:      214 30% 16%;   /* #1D2836 */
+    --line-h:       213 26% 23%;   /* #2C3A4B */
+    --line-stark-h: 214 16% 49%;   /* #697A91 */
+    --sky-h:        210 29% 19%;   /* #22303E */
+    --deep-h:       214 54% 63%;   /* #6E9BD4 — aufgehellt, sonst < 3:1 auf dunklem Grund */
+    --deep-2-h:     213 59% 72%;   /* #8FB4E2 */
+    --deep-vg-h:    212 36% 9%;    /* dieselbe dunkle Grundflaeche als Text — 6,27 : 1 auf --deep dunkel */
+    --ok-h:         154 48% 58%;   /* #5FC79A */
+    --ok-soft-h:    153 33% 11%;   /* #12241C */
+    --ok-ink-h:     152 52% 71%;   /* #8FDCB8 */
+    --warn-h:       30 71% 58%;    /* #E0954A */
+    --warn-soft-h:  30 45% 11%;    /* #2A1D10 */
+    --warn-ink-h:   31 79% 71%;    /* #EFB579 */
+    --bad-h:        9 64% 67%;     /* #E08574 */
+    --bad-soft-h:   8 40% 12%;     /* #2A1512 */
+    --bad-ink-h:    10 74% 76%;    /* #EFA394 */
+    --sun-h:        44 100% 68%;   /* unveraendert — die Konstante der Marke */
+    --sun-ink-h:    44 100% 24%;
+    --sun-soft-h:   43 33% 12%;    /* #2A2415 */
   }
 }
 :root[data-darstellung="dunkel"] {
-  --grund-h:      140 7% 8%;
-  --text-h:       150 7% 92%;
-  --leise-h:      137 4% 57%;
-  --karte-h:      150 7% 11%;
-  --linie-h:      144 6% 16%;
-  --flaeche-h:    146 7% 15%;
-  --akzent-h:     219 60% 72%;
-  --akzent-vg-h:  150 10% 10%;
-  --positiv-h:    154 37% 57%;
-  --positiv-fl-h: 154 30% 12%;
-  --warnung-h:    36 58% 58%;
-  --warnung-fl-h: 36 40% 13%;
-  --kritisch-h:   7 63% 65%;
-  --kritisch-fl-h:7 40% 15%;
-  --funke-h:      45 90% 66%;
-  --funke-vg-h:   38 55% 18%;
-  --funke-fl-h:   45 45% 20%;
+  --paper-h:      212 36% 9%;
+  --ink-h:        210 39% 93%;
+  --ink-2-h:      212 22% 77%;
+  --mute-h:       213 14% 60%;
+  --white-h:      214 30% 16%;
+  --line-h:       213 26% 23%;
+  --line-stark-h: 214 16% 49%;
+  --sky-h:        210 29% 19%;
+  --deep-h:       214 54% 63%;
+  --deep-2-h:     213 59% 72%;
+  --deep-vg-h:    212 36% 9%;
+  --ok-h:         154 48% 58%;
+  --ok-soft-h:    153 33% 11%;
+  --ok-ink-h:     152 52% 71%;
+  --warn-h:       30 71% 58%;
+  --warn-soft-h:  30 45% 11%;
+  --warn-ink-h:   31 79% 71%;
+  --bad-h:        9 64% 67%;
+  --bad-soft-h:   8 40% 12%;
+  --bad-ink-h:    10 74% 76%;
+  --sun-h:        44 100% 68%;
+  --sun-ink-h:    44 100% 24%;
+  --sun-soft-h:   43 33% 12%;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: var(--grund);
-  color: var(--text);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--sans);
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: hsl(var(--funke-h) / 0.28); color: var(--text); }
+::selection { background: hsl(var(--sun-h) / 0.28); color: var(--ink); }
 
 /* Siehe Begründung in der vorigen Fassung: `hidden` muss stärker sein als
    jede eigene display-Regel, sonst erscheint z. B. der Darstellungsknopf
@@ -249,7 +294,7 @@ body {
  * volle Breite und Grundschrift statt schmal und leise. Jetzt einmal echt
  * definiert, statt an jeder Stelle mit Inline-Stilen nachzuhelfen.
  */
-.lesehilfe { color: var(--leise); font-size: 0.9rem; max-width: 40rem; margin: 1rem 0 0; }
+.lesehilfe { color: var(--mute); font-size: 0.9rem; max-width: 40rem; margin: 1rem 0 0; }
 
 .nurvorlesen {
   position: absolute; width: 1px; height: 1px;
@@ -258,7 +303,7 @@ body {
 }
 .sprungmarke {
   position: absolute; left: 0.5rem; top: -4rem;
-  background: var(--akzent); color: var(--akzent-vg);
+  background: var(--deep); color: var(--deep-vg);
   padding: 0.6rem 1rem; border-radius: var(--radius); z-index: 40;
   text-decoration: none; font-weight: 600;
   transition: top 0.15s;
@@ -268,7 +313,7 @@ body {
 .fortschritt {
   position: fixed; inset: 0 auto auto 0; z-index: 40;
   height: 2px; width: 0%;
-  background: var(--akzent);
+  background: var(--deep);
   transition: width 0.12s linear;
 }
 @media (prefers-reduced-motion: reduce) { .fortschritt { transition: none; } }
@@ -276,33 +321,41 @@ body {
 /* ── Kopfleiste ────────────────────────────────────────────────────────────── */
 .kopf {
   position: sticky; top: 0; z-index: 10;
-  background: hsl(var(--grund-h) / 0.78);
+  background: hsl(var(--paper-h) / 0.78);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   backdrop-filter: blur(14px) saturate(1.4);
   border-bottom: 1px solid transparent;
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .kopf.schwebt {
-  border-bottom-color: hsl(var(--linie-h) / 0.7);
-  box-shadow: 0 12px 32px -20px hsl(var(--schatten) / 0.35);
+  border-bottom-color: hsl(var(--line-h) / 0.7);
+  box-shadow: 0 12px 32px -20px hsl(var(--schatten-h) / 0.35);
 }
 .kopf .huelle { display: flex; align-items: center; gap: 1.5rem; min-height: 4.25rem; }
 
 .marke {
   display: flex; align-items: baseline; gap: 0;
   font-family: var(--display); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em;
-  margin: 0; margin-right: auto; text-decoration: none; color: var(--text);
+  margin: 0; margin-right: auto; text-decoration: none; color: var(--ink);
 }
-.marke em { font-style: normal; font-weight: 300; color: var(--leise); }
-/* Der Punkt im Wortzeichen — die erste der drei „Funke"-Stellen. */
+/*
+ * A.4 aus dem Corporate-Design-Auftrag, wörtlich: „Immo in Bricolage 800,
+ * leicht in Bricolage 300 und um 0,14 em angehoben, dahinter ein Punkt in
+ * --sun mit 0,4 × Versalhöhe an der Oberkante." Verboten ausdrücklich: eine
+ * zweite Farbe für „leicht", Kursivschrift, eine zweite Schriftfamilie.
+ */
+.marke em {
+  font-style: normal; font-weight: 300; color: inherit;
+  position: relative; top: -0.14em;
+}
 .marke .punkt {
   width: 0.4rem; height: 0.4rem; border-radius: 50%;
-  background: var(--funke); margin-left: 0.2rem; align-self: flex-start; margin-top: 0.35rem;
+  background: var(--sun); margin-left: 0.2rem; align-self: flex-start; margin-top: 0.15rem;
 }
 .marke .zusatz {
   font-family: var(--sans); font-weight: 600; font-size: 0.6rem;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--leise);
-  border: 1px solid var(--linie); border-radius: 999px; padding: 0.15rem 0.5rem; margin-left: 0.7rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem; margin-left: 0.7rem;
 }
 /*
  * Gemessen bei 390 px: Wortzeichen + Beta-Schild + Darstellungsknopf + der
@@ -318,27 +371,42 @@ body {
 }
 
 .hauptnav { display: flex; gap: 1.75rem; list-style: none; margin: 0; padding: 0; font-size: 0.92rem; font-weight: 500; }
-.hauptnav a { color: var(--leise); text-decoration: none; transition: color 0.15s; }
-.hauptnav a:hover { color: var(--text); }
+.hauptnav a { color: var(--mute); text-decoration: none; transition: color 0.15s; }
+.hauptnav a:hover { color: var(--ink); }
 @media (max-width: 56rem) { .hauptnav { display: none; } }
 
 .knopf-klein {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2.75rem; height: 2.75rem;
-  border: 1px solid var(--linie); border-radius: 999px;
-  background: transparent; color: var(--text);
+  border: 1px solid var(--line); border-radius: 999px;
+  background: transparent; color: var(--ink);
   cursor: pointer; font-size: 1rem; line-height: 1;
   transition: border-color 0.15s, transform 0.15s;
 }
-.knopf-klein:hover { border-color: var(--akzent); }
+.knopf-klein:hover { border-color: var(--deep); }
 @media (hover: hover) { .knopf-klein:active { transform: scale(0.92); } }
-.knopf-klein:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+.knopf-klein:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
 .knopf-klein::before { content: "◐"; }
 .knopf-klein[data-wahl="hell"]::before { content: "☀"; }
 .knopf-klein[data-wahl="dunkel"]::before { content: "☾"; }
 
-/* ── Schaltflächen ─────────────────────────────────────────────────────────── */
-.zugang, .zugang-leise {
+/*
+ * ── Schaltflächen ───────────────────────────────────────────────────────────
+ *
+ * Zwei gefüllte Varianten, nicht eine: `.zugang` (Blau, `--deep`) für die
+ * WIEDERKEHRENDE, immer erreichbare Handlung — der Knopf in der schwebenden
+ * Kopfleiste, der auf jeder Bildlaufposition sichtbar ist. `.zugang-sun`
+ * (Gelb, `--sun`) für die EINE empfohlene Handlung eines Abschnitts: den
+ * ersten im Aufmacher, den letzten im Schlussband.
+ *
+ * Das ist keine Geschmacksfrage, sondern die Regel aus dem Corporate-Design-
+ * Auftrag: „Gelb ist Marke und Handlung, höchstens eine gelbe Fläche pro
+ * Bildschirm." Zwei gelbe Knöpfe gleichzeitig im Bild wären keine Empfehlung
+ * mehr. Da die Kopfleiste bei jeder Bildlaufposition mitläuft, bleibt SIE
+ * Blau — sonst stünde an jeder Stelle der Seite ein zweites Gelb neben dem
+ * jeweils einen, das gerade empfohlen wird.
+ */
+.zugang, .zugang-sun, .zugang-leise {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 2.9rem;
   padding: 0.65rem 1.4rem;
@@ -348,20 +416,24 @@ body {
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
 }
 .zugang {
-  background: var(--akzent); color: var(--akzent-vg); border: 1.5px solid var(--akzent);
-  box-shadow: 0 1px 2px hsl(var(--akzent-h) / 0.3), 0 12px 26px -12px hsl(var(--akzent-h) / 0.55);
+  background: var(--deep); color: var(--deep-vg); border: 1.5px solid var(--deep);
+  box-shadow: 0 1px 2px hsl(var(--deep-h) / 0.3), 0 12px 26px -12px hsl(var(--deep-h) / 0.55);
 }
-.zugang:hover { filter: brightness(1.12); }
-.zugang-leise { border: 1.5px solid var(--linie); color: var(--text); }
-.zugang-leise:hover { border-color: var(--akzent); background: var(--karte); }
+.zugang-sun {
+  background: var(--sun); color: var(--sun-ink); border: 1.5px solid var(--sun);
+  box-shadow: 0 1px 2px hsl(var(--sun-h) / 0.35), 0 12px 26px -12px hsl(var(--sun-h) / 0.5);
+}
+.zugang:hover, .zugang-sun:hover { filter: brightness(1.08); }
+.zugang-leise { border: 1.5px solid var(--line); color: var(--ink); }
+.zugang-leise:hover { border-color: var(--deep); background: var(--white); }
 @media (hover: hover) {
-  .zugang:hover, .zugang-leise:hover { transform: translateY(-1px); }
+  .zugang:hover, .zugang-sun:hover, .zugang-leise:hover { transform: translateY(-1px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .zugang:hover, .zugang-leise:hover { transform: none; }
+  .zugang:hover, .zugang-sun:hover, .zugang-leise:hover { transform: none; }
 }
 .knopfreihe { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
-.knopfreihe .fussnotiz { flex-basis: 100%; font-size: 0.85rem; color: var(--leise); margin-top: 0.2rem; }
+.knopfreihe .fussnotiz { flex-basis: 100%; font-size: 0.85rem; color: var(--mute); margin-top: 0.2rem; }
 
 /* ── Aufmacher ─────────────────────────────────────────────────────────────── */
 .aufmacher { padding: 4.5rem 0 5rem; }
@@ -376,9 +448,9 @@ body {
 .augenbraue {
   display: flex; align-items: center; gap: 0.65rem;
   font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--leise); margin: 0 0 1.4rem;
+  color: var(--mute); margin: 0 0 1.4rem;
 }
-.augenbraue::before { content: ""; width: 1.75rem; height: 1.5px; background: var(--akzent); }
+.augenbraue::before { content: ""; width: 1.75rem; height: 1.5px; background: var(--deep); }
 
 h1 {
   font-family: var(--display); font-weight: 800;
@@ -388,11 +460,20 @@ h1 {
   margin: 0 0 1.4rem; max-width: 16ch;
 }
 /*
- * Der Textmarker hinter „Geld" — die zweite „Funke"-Stelle. `z-index: -1` UND
- * eine eigene stapelnde Ebene am Wort selbst (`position: relative`) halten
- * die Fläche HINTER den Buchstaben, nicht davor: Der Text bleibt in
- * `--text`, nur ein Farbstreifen scheint dahinter hervor — wie ein
- * Textmarker auf Papier, keine neue Textfarbe.
+ * Der Textmarker hinter „Geld". `z-index: -1` UND eine eigene stapelnde
+ * Ebene am Wort selbst (`position: relative`) halten die Fläche HINTER den
+ * Buchstaben, nicht davor: Der Text bleibt in `--ink`, nur ein Farbstreifen
+ * scheint dahinter hervor — wie ein Textmarker auf Papier, keine neue
+ * Textfarbe.
+ *
+ * Bewusst NICHT `--sun`: Direkt darunter steht der Aufmacher-Knopf
+ * „Preis berechnen" als `.zugang-sun` — die EINE gelbe Fläche, die dieser
+ * Bildschirm laut Corporate Design tragen darf (Farbregel 1: „höchstens eine
+ * gelbe Fläche pro Bildschirm"). Ein zweiter gelber Balken direkt in der
+ * Überschrift wäre eine zweite Fläche im selben Bild und ließe offen, welche
+ * der beiden die empfohlene Handlung markieren soll. Der Marker steht daher
+ * in `--deep` (Struktur, nie Zustand) — er hebt das Wort hervor, ohne der
+ * Handlungsfarbe ihre Eindeutigkeit zu nehmen.
  */
 h1 .markiert {
   position: relative; display: inline-block; font-style: normal;
@@ -400,7 +481,7 @@ h1 .markiert {
 h1 .markiert::after {
   content: ""; position: absolute; z-index: -1;
   left: -0.06em; right: -0.06em; bottom: 0.04em; height: 0.32em;
-  background: hsl(var(--funke-h) / 0.4);
+  background: hsl(var(--deep-h) / 0.22);
   border-radius: 0.15em;
   transform: scaleX(0); transform-origin: left;
 }
@@ -410,7 +491,7 @@ h1 .markiert::after {
 @keyframes marker-auf { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) { .js h1 .markiert::after { animation: none; transform: scaleX(1); } }
 
-.vorspann { font-size: 1.2rem; color: var(--leise); margin: 0 0 2rem; max-width: 32rem; }
+.vorspann { font-size: 1.2rem; color: var(--mute); margin: 0 0 2rem; max-width: 32rem; }
 
 .js .kinetisch > * {
   opacity: 0; transform: translateY(12px);
@@ -450,19 +531,19 @@ h1 .markiert::after {
 @media (max-width: 62rem) { .demo { height: 26rem; } }
 .zettel {
   position: absolute; left: 50%; top: 50%; width: 17rem;
-  background: var(--karte); border: 1px solid var(--linie); border-radius: 0.85rem;
-  padding: 1rem 1.15rem; font-size: 0.82rem; color: var(--leise);
-  box-shadow: 0 18px 40px -22px hsl(var(--schatten) / 0.35);
+  background: var(--white); border: 1px solid var(--line); border-radius: 0.85rem;
+  padding: 1rem 1.15rem; font-size: 0.82rem; color: var(--mute);
+  box-shadow: 0 18px 40px -22px hsl(var(--schatten-h) / 0.35);
   opacity: 0; transform: translate(-50%, -50%) rotate(0) translateY(-44px) scale(0.92);
   transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s;
   will-change: transform;
 }
-.zettel b { display: block; color: var(--text); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.88rem; }
-.zettel .betrag { font-family: var(--mono); font-weight: 600; color: var(--text); float: right; }
+.zettel b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.88rem; }
+.zettel .betrag { font-family: var(--mono); font-weight: 600; color: var(--ink); float: right; }
 .zettel .marke-klein {
   position: absolute; top: 0.85rem; right: 0.85rem;
   font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 0.18rem 0.5rem; border-radius: 999px; background: var(--flaeche); color: var(--leise);
+  padding: 0.18rem 0.5rem; border-radius: 999px; background: var(--sky); color: var(--mute);
 }
 .karten-stapel {
   position: absolute; left: 50%; top: 50%; width: 20rem;
@@ -478,57 +559,70 @@ h1 .markiert::after {
 
 .ergebnis-karte {
   border-radius: var(--radius-lg); padding: 1.35rem 1.5rem;
-  box-shadow: 0 30px 60px -30px hsl(var(--schatten) / 0.55);
+  box-shadow: 0 30px 60px -30px hsl(var(--schatten-h) / 0.55);
 }
 /*
- * KEIN Verlauf aus zwei Toenen des Akzents: `hsl(var(--akzent-h) 46% 46%)`
- * sieht nach gueltigem CSS aus und ist es nicht - `--akzent-h` ist bereits das
- * VOLLE Dreiergespann "222 52% 36%", das Anhaengen von zwei weiteren Zahlen
- * ergibt fuenf Werte in einem hsl(), und der Browser verwirft die ganze
- * Eigenschaft. Gemessen: Die Karte stand ohne jeden Hintergrund da, nur der
- * weisse Text blieb kaum lesbar auf der Seite stehen. Eine einzige Flaeche
- * ist hier sicherer als ein Verlauf aus einer zusammengesetzten Variable.
+ * Zwei Lehren aus dem Corporate-Design-Auftrag vom 22.08.2026, beide an
+ * dieser Stelle gemessen:
+ *
+ * 1) Kein Verlauf aus zwei Toenen einer zusammengesetzten Variable, z. B.
+ *    `hsl(var(--deep-h) 46% 46%)`. `--deep-h` ist bereits das volle
+ *    Dreiergespann "222 52% 36%" - das Anhaengen weiterer Zahlen ergibt
+ *    fuenf Werte in einem hsl(), der Browser verwirft die ganze Eigenschaft
+ *    und die Karte stand ohne Flaeche da.
+ * 2) `.gut`/`.schlecht` zeigen einen Zustand - "traegt sich" gegen "kostet
+ *    Geld", der Satz aus docs/PRD.md, an dem sich das ganze Produkt misst.
+ *    Blau stand hier zuvor fuer die positive Karte, weil es beim Beheben von
+ *    Lehre 1 die naheliegende, sichere Flaeche war. Das Corporate Design
+ *    sagt seither ausdruecklich: Blau ist Struktur und bedeutet nie einen
+ *    Zustand, Gruen/Orange/Rot bedeuten ausschliesslich Zustand. Beide
+ *    Karten tragen deshalb jetzt eine neutrale Flaeche, und die Farbe sitzt
+ *    nur an den zwei Stellen, die tatsaechlich etwas behaupten: der Betrag
+ *    (Grundton, 3:1-Schwelle bei groSser Schrift) und das Schlagwort-Chip
+ *    (Ink-Ton, 4,5:1-Schwelle bei kleiner Schrift) - dieselbe Zwei-Toene-
+ *    Regel wie bei den Fristen weiter unten.
  */
-.ergebnis-karte.gut { background: var(--akzent); color: var(--akzent-vg); }
-.ergebnis-karte.schlecht { background: var(--karte); border: 1px solid var(--linie); color: var(--text); }
+.ergebnis-karte.gut { background: var(--ok-soft); border: 1px solid hsl(var(--ok-h) / 0.3); color: var(--ink); }
+.ergebnis-karte.schlecht { background: var(--white); border: 1px solid var(--line); color: var(--ink); }
 .ergebnis-karte h4 { margin: 0; font-size: 1rem; font-weight: 600; }
-.ergebnis-karte .ort { font-size: 0.78rem; opacity: 0.85; margin: 0.15rem 0 0.7rem; }
+.ergebnis-karte .ort { font-size: 0.78rem; margin: 0.15rem 0 0.7rem; color: var(--mute); }
 .ergebnis-karte .zahl {
   display: block; font-family: var(--mono); font-weight: 700;
   font-size: 2.3rem; letter-spacing: -0.03em; line-height: 1;
 }
-.ergebnis-karte.schlecht .zahl { color: var(--kritisch); }
+.ergebnis-karte.gut .zahl { color: var(--ok); }
+.ergebnis-karte.schlecht .zahl { color: var(--bad); }
 .ergebnis-karte .stichwort { display: inline-block; margin-top: 0.6rem; font-size: 0.76rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; }
-.ergebnis-karte.gut .stichwort { background: hsl(0 0% 100% / 0.18); }
-.ergebnis-karte.schlecht .stichwort { background: var(--kritisch-fl); color: var(--kritisch); }
+.ergebnis-karte.gut .stichwort { background: hsl(var(--ok-h) / 0.16); color: var(--ok-ink); }
+.ergebnis-karte.schlecht .stichwort { background: var(--bad-soft); color: var(--bad-ink); }
 
 .umschalter {
   position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 0.25rem; background: var(--karte); border: 1px solid var(--linie);
-  border-radius: 999px; padding: 0.25rem; box-shadow: 0 8px 24px -16px hsl(var(--schatten) / 0.3);
+  display: flex; gap: 0.25rem; background: var(--white); border: 1px solid var(--line);
+  border-radius: 999px; padding: 0.25rem; box-shadow: 0 8px 24px -16px hsl(var(--schatten-h) / 0.3);
 }
 .umschalter button {
   border: 0; background: transparent; padding: 0.55rem 1.1rem; border-radius: 999px;
-  font: 600 0.82rem var(--sans); color: var(--leise); cursor: pointer;
+  font: 600 0.82rem var(--sans); color: var(--mute); cursor: pointer;
   min-height: 2.5rem;
 }
-.umschalter button.aktiv { background: var(--text); color: var(--grund); }
-.umschalter button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+.umschalter button.aktiv { background: var(--ink); color: var(--paper); }
+.umschalter button:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
 
 /* ── Kennzahlenleiste ──────────────────────────────────────────────────────── */
 .leiste {
-  border-top: 1px solid var(--linie); border-bottom: 1px solid var(--linie);
-  background: var(--karte);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--white);
 }
 .leiste .huelle { display: grid; grid-template-columns: repeat(4, 1fr); }
-.leiste > .huelle > div { padding: 1.75rem 1.5rem; border-right: 1px solid var(--linie); }
+.leiste > .huelle > div { padding: 1.75rem 1.5rem; border-right: 1px solid var(--line); }
 .leiste > .huelle > div:last-child { border-right: 0; }
 .leiste .n { font-family: var(--display); font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; }
-.leiste .n small { font-size: 1rem; color: var(--leise); margin-left: 0.25rem; font-weight: 500; }
-.leiste .l { font-size: 0.84rem; color: var(--leise); margin-top: 0.2rem; }
+.leiste .n small { font-size: 1rem; color: var(--mute); margin-left: 0.25rem; font-weight: 500; }
+.leiste .l { font-size: 0.84rem; color: var(--mute); margin-top: 0.2rem; }
 @media (max-width: 50rem) {
   .leiste .huelle { grid-template-columns: 1fr 1fr; }
-  .leiste > .huelle > div { border-bottom: 1px solid var(--linie); }
+  .leiste > .huelle > div { border-bottom: 1px solid var(--line); }
   .leiste > .huelle > div:nth-child(2) { border-right: 0; }
 }
 
@@ -540,7 +634,7 @@ h2 {
   font-size: clamp(1.85rem, 3.6vw, 2.6rem); letter-spacing: -0.02em; line-height: 1.08;
   margin: 0 0 0.85rem;
 }
-.sec-kopf p { font-size: 1.1rem; color: var(--leise); margin: 0; }
+.sec-kopf p { font-size: 1.1rem; color: var(--mute); margin: 0; }
 section p { margin: 0 0 1rem; }
 section p:last-child { margin-bottom: 0; }
 
@@ -557,16 +651,16 @@ section p:last-child { margin-bottom: 0; }
 
 /* ── Karten, Wasserzeichen ─────────────────────────────────────────────────── */
 .karte {
-  background: hsl(var(--karte-h) / 0.94);
+  background: hsl(var(--white-h) / 0.94);
   -webkit-backdrop-filter: blur(16px) saturate(1.25);
   backdrop-filter: blur(16px) saturate(1.25);
-  border: 1px solid hsl(var(--linie-h) / 0.9);
+  border: 1px solid hsl(var(--line-h) / 0.9);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
-  box-shadow: 0 1px 1px hsl(var(--schatten) / 0.03), 0 18px 40px -28px hsl(var(--schatten) / 0.35);
+  box-shadow: 0 1px 1px hsl(var(--schatten-h) / 0.03), 0 18px 40px -28px hsl(var(--schatten-h) / 0.35);
 }
 .karte h3 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; margin: 0 0 0.6rem; letter-spacing: -0.01em; }
-.karte p { font-size: 0.96rem; color: var(--leise); }
+.karte p { font-size: 0.96rem; color: var(--mute); }
 
 .paar { display: grid; gap: 1.25rem; }
 @media (min-width: 44rem) { .paar { grid-template-columns: 1fr 1fr; } }
@@ -574,7 +668,7 @@ section p:last-child { margin-bottom: 0; }
 .schrittnr {
   position: absolute; top: -0.9rem; right: -0.1rem;
   font-family: var(--mono); font-weight: 700; font-size: 4.5rem; line-height: 1;
-  color: hsl(var(--akzent-h) / 0.1); pointer-events: none; user-select: none;
+  color: hsl(var(--deep-h) / 0.1); pointer-events: none; user-select: none;
 }
 
 /* ── Der erste Schritt: dieselbe Rechnung, als Ablauf statt als Ergebnis ────
@@ -588,24 +682,24 @@ section p:last-child { margin-bottom: 0; }
  * eine Ergaenzung, keine Voraussetzung fuer den Inhalt.
  */
 .eintrag-karte {
-  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 1.75rem; max-width: 30rem;
 }
 .eintrag-titel { font-family: var(--display); font-weight: 700; font-size: 1.05rem; margin: 0 0 1.1rem; }
-.eintrag-titel span { display: block; font-family: var(--sans); font-weight: 400; color: var(--leise); font-size: 0.82rem; margin-top: 0.15rem; }
+.eintrag-titel span { display: block; font-family: var(--sans); font-weight: 400; color: var(--mute); font-size: 0.82rem; margin-top: 0.15rem; }
 .eintrag-zeilen { display: grid; gap: 0.5rem; }
 .eintrag-zeile { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.35rem 0; }
-.eintrag-label { color: var(--leise); font-size: 0.92rem; }
+.eintrag-label { color: var(--mute); font-size: 0.92rem; }
 .eintrag-wert {
   font-family: var(--mono); font-size: 0.96rem; font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.eintrag-wert::before { content: attr(data-vz) " "; color: var(--leise); }
+.eintrag-wert::before { content: attr(data-vz) " "; color: var(--mute); }
 /* Ein blinkender Strich waehrend des Tippens - siehe rechner.js. Leer und
    unsichtbar, solange keine Zeile gerade "eingetragen" wird. */
 .eintrag-cursor {
   display: inline-block; width: 2px; height: 1em; margin-left: 1px;
-  background: var(--akzent); vertical-align: -0.15em; opacity: 0;
+  background: var(--deep); vertical-align: -0.15em; opacity: 0;
 }
 .eintrag-cursor.tippt { opacity: 1; animation: blinken 0.9s step-end infinite; }
 @keyframes blinken { 50% { opacity: 0; } }
@@ -613,12 +707,12 @@ section p:last-child { margin-bottom: 0; }
 
 .eintrag-summe {
   display: flex; justify-content: space-between; align-items: baseline;
-  margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--linie);
+  margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--line);
   font-size: 1rem;
 }
-.eintrag-summe span { color: var(--leise); font-weight: 500; }
+.eintrag-summe span { color: var(--mute); font-weight: 500; }
 .eintrag-summe strong {
-  font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--positiv);
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--ok);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .eintrag-summe.betont strong { transform: scale(1.08); }
@@ -626,68 +720,68 @@ section p:last-child { margin-bottom: 0; }
 
 /* ── Fristen ──────────────────────────────────────────────────────────────── */
 .fristen { list-style: none; margin: 0; padding: 0; }
-.frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.7rem 0; border-top: 1px solid var(--linie); }
+.frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.7rem 0; border-top: 1px solid var(--line); }
 .frist:first-child { border-top: 0; padding-top: 0; }
 .frist .wann {
   flex: 0 0 auto; font-family: var(--mono); font-variant-numeric: tabular-nums;
   font-size: 0.8rem; font-weight: 500; padding: 0.12rem 0.55rem; border-radius: 999px;
   min-width: 7.5rem; text-align: center;
 }
-.frist.schlecht .wann { background: var(--kritisch-fl); color: var(--kritisch); }
-.frist.bald .wann { background: var(--warnung-fl); color: var(--warnung); }
-.frist.ruhig .wann { background: var(--flaeche); color: var(--leise); }
+.frist.schlecht .wann { background: var(--bad-soft); color: var(--bad-ink); }
+.frist.bald .wann { background: var(--warn-soft); color: var(--warn-ink); }
+.frist.ruhig .wann { background: var(--sky); color: var(--mute); }
 .frist .was { font-size: 0.95rem; }
-.frist .was span { display: block; color: var(--leise); font-size: 0.85rem; }
+.frist .was span { display: block; color: var(--mute); font-size: 0.85rem; }
 
 /* ── Funktionsraster ───────────────────────────────────────────────────────── */
 .raster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
 @media (max-width: 62rem) { .raster { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 42rem) { .raster { grid-template-columns: 1fr; } }
 .f {
-  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 1.6rem; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 @media (hover: hover) {
-  .f:hover { transform: translateY(-3px); box-shadow: 0 22px 44px -26px hsl(var(--schatten) / 0.35); border-color: hsl(var(--akzent-h) / 0.35); }
+  .f:hover { transform: translateY(-3px); box-shadow: 0 22px 44px -26px hsl(var(--schatten-h) / 0.35); border-color: hsl(var(--deep-h) / 0.35); }
 }
 @media (prefers-reduced-motion: reduce) { .f:hover { transform: none; } }
 .f .wann {
-  font-family: var(--mono); font-size: 0.72rem; color: var(--leise);
+  font-family: var(--mono); font-size: 0.72rem; color: var(--mute);
   letter-spacing: 0.05em; text-transform: uppercase;
 }
 .f h3 { font-family: var(--display); font-size: 1.2rem; font-weight: 700; margin: 0.6rem 0 0.5rem; letter-spacing: -0.01em; }
-.f p { font-size: 0.92rem; color: var(--leise); margin: 0; }
-.spaeter { margin-top: 2.25rem; padding-top: 1.75rem; border-top: 1px solid var(--linie); }
+.f p { font-size: 0.92rem; color: var(--mute); margin: 0; }
+.spaeter { margin-top: 2.25rem; padding-top: 1.75rem; border-top: 1px solid var(--line); }
 .spaeter h4 {
   font-family: var(--sans); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--leise); margin: 0 0 0.85rem;
+  text-transform: uppercase; color: var(--mute); margin: 0 0 0.85rem;
 }
 .chipzeile { display: flex; flex-wrap: wrap; gap: 0.55rem; }
 .chipzeile span {
   font-size: 0.85rem; padding: 0.4rem 0.85rem; border-radius: 999px;
-  background: var(--flaeche); color: var(--leise);
+  background: var(--sky); color: var(--mute);
 }
 
 /* ── Vorher/Nachher ────────────────────────────────────────────────────────── */
 .vgl {
   display: grid; grid-template-columns: 1.3fr 1fr 1fr;
-  border: 1px solid var(--linie); border-radius: var(--radius-lg); overflow: hidden;
-  background: var(--karte);
+  border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--white);
 }
-.vgl > div { padding: 1.1rem 1.35rem; border-bottom: 1px solid var(--linie); display: flex; align-items: center; font-size: 0.95rem; }
+.vgl > div { padding: 1.1rem 1.35rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; font-size: 0.95rem; }
 .vgl .kopfzeile {
-  background: var(--flaeche); font-weight: 600; font-size: 0.76rem;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--leise);
+  background: var(--sky); font-weight: 600; font-size: 0.76rem;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--mute);
 }
-.vgl .kopfzeile.neu { color: var(--akzent); background: hsl(var(--akzent-h) / 0.08); }
-.vgl .alt { color: var(--leise); text-decoration: line-through; text-decoration-color: var(--linie); }
+.vgl .kopfzeile.neu { color: var(--deep); background: hsl(var(--deep-h) / 0.08); }
+.vgl .alt { color: var(--mute); text-decoration: line-through; text-decoration-color: var(--line); }
 .vgl .neu { font-weight: 600; }
-.vgl .neu::before { content: "✓"; color: var(--positiv); margin-right: 0.6rem; font-weight: 700; }
+.vgl .neu::before { content: "✓"; color: var(--ok); margin-right: 0.6rem; font-weight: 700; }
 .vgl .aufgabe { font-weight: 500; }
 @media (max-width: 46rem) {
   .vgl { grid-template-columns: 1fr; }
   .vgl .kopfzeile { display: none; }
-  .vgl .aufgabe { background: var(--flaeche); font-weight: 600; }
+  .vgl .aufgabe { background: var(--sky); font-weight: 600; }
 }
 
 /* ── Preisregler ───────────────────────────────────────────────────────────
@@ -696,7 +790,7 @@ section p:last-child { margin-bottom: 0; }
  * siehe rechner.js. Hier nur die Gestaltung an die neue Sprache angepasst.
  */
 .rechner {
-  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 2rem 1.75rem;
 }
 @media (min-width: 44rem) { .rechner { padding: 2.75rem; } }
@@ -710,29 +804,29 @@ section p:last-child { margin-bottom: 0; }
 }
 .schiene::-webkit-slider-runnable-track {
   height: 0.55rem; border-radius: 999px;
-  background: linear-gradient(to right, var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+  background: linear-gradient(to right, var(--deep) var(--fuellung, 10%), var(--sky) var(--fuellung, 10%));
 }
 .schiene::-moz-range-track {
   height: 0.55rem; border-radius: 999px;
-  background: linear-gradient(to right, var(--akzent) var(--fuellung, 10%), var(--flaeche) var(--fuellung, 10%));
+  background: linear-gradient(to right, var(--deep) var(--fuellung, 10%), var(--sky) var(--fuellung, 10%));
 }
 .schiene::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
   width: 1.75rem; height: 1.75rem; border-radius: 50%;
-  background: var(--karte); border: 3px solid var(--akzent);
+  background: var(--white); border: 3px solid var(--deep);
   margin-top: -0.6rem;
-  box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
+  box-shadow: 0 2px 6px hsl(var(--schatten-h) / 0.22), 0 0 0 5px hsl(var(--deep-h) / 0.1);
   transition: transform 0.12s;
 }
 .schiene::-moz-range-thumb {
   width: 1.75rem; height: 1.75rem; border-radius: 50%;
-  background: var(--karte); border: 3px solid var(--akzent);
-  box-shadow: 0 2px 6px hsl(var(--schatten) / 0.22), 0 0 0 5px hsl(var(--akzent-h) / 0.1);
+  background: var(--white); border: 3px solid var(--deep);
+  box-shadow: 0 2px 6px hsl(var(--schatten-h) / 0.22), 0 0 0 5px hsl(var(--deep-h) / 0.1);
 }
 .schiene:active::-webkit-slider-thumb { transform: scale(1.12); }
 .schiene:focus-visible { outline: none; }
-.schiene:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--akzent-h) / 0.3); }
-.schiene:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--akzent-h) / 0.3); }
+.schiene:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--deep-h) / 0.3); }
+.schiene:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 0.3rem hsl(var(--deep-h) / 0.3); }
 @media (prefers-reduced-motion: reduce) {
   .schiene::-webkit-slider-thumb { transition: none; }
   .schiene:active::-webkit-slider-thumb { transform: none; }
@@ -741,28 +835,28 @@ section p:last-child { margin-bottom: 0; }
 .zahlfeld {
   width: 5.5rem; min-height: 2.75rem; padding: 0.4rem 0.5rem; text-align: center;
   font-family: var(--mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums;
-  color: var(--text); background: var(--grund); border: 1px solid var(--linie); border-radius: 0.6rem;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 0.6rem;
 }
-.zahlfeld:focus-visible { outline: 2px solid var(--akzent); outline-offset: 1px; }
+.zahlfeld:focus-visible { outline: 2px solid var(--deep); outline-offset: 1px; }
 .spanne {
-  display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--leise);
+  display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--mute);
   font-family: var(--mono); margin-top: -0.35rem; padding-right: 6.5rem;
 }
 
-.taktwahl { display: inline-flex; gap: 0.25rem; margin: 1.85rem 0 0; padding: 0.25rem; background: var(--flaeche); border-radius: 999px; }
+.taktwahl { display: inline-flex; gap: 0.25rem; margin: 1.85rem 0 0; padding: 0.25rem; background: var(--sky); border-radius: 999px; }
 .taktwahl button {
   min-height: 2.5rem; padding: 0.4rem 1rem; border: 0; border-radius: 999px;
-  background: transparent; color: var(--text); font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
+  background: transparent; color: var(--ink); font-family: var(--sans); font-size: 0.9rem; font-weight: 500;
   cursor: pointer; white-space: nowrap; transition: background 0.15s, color 0.15s;
 }
-.taktwahl button.aktiv { background: var(--akzent); color: var(--akzent-vg); font-weight: 600; }
-.taktwahl button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+.taktwahl button.aktiv { background: var(--deep); color: var(--deep-vg); font-weight: 600; }
+.taktwahl button:focus-visible { outline: 2px solid var(--deep); outline-offset: 2px; }
 .taktwahl .nachlass { font-size: 0.78rem; opacity: 0.85; margin-left: 0.35rem; }
 
-.ergebnis { position: relative; isolation: isolate; margin-top: 1.85rem; padding-top: 1.5rem; border-top: 1px solid var(--linie); }
+.ergebnis { position: relative; isolation: isolate; margin-top: 1.85rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 .ergebnis-gluehen {
   position: absolute; inset: -1.5rem -1.5rem auto -1.5rem; height: 9rem;
-  background: radial-gradient(60% 100% at 15% 15%, hsl(var(--akzent-h) / 0.5), transparent 72%);
+  background: radial-gradient(60% 100% at 15% 15%, hsl(var(--deep-h) / 0.5), transparent 72%);
   z-index: -1; pointer-events: none; opacity: 0.12; transition: opacity 0.25s ease;
 }
 .betrag-gross {
@@ -772,15 +866,15 @@ section p:last-child { margin-bottom: 0; }
 }
 .betrag-zeile { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
 .waehrung { margin-left: 0.14em; }
-.takt { font-size: 1.1rem; color: var(--leise); }
-.jahresvorteil { font-size: 0.84rem; font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--positiv-fl); color: var(--positiv); }
-.nebensatz { display: block; color: var(--leise); font-size: 0.97rem; margin-top: 0.4rem; }
-.herleitung { display: block; margin-top: 1.1rem; font-family: var(--mono); font-size: 0.85rem; color: var(--leise); font-variant-numeric: tabular-nums; }
-.viele { margin: 1.1rem 0 0; padding: 0.8rem 1rem; background: var(--flaeche); border-radius: 0.7rem; font-size: 0.89rem; color: var(--leise); }
+.takt { font-size: 1.1rem; color: var(--mute); }
+.jahresvorteil { font-size: 0.84rem; font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--ok-soft); color: var(--ok-ink); }
+.nebensatz { display: block; color: var(--mute); font-size: 0.97rem; margin-top: 0.4rem; }
+.herleitung { display: block; margin-top: 1.1rem; font-family: var(--mono); font-size: 0.85rem; color: var(--mute); font-variant-numeric: tabular-nums; }
+.viele { margin: 1.1rem 0 0; padding: 0.8rem 1rem; background: var(--sky); border-radius: 0.7rem; font-size: 0.89rem; color: var(--mute); }
 
 .ohneskript table { border-collapse: collapse; width: 100%; max-width: 30rem; font-size: 0.92rem; }
-.ohneskript th, .ohneskript td { text-align: right; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--linie); font-variant-numeric: tabular-nums; }
-.ohneskript th { color: var(--leise); font-weight: 600; font-size: 0.8rem; }
+.ohneskript th, .ohneskript td { text-align: right; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.ohneskript th { color: var(--mute); font-weight: 600; font-size: 0.8rem; }
 .ohneskript th:first-child, .ohneskript td:first-child { text-align: left; }
 .ohneskript td { font-family: var(--mono); }
 
@@ -788,28 +882,28 @@ section p:last-child { margin-bottom: 0; }
 
 /* ── Schlussband ───────────────────────────────────────────────────────────── */
 .schluss {
-  background: linear-gradient(135deg, hsl(var(--funke-h) / 0.16), hsl(var(--akzent-h) / 0.12));
-  border: 1px solid hsl(var(--akzent-h) / 0.16);
+  background: linear-gradient(135deg, hsl(var(--sun-h) / 0.16), hsl(var(--deep-h) / 0.12));
+  border: 1px solid hsl(var(--deep-h) / 0.16);
   border-radius: var(--radius-lg); padding: 3.5rem;
   display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2.5rem; align-items: center;
   position: relative; overflow: hidden;
 }
 .schluss::after {
   content: ""; position: absolute; right: -6rem; top: -6rem; width: 18rem; height: 18rem;
-  border-radius: 50%; background: hsl(var(--funke-h) / 0.45); filter: blur(10px); pointer-events: none;
+  border-radius: 50%; background: hsl(var(--sun-h) / 0.45); filter: blur(10px); pointer-events: none;
 }
 .schluss h2 { margin-bottom: 0.6rem; }
-.schluss p { color: var(--leise); font-size: 1.02rem; max-width: 32rem; }
+.schluss p { color: var(--mute); font-size: 1.02rem; max-width: 32rem; }
 .schluss .aktion { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.85rem; align-items: flex-start; }
 @media (max-width: 54rem) {
   .schluss { grid-template-columns: 1fr; padding: 2.5rem 1.75rem; }
 }
 
 /* ── Verweise ─────────────────────────────────────────────────────────────── */
-a { color: var(--akzent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:focus-visible { outline: 2px solid var(--akzent); outline-offset: 3px; border-radius: 3px; }
+a { color: var(--deep); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:focus-visible { outline: 2px solid var(--deep); outline-offset: 3px; border-radius: 3px; }
 
-footer { border-top: 1px solid var(--linie); padding: 2.5rem 0; color: var(--leise); font-size: 0.85rem; }
+footer { border-top: 1px solid var(--line); padding: 2.5rem 0; color: var(--mute); font-size: 0.85rem; }
 footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
 </style>
 </head>
@@ -846,7 +940,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
           bleibt: Miete, Darlehensrate und laufende Kosten in einer Rechnung, je Einheit.
         </p>
         <div class="knopfreihe">
-          <a class="zugang" href="#preis">Preis berechnen</a>
+          <a class="zugang-sun" href="#preis">Preis berechnen</a>
           <a class="zugang-leise" href="#funktionen">Was heute schon geht</a>
           <small class="fussnotiz">Erste Einheit dauerhaft kostenlos. Kein Testzeitraum, der abläuft.</small>
         </div>
@@ -1138,7 +1232,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
       <noscript>
         <div class="rechner ohneskript">
           <p class="frage">Preis je Bestandsgröße</p>
-          <p style="font-size:.9rem;color:var(--leise);margin-top:-.5rem">
+          <p style="font-size:.9rem;color:var(--mute);margin-top:-.5rem">
             Der Regler braucht JavaScript. Dieselbe Rechnung als Tabelle — die erste Einheit
             ist überall schon abgezogen.
           </p>
@@ -1160,7 +1254,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
         </div>
       </noscript>
 
-      <p class="lesebreite" style="color:var(--leise);font-size:.9rem;margin-top:1.1rem">
+      <p class="lesebreite" style="color:var(--mute);font-size:.9rem;margin-top:1.1rem">
         Alle Beträge sind Endpreise inklusive Umsatzsteuer. <b>Stellplätze, Keller und
         Gartenanteile zählen nicht mit</b> — eine Wohnung mit Garage und Kellerraum ist eine
         Einheit, nicht drei. Gezählt wird tagegenau, und niemand wird gesperrt: Was
@@ -1180,8 +1274,8 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
           </p>
         </div>
         <div class="aktion">
-          <a class="zugang" href="https://app.immoleicht.com">Zur Anwendung</a>
-          <span style="font-size:.85rem;color:var(--leise)">
+          <a class="zugang-sun" href="https://app.immoleicht.com">Zur Anwendung</a>
+          <span style="font-size:.85rem;color:var(--mute)">
             Immoleicht wird gerade gebaut. Wenn Sie einen Zugang haben, geht es hier weiter.
           </span>
         </div>
