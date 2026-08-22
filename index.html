@@ -545,6 +545,10 @@ h1 .markiert::after {
   font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 0.18rem 0.5rem; border-radius: 999px; background: var(--sky); color: var(--mute);
 }
+/* Drei Zettel sind blosse Kategorien (Miete, Rate, Kosten) - neutral. Der
+   vierte ist eine wirklich offene Frage ("traegt sich das?"), das ist ein
+   Zustand, kein Etikett, und bekommt deshalb den Warnton statt Neutral. */
+.zettel .marke-klein.unklar { background: var(--warn-soft); color: var(--warn-ink); }
 .karten-stapel {
   position: absolute; left: 50%; top: 50%; width: 20rem;
   transform: translate(-50%, -50%) scale(1); opacity: 1;
@@ -729,6 +733,10 @@ section p:last-child { margin-bottom: 0; }
  * deshalb als einfacher Text in <span>, nicht fokussierbar, nicht als
  * Steuerelement angesagt.
  */
+.ki-grid {
+  display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: center;
+}
+@media (max-width: 55rem) { .ki-grid { grid-template-columns: 1fr; gap: 2rem; } }
 .ki-karte {
   background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 1.75rem; max-width: 30rem;
@@ -1013,7 +1021,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
           <span class="betrag">145,00 €</span>
         </div>
         <div class="zettel" style="--r:5deg;--y:94px">
-          <span class="marke-klein">Unklar</span>
+          <span class="marke-klein unklar">Unklar</span>
           <b>Wohnung 1 — trägt sich das?</b>
           <span class="betrag">?</span>
         </div>
@@ -1160,15 +1168,22 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
   </section>
 
   <section id="ki-vorschau">
-    <div class="huelle enthuellen">
-      <div class="sec-kopf">
-        <h2>Vorschläge, die Sie bestätigen — nicht die KI.</h2>
-        <p>
-          Eine KI, die selbständig einen Handwerker beauftragt, kann sich irren — und eine
-          falsch versendete Anfrage kostet echtes Geld. Deshalb schlägt die KI vor, mit
-          einem Sicherheitswert, und landet damit in „Heute". Übernommen wird nur, was Sie
-          bestätigen.
-        </p>
+    <div class="huelle enthuellen ki-grid">
+      <div>
+        <div class="sec-kopf" style="margin-bottom: 1.4rem;">
+          <h2>Vorschläge, die Sie bestätigen — nicht die KI.</h2>
+          <p>
+            Eine KI, die selbständig einen Handwerker beauftragt, kann sich irren — und
+            eine falsch versendete Anfrage kostet echtes Geld. Deshalb schlägt die KI vor,
+            mit einem Sicherheitswert, und landet damit in „Heute". Übernommen wird nur,
+            was Sie bestätigen.
+          </p>
+        </div>
+        <div class="chipzeile">
+          <span>Belegzuordnung</span>
+          <span>Mailsortierung</span>
+          <span>Exposé-Entwurf</span>
+        </div>
       </div>
 
       <div class="ki-karte">
