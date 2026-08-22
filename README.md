@@ -24,13 +24,13 @@ preise-erzeugen.py  Prüfwerkzeug: hält die Preise an drei Stellen zusammen
 Die drei `pruefe-*`-Dateien werden **nicht ausgeliefert** — das Dockerfile kopiert nur
 `index.html`, die beiden Skripte, `schriften/` und `nginx.conf`.
 
-## Gestaltung: eine eigene Sprache seit dem 22.08.2026
+## Gestaltung: eine eigene Sprache, seit dem 22.08.2026 an das echte Corporate Design gebunden
 
 Zwei Anläufe vorher übernahm diese Seite Farben und Schrift unverändert aus der
 Anwendung (`DESIGN-2`). Das war für ein ruhiges Verwaltungswerkzeug richtig und für
 eine Landingpage zu leise — der Auftraggeber hat das ausdrücklich zurückgewiesen
 („das ist überhaupt keine geile Seite") und eine eigene Referenzseite mitgeschickt.
-Diese Fassung übernimmt ihren **Typografie- und Energiecharakter**, aber nicht
+Diese Fassung übernimmt deren **Typografie- und Energiecharakter**, aber nicht
 ungeprüft ihren Inhalt. Was dabei bewusst **nicht** übernommen wurde, steht als Erstes
 im Kopfkommentar von `index.html`, nicht versteckt in einem Commit:
 
@@ -48,37 +48,58 @@ im Kopfkommentar von `index.html`, nicht versteckt in einem Commit:
   stattdessen zum echten „Zur Anwendung", mit demselben ehrlichen Satz wie zuvor:
   „Wenn Sie einen Zugang haben, geht es hier weiter."
 
-### Schrift: Bricolage Grotesque und Instrument Sans, selbst ausgeliefert
+### 22.08.2026 — die Farb- und Schriftfrage ist nicht mehr selbst entschieden, sondern übernommen
 
-Beide unter der SIL Open Font License 1.1, geladen von den offiziellen Quelldateien
-(`google/fonts`-Repository) und **selbst ausgeliefert, nicht von Googles Servern** —
-das ist hier nicht Geschmack: Google Fonts von Googles Servern einzubinden überträgt
-die IP-Adresse jedes Besuchers in die USA, und dafür gibt es rechtskräftige
-Abmahnungen. IBM Plex Mono bleibt unverändert für alle Zahlen. Die vorher genutzten
-Source Sans 3 / Source Serif 4 sind aus `schriften/` entfernt, damit keine toten
-Schriftdateien mitgeliefert werden.
+Die Frage „welches Gelb, und wo darf es hin" wurde hier zweimal **selbst** beantwortet:
+erst mit Violett statt Gelb (Begründung: Gelb war bereits `--warnung`), dann, auf
+ausdrücklichen Wunsch des Auftraggebers, doch mit Gelb — mit einer selbst
+ausgedachten Trennung über Helligkeit und Sättigung, und der Regel „Gelb steht nie auf
+einer Schaltfläche".
 
-### Farbe: die zwei Bedeutungen bleiben, plus eine benannte, umgezogene Ausnahme
+Am 22.08.2026 wurde dieselbe Frage an anderer Stelle **echt und verbindlich**
+beantwortet: der Corporate-Design-Auftrag im Hauptprojekt
+(`immobilien-software/docs/eingang/2026-08-22-corporate-design-und-funktionsordnung.md`,
+umgesetzt in PR #207, verankert mit CI-Wächtern in
+`features/DESIGN-1-designsystem.md`). Die drei Farbregeln dort:
 
-Die Grundregel ist unverändert: Grün/Gelb/Rot sagen, wie es um eine Sache steht, Blau
-(„Tinte") sagt, wo man handeln kann. Neu ist **„Funke"** — ein Violett, das
-ausschließlich als reine Fläche auftritt: der Punkt im Wortzeichen, der
-Textmarker-Strich hinter dem Wort „Geld" in der Überschrift, der Glanz im Schlussband.
-Es trägt nie einen Wert, nie einen Zustand, nie eine Schaltfläche.
+1. **Gelb ist Marke und Handlung, nie Warnung.** Höchstens eine gelbe Fläche pro
+   Bildschirm — die Handlung, die der Bildschirm empfiehlt.
+2. **Blau ist Struktur und Navigation.** Es bedeutet nie einen Zustand.
+3. **Grün, Orange und Rot bedeuten ausschließlich Zustand.**
 
-**Bewusst nicht Gelb**, wie es die Referenz als „Sonne" vorschlug: Gelb ist bei uns
-bereits „Frist bald fällig" (`--warnung`), sichtbar auf derselben Seite im Abschnitt
-„Was jetzt ansteht". Ein zweiter, rein dekorativer Gelbton hätte mit dieser Bedeutung
-kollidiert — genau die vierte Bedeutung, vor der die Regel warnt. Violett liegt fernab
-von Blau, Grün, Gelb und Rot und kollidiert mit keiner. Beide Kontrastfälle
-(Text-auf-Funke, Funke-auf-Fläche) sind nachgerechnet, hell **und** dunkel, jeweils
-über 5 : 1.
+Das ist **anders**, als der eigene Kompromiss es löste — Gelb darf jetzt auf einer
+Schaltfläche stehen, weil `--warn` dort auf ein Orange-Braun verschoben wurde und die
+Kollision damit an der Quelle verschwunden ist. Diese Seite übernimmt seither die
+**exakten** Werte der Anwendung, nicht mehr eigene Annäherungen:
 
-Die vorige, DESIGN-2-treue Fassung nutzte den Akzent an drei Stellen rein dekorativ
-(Aurora-Flecken, Maus-Licht, Schrittziffern). Diese Fassung ersetzt Aurora und
-Maus-Licht durch den Aufmacher-Beweis (siehe unten) — geblieben und auf „Funke"
-umgezogen sind der Wortzeichen-Punkt, der Textmarker und die Schrittziffern
-„01"/„02".
+- **Elf Marken- und Flächenfarben, drei Zustandsfarben mit je drei Tönen** —
+  Grundton für den Betrag (3 : 1 bei großer Schrift), `-ink`-Ton für das Wort im Chip
+  (4,5 : 1 bei kleiner Schrift). Betrifft z. B. die Fristen-Liste und die
+  Ergebniskarten im Aufmacher-Beweis.
+- **Drei Schriften statt zwei**: Bricolage Grotesque (Überschriften), Instrument Sans
+  (Fließtext), **JetBrains Mono** (Beträge, Kennzahlen) — ersetzt IBM Plex Mono. Alle
+  drei unter der SIL Open Font License 1.1, selbst geladen von den offiziellen
+  Quelldateien und **selbst ausgeliefert, nicht von Googles Servern**: Google Fonts von
+  Googles Servern einzubinden überträgt die IP-Adresse jedes Besuchers in die USA, und
+  dafür gibt es rechtskräftige Abmahnungen.
+- **Die Wortmarke** folgt jetzt exakt der Vorgabe A.4: „Immo" in Bricolage 800, „leicht"
+  in Bricolage 300 und um 0,14 em angehoben, der Punkt in `--sun` bei 0,4× Versalhöhe
+  an der oberen Kante.
+- **`--ergebnis-karte.gut`** (die positive Beispielkarte im Aufmacher) stand vorher auf
+  Blau — ein Rest aus der Behebung eines CSS-Bugs, keine bewusste Zustandsentscheidung.
+  Das verstößt gegen Farbregel 2 (Blau bedeutet nie einen Zustand) und ist jetzt Grün.
+- **„Höchstens eine gelbe Fläche pro Bildschirm" ist im Hauptprojekt ausdrücklich nicht
+  automatisch geprüft** (siehe `DESIGN-1`, „Offene Fragen") — hier von Hand
+  durchgesehen: Der Textmarker hinter „Geld" im Aufmacher stand vorher ebenfalls in
+  Gelb, direkt über dem gelben Knopf „Preis berechnen". Beides gleichzeitig sichtbar
+  wäre zwei gelbe Flächen auf einem Bildschirm gewesen; der Marker steht jetzt in Blau
+  (Struktur, keine Handlung).
+
+**Zwei Punkte bleiben ehrlich vermerkt:** Die Canvas-Vorlage der Design-Sitzung selbst
+(`claude.ai/design/p/…`) ließ sich hier nicht öffnen (403 Forbidden) — Grundlage ist der
+geschriebene Auftrag samt seinen Hex-Werten, nicht ein Blick auf die Vorlage selbst. Und
+der Punkt der Wortmarke ist nach der Textvorgabe gesetzt, aber nicht pixelgenau gegen
+die Vorlage nachgemessen.
 
 ## Der Aufmacher-Beweis: Stapel wird zur Abrechnung
 

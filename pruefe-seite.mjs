@@ -274,7 +274,7 @@ const browser = await chromium.launch();
   await seite.reload({ waitUntil: "networkidle" });
   melde("nach dem Neuladen noch dunkel", await wurzel.getAttribute("data-darstellung"), "dunkel");
   const grund = await seite.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  melde("und der Grund ist wirklich dunkel", grund, "rgb(19, 22, 20)");
+  melde("und der Grund ist wirklich dunkel", grund, "rgb(15, 22, 31)");
 
   await seite.click("#darstellung");
   melde("dritter Klick: zurueck zum System", await wurzel.getAttribute("data-darstellung"), null);
