@@ -34,10 +34,13 @@ Diese Fassung übernimmt deren **Typografie- und Energiecharakter**, aber nicht
 ungeprüft ihren Inhalt. Was dabei bewusst **nicht** übernommen wurde, steht als Erstes
 im Kopfkommentar von `index.html`, nicht versteckt in einem Commit:
 
-- **Der Preis bleibt unverändert** — 9,99 € je Einheit und Monat, erste Einheit
-  dauerhaft frei. Die Referenz zeigte ein anderes Modell (0 € bis 3 Einheiten, dann
-  2 €/Einheit). Eine echte Preisänderung ist laut `.claude/rules/general.md` im
-  Hauptprojekt eine von drei Sachen, die gefragt werden — nicht selbst entschieden.
+- **Der Preis wurde nicht stillschweigend von der Referenz übernommen** (0 € bis
+  3 Einheiten, dann 2 €/Einheit) — eine echte Preisänderung ist laut
+  `.claude/rules/general.md` im Hauptprojekt eine von drei Sachen, die gefragt
+  werden, nicht selbst entschieden. Am 22.08.2026 hat der Auftraggeber dann
+  ausdrücklich ein Paketmodell entschieden, siehe „Der Preis: seit dem
+  22.08.2026 in Paketen" weiter unten — mit eigenen, an der Konkurrenz
+  recherchierten Zahlen statt den Werten der Referenz.
 - **Keine erfundenen Fähigkeiten.** Die Referenz zeigte einen KI-Assistenten,
   Bankanbindung, DATEV-Export — nichts davon existiert im Produkt. Jede Zahl und jede
   Fähigkeit auf dieser Seite ist entweder gebaut (siehe `features/INDEX.md` im
@@ -183,21 +186,56 @@ Male gemessen, nicht vermutet — sonst wäre es eine Zusage ohne Zähne.
 `node` liegt im Hauptprojekt (dieses Repo hat kein npm); der Pfad zu Playwright steht oben
 in `pruefe-seite.mjs`.
 
-### Wenn sich der Preis ändert
+### Der Preis: seit dem 22.08.2026 in Paketen
+
+Bis dahin galt ein Preis je Einheit (9,99 €/Monat, erste Einheit dauerhaft frei). Der
+Auftraggeber hat das am 22.08.2026 ausdrücklich geändert — Wortlaut: „das Preismodell ist
+auch richtig zu übernehmen, da wir uns an der Konkurrenz orientieren müssen und die
+Preise in Paketen machen müssen. Eins bleibt trotzdem kostenlos." Die konkreten Stufen
+waren an die Sitzung delegiert und gegen echte Wettbewerbspreise hergeleitet (objego,
+DoorLoop) — vollständige Herleitung und Quellen:
+`docs/eingang/2026-08-22-preismodell-pakete.md` im Hauptprojekt.
+
+**Das Modell, brutto:**
+
+| Paket | Umfang | Preis |
+|---|---|---|
+| Start | 1 Einheit | 0 €, dauerhaft |
+| Wachstum | 2–10 Einheiten | 7,99 €/Monat, 79,99 €/Jahr |
+| Portfolio | 11–50 Einheiten | 24,99 €/Monat, 249,99 €/Jahr |
+| ab 51 Einheiten | — | individuell (`TARIF-3`, unverändert) |
+
+Der Regler bleibt als Interaktion bestehen, rechnet aber nicht mehr kontinuierlich je
+Einheit — er zeigt, in welches Paket eine eingegebene Einheitenzahl fällt. Das ist mit
+Absicht: Wer den Regler von 2 auf 10 zieht und der Preis bewegt sich nicht, versteht das
+Paketprinzip schneller als aus einem Satz Fließtext.
+
+**Ehrlich offen:** Die eigentliche Preisregel im Hauptprojekt
+(`docs/architektur/preis-und-zaehlung.md`) ist nachgezogen, ebenso `docs/PRD.md` und
+`docs/arbeitsweise/entscheidungen.md`. Die beiden großen Abrechnungs-Specs `TARIF-1` und
+`TARIF-2` (zusammen rund 3.900 Zeilen) sind es **nicht** — sie sind bis ins Detail um den
+alten Preis je Einheit gebaut (tagesgenaue Anteilsrechnung, Steuer-Gegenproben,
+Rechnungszeilen) und brauchen eine eigene Überarbeitungs-Tranche, keine Zahlenersetzung
+nebenbei. Das ist im Eingang-Dokument selbst so vermerkt. Beide Specs stehen auf
+„Spezifiziert", nicht „Fertig" — es gibt also keinen ausgerollten Code, der der alten
+Zahl noch folgt.
+
+### Wenn sich der Preis wieder ändert
 
 Der Preis steht an **drei** Stellen, und das lässt sich nicht auf eine reduzieren: die
-Konstanten in `rechner.js`, die Ersatztabelle im `<noscript>`-Block und der Satz im
-Fließtext. Wer kein JavaScript hat, bekommt keine gerechneten Zahlen — nur das, was als
-Text dasteht.
+Pakettabelle in `rechner.js`, die Ersatztabelle im `<noscript>`-Block und die
+Kennzahlenleiste im Fließtext. Wer kein JavaScript hat, bekommt keine gerechneten Zahlen
+— nur das, was als Text dasteht.
 
 ```bash
-# die drei Zahlen in preise-erzeugen.py und rechner.js ändern, dann
+# die Pakettabelle in preise-erzeugen.py und rechner.js gemeinsam aendern, dann
 python3 preise-erzeugen.py           # erzeugt die <noscript>-Tabelle
-python3 preise-erzeugen.py --pruefe  # hält alle drei Stellen gegeneinander
+python3 preise-erzeugen.py --pruefe  # haelt alle drei Stellen gegeneinander
 ```
 
-Der Prüflauf misst auch den Nachlass am Jahresknopf: Steht dort „−17 %", muss das aus den
-beiden Preisen wirklich folgen.
+Der Prüflauf misst auch den Nachlass am Jahresknopf: Steht dort „−17 %", muss das aus
+**jedem** zahlenden Paket einzeln folgen — laufen die Pakete auf verschiedene Nachlässe
+hinaus, schlägt er eigens dafür an.
 
 Die maßgebliche Preisregel steht im Hauptprojekt und ist dort begründet:
 `docs/architektur/preis-und-zaehlung.md`. Weicht diese Seite davon ab, hat diese Seite

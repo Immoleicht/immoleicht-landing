@@ -4,9 +4,9 @@ Haelt die Preise an den drei Stellen zusammen, an denen sie stehen muessen.
 
 WARUM ES DREI STELLEN SIND — UND WARUM DAS NICHT ZU VERMEIDEN IST
 
-    1. rechner.js      die drei Zahlen, aus denen der Regler alles rechnet
+    1. rechner.js      die Pakettabelle, aus der der Regler alles rechnet
     2. index.html      die Tabelle im <noscript>-Block, fuer Besucher ohne Skript
-    3. index.html      der Satz "9,99 EUR im Monat oder 100 EUR im Jahr"
+    3. index.html      die Kennzahlenleiste, die den Einstiegspreis nennt
 
 Eine einzige Stelle waere schoener und geht nicht: Wer kein JavaScript hat,
 bekommt keine gerechneten Zahlen, sondern nur, was als Text dasteht. Genau
@@ -18,24 +18,25 @@ etwas, das sie gegeneinander haelt.
 
 Massgeblich ist und bleibt `docs/architektur/preis-und-zaehlung.md` im
 Hauptprojekt. Weichen diese Dateien davon ab, haben diese Dateien unrecht.
+
+SEIT DEM 22.08.2026: Paketmodell statt Preis je Einheit — echte
+Preisentscheidung des Auftraggebers, hergeleitet gegen objego und DoorLoop.
+Begruendung: `docs/eingang/2026-08-22-preismodell-pakete.md` im Hauptprojekt.
 """
+
+from __future__ import annotations
 
 import re
 import sys
 from pathlib import Path
 
-# Beide Betraege sind BRUTTO — der Gesamtpreis, den ein Privatvermieter zahlt.
-# Am 19.08.2026 so festgelegt. Der Bruttopreis ist die feste Groesse, nicht der
-# Nettopreis: Aendert sich der Steuersatz, aendert sich der Nettoerloes, nicht
-# das, was der Kunde zahlt.
-MONAT_JE_EINHEIT = 9.99
-JAHR_JE_EINHEIT = 100.00
-FREI = 1
-
-# Die Zeilen der Ersatztabelle. Bewusst weniger als frueher: Sie ist kein
-# Rechner, sondern ein Notnagel — sie soll die Groessenordnung zeigen, nicht
-# jeden Fall treffen.
-ZEILEN = [1, 2, 3, 5, 10, 20, 50, 100]
+# Alle Betraege sind BRUTTO — der Gesamtpreis, den ein Privatvermieter zahlt.
+# `bis` ist die letzte Einheitenzahl, die noch in dieses Paket faellt.
+PAKETE = [
+    {"name": "Start", "bis": 1, "monat": 0.0, "jahr": 0.0},
+    {"name": "Wachstum", "bis": 10, "monat": 7.99, "jahr": 79.99},
+    {"name": "Portfolio", "bis": 50, "monat": 24.99, "jahr": 249.99},
+]
 
 HIER = Path(__file__).parent
 
@@ -46,17 +47,41 @@ def euro(betrag: float) -> str:
     return ganz.replace(",", ".") + "," + komma
 
 
-def werte(n: int) -> tuple[str, str]:
-    zahlbar = max(0, n - FREI)
-    return euro(zahlbar * MONAT_JE_EINHEIT), euro(zahlbar * JAHR_JE_EINHEIT)
-
-
 def tabelle() -> str:
     zeilen = []
-    for n in ZEILEN:
-        monat, jahr = werte(n)
-        zeilen.append(f"              <tr><td>{n}</td><td>{monat} €</td><td>{jahr} €</td></tr>")
+    vorher = 1
+    for p in PAKETE:
+        spanne = str(p["bis"]) if vorher == p["bis"] else f"{vorher}–{p['bis']}"
+        zeilen.append(
+            f'              <tr><td>{spanne}</td><td>{euro(p["monat"])} €</td>'
+            f'<td>{euro(p["jahr"])} €</td></tr>'
+        )
+        vorher = p["bis"] + 1
+    zeilen.append(
+        '              <tr><td>ab '
+        f'{PAKETE[-1]["bis"] + 1}</td><td colspan="2">individuell — Gespräch statt Tabelle</td></tr>'
+    )
     return "\n".join(zeilen)
+
+
+def js_pakete(js: str) -> list[dict] | None:
+    treffer = re.search(r"const PAKETE = \[(.*?)\];", js, re.DOTALL)
+    if not treffer:
+        return None
+    eintraege = []
+    for m in re.finditer(
+        r'\{\s*name:\s*"([^"]+)",\s*bis:\s*(\d+),\s*monat:\s*([\d.]+),\s*jahr:\s*([\d.]+)\s*\}',
+        treffer.group(1),
+    ):
+        eintraege.append(
+            {
+                "name": m.group(1),
+                "bis": int(m.group(2)),
+                "monat": float(m.group(3)),
+                "jahr": float(m.group(4)),
+            }
+        )
+    return eintraege
 
 
 def pruefe() -> int:
@@ -64,53 +89,55 @@ def pruefe() -> int:
     html = (HIER / "index.html").read_text(encoding="utf-8")
     fehler = []
 
-    # 1. Die Konstanten im Skript.
-    for name, soll in (
-        ("MONAT_JE_EINHEIT", MONAT_JE_EINHEIT),
-        ("JAHR_JE_EINHEIT", JAHR_JE_EINHEIT),
-        ("FREI", FREI),
-    ):
-        treffer = re.search(rf"^const {name} = ([\d.]+);", js, re.MULTILINE)
-        if not treffer:
-            fehler.append(f"  rechner.js: {name} nicht gefunden")
-        elif float(treffer.group(1)) != float(soll):
-            fehler.append(f"  rechner.js: {name} ist {treffer.group(1)}, erwartet {soll}")
+    # 1. Die Pakettabelle im Skript, Eintrag fuer Eintrag.
+    gefunden = js_pakete(js)
+    if gefunden is None:
+        fehler.append("  rechner.js: PAKETE nicht gefunden")
+    elif gefunden != PAKETE:
+        fehler.append(f"  rechner.js: PAKETE ist {gefunden}, erwartet {PAKETE}")
 
     # 2. Jede Zeile der Ersatztabelle.
-    for n in ZEILEN:
-        monat, jahr = werte(n)
-        zeile = f"<tr><td>{n}</td><td>{monat} €</td><td>{jahr} €</td></tr>"
-        if zeile not in html:
-            fehler.append(f"  index.html <noscript>: Zeile fuer {n} fehlt oder stimmt nicht")
+    for zeile in tabelle().split("\n"):
+        if zeile.strip() not in html:
+            fehler.append(f"  index.html <noscript>: Zeile fehlt oder stimmt nicht: {zeile.strip()}")
 
-    # 3. Gegenprobe: keine Zeile in der Tabelle, die hier nicht vorgesehen ist.
+    # 3. Gegenprobe: keine <noscript>-Tabellenzeile, die hier nicht vorgesehen ist.
     noscript = re.search(r"<noscript>(.*?)</noscript>", html, re.DOTALL)
     if not noscript:
         fehler.append("  index.html: kein <noscript>-Block — Besucher ohne Skript sehen keinen Preis")
     else:
-        gefunden = {int(m) for m in re.findall(r"<tr><td>(\d+)</td>", noscript.group(1))}
-        for n in sorted(gefunden - set(ZEILEN)):
-            fehler.append(f"  index.html <noscript>: Zeile {n} steht dort, aber nicht in ZEILEN")
+        erwartete_zeilen = {z.strip() for z in tabelle().split("\n")}
+        vorhandene_zeilen = {
+            m.strip() for m in re.findall(r"<tr><td>.*?</tr>", noscript.group(1))
+        }
+        for z in sorted(vorhandene_zeilen - erwartete_zeilen):
+            fehler.append(f"  index.html <noscript>: unerwartete Zeile: {z}")
 
-    # 4. Die Kennzahlenleiste — seit der Neugestaltung vom 22.08.2026 die
-    # Stelle im Fliesstext-Rang, an der der Monatspreis ausserhalb des
-    # Rechners noch einmal genannt wird.
-    satz_monat = euro(MONAT_JE_EINHEIT)
+    # 4. Die Kennzahlenleiste nennt den Einstiegspreis des guenstigsten
+    # zahlenden Pakets (seit der Paketumstellung vom 22.08.2026).
+    einstieg = next(p for p in PAKETE if p["monat"] > 0)
+    satz_monat = euro(einstieg["monat"])
     if f'<div class="n">{satz_monat}<small>€</small></div>' not in html:
         fehler.append(f"  index.html: die Kennzahlenleiste nennt nicht {satz_monat} € im Monat")
 
-    # 5. Der Nachlass am Jahresknopf muss zur Rechnung passen.
-    nachlass = round((1 - JAHR_JE_EINHEIT / (MONAT_JE_EINHEIT * 12)) * 100)
-    if f"−{nachlass} %" not in html:
-        fehler.append(f"  index.html: der Jahresknopf muss −{nachlass} % nennen")
+    # 5. Der Nachlass am Jahresknopf muss zu JEDEM zahlenden Paket passen —
+    # sie duerfen nicht auseinanderlaufen, sonst gilt die eine Zahl auf dem
+    # Knopf nicht fuer jedes Paket, das ihn benutzt.
+    nachlaesse = {
+        round((1 - p["jahr"] / (p["monat"] * 12)) * 100) for p in PAKETE if p["monat"] > 0
+    }
+    if len(nachlaesse) != 1:
+        fehler.append(f"  Pakete ergeben verschiedene Nachlaesse: {nachlaesse} — der Jahresknopf kann nur einen nennen")
+    else:
+        nachlass = nachlaesse.pop()
+        if f"−{nachlass} %" not in html:
+            fehler.append(f"  index.html: der Jahresknopf muss −{nachlass} % nennen")
 
     if fehler:
         print("Die Preise laufen auseinander:", *fehler, sep="\n")
         return 1
-    print(
-        f"Alle drei Stellen stimmen ueberein: {MONAT_JE_EINHEIT} €/Monat, "
-        f"{JAHR_JE_EINHEIT:.0f} €/Jahr, {FREI} frei, Nachlass {nachlass} %."
-    )
+    namen = ", ".join(f'{p["name"]} {euro(p["monat"])} €/Monat' for p in PAKETE)
+    print(f"Alle drei Stellen stimmen ueberein: {namen}.")
     return 0
 
 
