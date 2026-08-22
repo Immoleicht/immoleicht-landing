@@ -205,6 +205,52 @@ const browser = await chromium.launch();
   await ruhig.close();
 }
 
+/* ── 4b. Der erste Schritt: dieselbe Rechnung als Tipp-Vorgang ────────────── */
+{
+  // Zuerst ohne Skript-Warten: die Karte muss VOR jeder Animation schon die
+  // richtigen Werte tragen - das ist der Zustand, den ein no-JS-Besucher und
+  // eine Suchmaschine sehen.
+  const sofort = await browser.newPage({ viewport: { width: 1000, height: 900 } });
+  await sofort.goto(U, { waitUntil: "domcontentloaded" });
+  const werteSofort = await sofort.locator("#eintragKarte .eintrag-text").allInnerTexts();
+  melde("Werte stehen vor jeder Bewegung schon richtig da", werteSofort.join("|"), "780,00|612,40|145,00");
+  await sofort.close();
+
+  // Dann MIT Bewegung, bis in den Abschnitt gescrollt: die Karte MUSS die
+  // Werte zwischendurch wirklich loeschen und neu aufbauen - nicht nur am
+  // Ende zufaellig gleich aussehen. Ein Test, der nur den Endzustand prueft,
+  // waere gruen geblieben, selbst wenn eintragAufsetzen() gar nicht liefe
+  // (genau das wurde hier auch geprueft: erste Fassung dieser Pruefung
+  // ueberlebte eine auskommentierte Funktion unbemerkt).
+  const seite = await browser.newPage({ viewport: { width: 1000, height: 900 } });
+  lauschen(seite, "Erster Schritt");
+  await seite.goto(U, { waitUntil: "networkidle" });
+  await seite.locator("#eintragKarte").scrollIntoViewIfNeeded();
+  await seite.waitForTimeout(120); // kurz NACH dem Ausloesen, deutlich VOR dem Ende
+  const ersteZeile = await seite.locator("#eintragKarte .eintrag-text").first().innerText();
+  melde("Vorfuehrung loescht/tippt wirklich (Zwischenstand kuerzer als Endwert)", ersteZeile !== "780,00", true);
+
+  await seite.waitForTimeout(3500); // drei Zeilen a ~6 Zeichen plus Pausen
+  const werteFertig = await seite.locator("#eintragKarte .eintrag-text").allInnerTexts();
+  melde("nach der Vorfuehrung wieder dieselben Werte", werteFertig.join("|"), "780,00|612,40|145,00");
+  melde(
+    "Summe stimmt mit dem Aufmacher ueberein",
+    (await seite.locator(".eintrag-summe strong").innerText()).trim(),
+    "+ 22,60 €",
+  );
+  await seite.close();
+
+  // Und MIT reduzierter Bewegung: keine Vorfuehrung, die Werte stehen von
+  // Anfang an und bleiben unangetastet - kein Loeschen, kein Neu-Tippen.
+  const ruhigSeite = await browser.newPage({ viewport: { width: 1000, height: 900 }, reducedMotion: "reduce" });
+  await ruhigSeite.goto(U, { waitUntil: "networkidle" });
+  await ruhigSeite.locator("#eintragKarte").scrollIntoViewIfNeeded();
+  await ruhigSeite.waitForTimeout(500);
+  const werteRuhig = await ruhigSeite.locator("#eintragKarte .eintrag-text").allInnerTexts();
+  melde("bei reduzierter Bewegung keine Vorfuehrung", werteRuhig.join("|"), "780,00|612,40|145,00");
+  await ruhigSeite.close();
+}
+
 /* ── 5. Hell, dunkel, wie das System ─────────────────────────────────────── */
 {
   const seite = await browser.newPage({ colorScheme: "light", reducedMotion: "reduce" });

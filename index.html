@@ -242,6 +242,14 @@ body {
 [hidden] { display: none !important; }
 .huelle { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
 .lesebreite { max-width: 40rem; }
+/*
+ * Fehlte in dieser Fassung ganz - eine tote Klasse, benutzt (im
+ * „erster Schritt"-Abschnitt) aber nirgends definiert, seit dem grossen
+ * Umbau auf die Referenz-Gestaltung. Lief dort ohne jede eigene Regel auf
+ * volle Breite und Grundschrift statt schmal und leise. Jetzt einmal echt
+ * definiert, statt an jeder Stelle mit Inline-Stilen nachzuhelfen.
+ */
+.lesehilfe { color: var(--leise); font-size: 0.9rem; max-width: 40rem; margin: 1rem 0 0; }
 
 .nurvorlesen {
   position: absolute; width: 1px; height: 1px;
@@ -568,6 +576,53 @@ section p:last-child { margin-bottom: 0; }
   font-family: var(--mono); font-weight: 700; font-size: 4.5rem; line-height: 1;
   color: hsl(var(--akzent-h) / 0.1); pointer-events: none; user-select: none;
 }
+
+/* ── Der erste Schritt: dieselbe Rechnung, als Ablauf statt als Ergebnis ────
+ *
+ * Zeigt dieselben drei Zahlen wie die Wohnung-3-Karte im Aufmacher, aber so,
+ * dass man beim Eintragen zusieht statt das fertige Ergebnis vorgesetzt zu
+ * bekommen. Der Text steht von Anfang an KORREKT im Quelltext (siehe
+ * `.eintrag-text` in index.html) - ohne Skript oder unter reduzierter
+ * Bewegung ist die Karte sofort fertig ausgefüllt. `eintragAufsetzen()` in
+ * rechner.js loescht die Werte beim Sichtbarwerden kurz und tippt sie neu -
+ * eine Ergaenzung, keine Voraussetzung fuer den Inhalt.
+ */
+.eintrag-karte {
+  background: var(--karte); border: 1px solid var(--linie); border-radius: var(--radius-lg);
+  padding: 1.75rem; max-width: 30rem;
+}
+.eintrag-titel { font-family: var(--display); font-weight: 700; font-size: 1.05rem; margin: 0 0 1.1rem; }
+.eintrag-titel span { display: block; font-family: var(--sans); font-weight: 400; color: var(--leise); font-size: 0.82rem; margin-top: 0.15rem; }
+.eintrag-zeilen { display: grid; gap: 0.5rem; }
+.eintrag-zeile { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.35rem 0; }
+.eintrag-label { color: var(--leise); font-size: 0.92rem; }
+.eintrag-wert {
+  font-family: var(--mono); font-size: 0.96rem; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.eintrag-wert::before { content: attr(data-vz) " "; color: var(--leise); }
+/* Ein blinkender Strich waehrend des Tippens - siehe rechner.js. Leer und
+   unsichtbar, solange keine Zeile gerade "eingetragen" wird. */
+.eintrag-cursor {
+  display: inline-block; width: 2px; height: 1em; margin-left: 1px;
+  background: var(--akzent); vertical-align: -0.15em; opacity: 0;
+}
+.eintrag-cursor.tippt { opacity: 1; animation: blinken 0.9s step-end infinite; }
+@keyframes blinken { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .eintrag-cursor.tippt { animation: none; opacity: 0; } }
+
+.eintrag-summe {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--linie);
+  font-size: 1rem;
+}
+.eintrag-summe span { color: var(--leise); font-weight: 500; }
+.eintrag-summe strong {
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--positiv);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.eintrag-summe.betont strong { transform: scale(1.08); }
+@media (prefers-reduced-motion: reduce) { .eintrag-summe strong { transition: none; } }
 
 /* ── Fristen ──────────────────────────────────────────────────────────────── */
 .fristen { list-style: none; margin: 0; padding: 0; }
@@ -912,6 +967,51 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
           </p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="erster-schritt">
+    <div class="huelle enthuellen">
+      <div class="sec-kopf">
+        <h2>So einfach ist der erste Schritt.</h2>
+        <p>
+          Keine Schulung, kein Import-Assistent. Sie tragen ein, was Sie ohnehin wissen —
+          und sehen sofort, woran Sie sind.
+        </p>
+      </div>
+
+      <div class="eintrag-karte" id="eintragKarte">
+        <p class="eintrag-titel">Wohnung 3 <span>2. OG links · 68 m²</span></p>
+        <div class="eintrag-zeilen">
+          <div class="eintrag-zeile">
+            <span class="eintrag-label">Kaltmiete</span>
+            <span class="eintrag-wert" data-vz="+" data-ziel="780,00">
+              <span class="eintrag-text">780,00</span><span class="eintrag-cursor" aria-hidden="true"></span>
+            </span>
+          </div>
+          <div class="eintrag-zeile">
+            <span class="eintrag-label">Darlehensrate</span>
+            <span class="eintrag-wert" data-vz="−" data-ziel="612,40">
+              <span class="eintrag-text">612,40</span><span class="eintrag-cursor" aria-hidden="true"></span>
+            </span>
+          </div>
+          <div class="eintrag-zeile">
+            <span class="eintrag-label">Rücklage &amp; laufende Kosten</span>
+            <span class="eintrag-wert" data-vz="−" data-ziel="145,00">
+              <span class="eintrag-text">145,00</span><span class="eintrag-cursor" aria-hidden="true"></span>
+            </span>
+          </div>
+        </div>
+        <div class="eintrag-summe">
+          <span>Überschuss</span>
+          <strong>+ 22,60 €</strong>
+        </div>
+      </div>
+      <p class="lesehilfe">
+        Dieselbe Rechnung wie bei Wohnung 3 im Aufmacher — hier als Ablauf gezeigt, nicht
+        als fertiges Ergebnis. Drei Zeilen eintragen, die Rechnung steht: mehr Schritte
+        braucht die erste Wohnung nicht.
+      </p>
     </div>
   </section>
 

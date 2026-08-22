@@ -266,6 +266,30 @@ curl -s -X POST -H "Authorization: Bearer $TOK" -H "Accept: application/json" \
 Die UUID steht in Coolify an der Anwendung für `immoleicht.com`. Danach prüfen, ob die
 Änderung wirklich draussen ist — nicht darauf vertrauen, dass der Aufruf zurückkam.
 
+## „So einfach ist der erste Schritt" — dieselbe Rechnung als Ablauf
+
+Ein Wettbewerbs- und Psychologie-Bericht ging der Entscheidung voraus (objego, DoorLoop,
+Mercury verglichen; Fazit: kein einziges erfolgreiches Vorbild erfindet eine Fähigkeit,
+und echte Bildschirminhalte überzeugen nachweislich stärker als Illustrationen oder
+Mock-ups). Der Auftraggeber hatte sich einen Ablauf gewünscht, wie ein Anfänger etwas
+„hochlädt" und „die KI antwortet". Es gibt weder eine Hochlade-Funktion noch eine KI, die
+antwortet — dieselbe Art Tatsachenbehauptung wie beim Preis oder den erfundenen
+Fähigkeiten, siehe oben.
+
+**Was stattdessen gebaut wurde:** derselbe Wohnung-3-Datensatz, der auch im Aufmacher
+steht, aber als **Ablauf** statt als fertiges Ergebnis. Die Karte trägt die drei Zeilen
+von Anfang an korrekt im Quelltext — das ist der Zustand ohne Skript. Erst beim ersten
+Sichtbarwerden löscht `eintragAufsetzen()` in `rechner.js` die Werte kurz und tippt sie
+neu, Zeile für Zeile, mit einer kurzen Betonung auf der Summe am Ende. Unter
+`prefers-reduced-motion` passiert nichts — die Werte stehen unverändert da.
+
+**Geprüft mit Gegenprobe, und die erste Fassung der Prüfung hatte keine Zähne:** Ein
+Test, der nur den ENDZUSTAND nach mehreren Sekunden mit dem erwarteten Wert vergleicht,
+bleibt grün, selbst wenn `eintragAufsetzen()` gar nicht läuft — die statischen
+Ausgangswerte sind ja bereits korrekt. Erst eine zweite Prüfung, die den
+**Zwischenstand** kurz nach dem Sichtbarwerden misst (die erste Zeile muss kürzer als
+der Endwert sein, weil gerade getippt wird), schlägt an, wenn die Funktion fehlt.
+
 ## Zusammenhang
 
 | | |

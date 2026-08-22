@@ -1,7 +1,8 @@
 /*
  * Preisregler, Darstellungswechsel und alles, was sich bewegt: die
- * Fortschrittslinie, der Aufmacher-Beweis (Stapel wird zur Abrechnung) und
- * das Einblenden beim Scrollen.
+ * Fortschrittslinie, der Aufmacher-Beweis (Stapel wird zur Abrechnung), der
+ * Tipp-Vorgang im Abschnitt "So einfach ist der erste Schritt" und das
+ * Einblenden beim Scrollen.
  *
  * Laeuft mit `defer`, also nach dem Aufbau der Seite und ohne sie aufzuhalten.
  * Die Seite ist ohne dieses Skript vollstaendig lesbar: Der `<noscript>`-Block
@@ -288,6 +289,69 @@ function demoAufsetzen() {
   }
 }
 
+/* ── Der erste Schritt: dieselbe Rechnung, als Ablauf gezeigt ─────────────── */
+
+/*
+ * Die drei Zeilen stehen im Quelltext bereits FERTIG (siehe index.html,
+ * `.eintrag-text`) - das ist der Zustand ohne Skript und unter reduzierter
+ * Bewegung. Erst beim ERSTEN Sichtbarwerden loescht dieses Skript die Werte
+ * kurz und tippt sie neu, Zeile fuer Zeile, dann eine kurze Betonung auf der
+ * Summe. Keine erfundene Antwort - dieselbe Zahl, die auch im Aufmacher
+ * steht, nur als Vorgang statt als Ergebnis gezeigt.
+ */
+function eintragAufsetzen() {
+  const karte = document.getElementById("eintragKarte");
+  if (!karte) return;
+  if (ruhig.matches || !("IntersectionObserver" in window)) return;
+
+  const zeilen = Array.from(karte.querySelectorAll(".eintrag-wert"));
+  const summe = karte.querySelector(".eintrag-summe");
+
+  function tippeZeile(zeile) {
+    return new Promise((fertig) => {
+      const text = zeile.querySelector(".eintrag-text");
+      const cursor = zeile.querySelector(".eintrag-cursor");
+      const ziel = zeile.dataset.ziel;
+      text.textContent = "";
+      cursor.classList.add("tippt");
+      let i = 0;
+      const schritt = () => {
+        i += 1;
+        text.textContent = ziel.slice(0, i);
+        if (i < ziel.length) {
+          setTimeout(schritt, 55);
+        } else {
+          cursor.classList.remove("tippt");
+          setTimeout(fertig, 200);
+        }
+      };
+      setTimeout(schritt, 55);
+    });
+  }
+
+  async function vorfuehren() {
+    for (const zeile of zeilen) {
+      await tippeZeile(zeile);
+    }
+    if (summe) {
+      summe.classList.add("betont");
+      setTimeout(() => summe.classList.remove("betont"), 350);
+    }
+  }
+
+  const beobachter = new IntersectionObserver(
+    (eintraege) => {
+      eintraege.forEach((e) => {
+        if (!e.isIntersecting) return;
+        vorfuehren();
+        beobachter.unobserve(e.target);
+      });
+    },
+    { rootMargin: "0px 0px -20% 0px" },
+  );
+  beobachter.observe(karte);
+}
+
 /* ── Einblenden beim Scrollen ─────────────────────────────────────────────── */
 
 function enthuellenAufsetzen() {
@@ -319,3 +383,4 @@ darstellungAufsetzen();
 enthuellenAufsetzen();
 kopfUndFortschrittAufsetzen();
 demoAufsetzen();
+eintragAufsetzen();
