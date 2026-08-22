@@ -718,6 +718,56 @@ section p:last-child { margin-bottom: 0; }
 .eintrag-summe.betont strong { transform: scale(1.08); }
 @media (prefers-reduced-motion: reduce) { .eintrag-summe strong { transition: none; } }
 
+/* ── KI-Vorschau ───────────────────────────────────────────────────────────
+ * Zeigt, WIE ein KI-Vorschlag aussehen wird - nicht, dass es ihn heute gibt.
+ * Die Regel dahinter steht bereits fest (Corporate-Design-Auftrag, Teil B,
+ * Punkt 5: "Jeder KI-Vorschlag landet als Vorschlag in 'Heute', mit
+ * Sicherheitswert, und wird dort bestaetigt. Nie direkt im Datensatz.") -
+ * diese Karte ist ihre bildliche Umsetzung, ausdruecklich als Vorschau
+ * beschriftet. Bewusst KEIN <button>: Ein Element, das wie ein Knopf
+ * aussieht und nichts tut, ist ein toter Knopf. Die zwei Aktionen stehen
+ * deshalb als einfacher Text in <span>, nicht fokussierbar, nicht als
+ * Steuerelement angesagt.
+ */
+.ki-karte {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 1.75rem; max-width: 30rem;
+}
+.ki-vorschau-marke {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--mute);
+  background: var(--sky); border-radius: 999px; padding: 0.3rem 0.75rem 0.3rem 0.6rem;
+  margin: 0 0 1.1rem;
+}
+.ki-vorschau-marke::before { content: "✎"; font-size: 0.85rem; }
+.ki-nachricht { display: flex; gap: 0.75rem; align-items: flex-start; }
+.ki-punkt {
+  flex: 0 0 auto; width: 1.9rem; height: 1.9rem; border-radius: 50%;
+  background: var(--deep); margin-top: 0.1rem;
+}
+.ki-blase {
+  background: var(--sky); border-radius: 0.2rem 0.9rem 0.9rem 0.9rem;
+  padding: 0.9rem 1.05rem;
+}
+.ki-blase p { font-size: 0.95rem; margin: 0; }
+.ki-sicherheit {
+  display: inline-block; margin-top: 0.65rem; font-size: 0.76rem; font-weight: 600;
+  font-family: var(--mono); padding: 0.15rem 0.55rem; border-radius: 999px;
+  background: var(--white); color: var(--mute); border: 1px solid var(--line);
+}
+.ki-aktionen { display: flex; gap: 0.6rem; margin: 1rem 0 0 2.65rem; }
+.ki-knopf {
+  font-size: 0.88rem; font-weight: 600; padding: 0.5rem 1.1rem; border-radius: 999px;
+  border: 1.5px solid var(--line); color: var(--mute);
+}
+.ki-knopf-ja { border-color: hsl(var(--ok-h) / 0.4); color: var(--ok-ink); }
+.ki-knopf-nein { border-color: hsl(var(--bad-h) / 0.35); color: var(--bad-ink); }
+.ki-fussnote { color: var(--mute); font-size: 0.85rem; margin: 1.1rem 0 0 2.65rem; }
+@media (max-width: 30rem) {
+  .ki-aktionen, .ki-fussnote { margin-left: 0; }
+}
+
 /* ── Fristen ──────────────────────────────────────────────────────────────── */
 .fristen { list-style: none; margin: 0; padding: 0; }
 .frist { display: flex; gap: 0.85rem; align-items: baseline; padding: 0.7rem 0; border-top: 1px solid var(--line); }
@@ -1106,6 +1156,41 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
         als fertiges Ergebnis. Drei Zeilen eintragen, die Rechnung steht: mehr Schritte
         braucht die erste Wohnung nicht.
       </p>
+    </div>
+  </section>
+
+  <section id="ki-vorschau">
+    <div class="huelle enthuellen">
+      <div class="sec-kopf">
+        <h2>Vorschläge, die Sie bestätigen — nicht die KI.</h2>
+        <p>
+          Eine KI, die selbständig einen Handwerker beauftragt, kann sich irren — und eine
+          falsch versendete Anfrage kostet echtes Geld. Deshalb schlägt die KI vor, mit
+          einem Sicherheitswert, und landet damit in „Heute". Übernommen wird nur, was Sie
+          bestätigen.
+        </p>
+      </div>
+
+      <div class="ki-karte">
+        <p class="ki-vorschau-marke">Vorschau — so ist es geplant, noch nicht gebaut</p>
+        <div class="ki-nachricht">
+          <span class="ki-punkt" aria-hidden="true"></span>
+          <div class="ki-blase">
+            <p>
+              Neue Rechnung erkannt: <strong>Schmidt GmbH</strong>, 412,00 €. Soll ich sie
+              der Sanierung „Bad, Wohnung 3" zuordnen?
+            </p>
+            <span class="ki-sicherheit">94&nbsp;% sicher</span>
+          </div>
+        </div>
+        <div class="ki-aktionen">
+          <span class="ki-knopf ki-knopf-ja">Übernehmen</span>
+          <span class="ki-knopf ki-knopf-nein">Ablehnen</span>
+        </div>
+        <p class="ki-fussnote">
+          Bestätigt wird in „Heute" — nie automatisch, nie direkt im Datensatz.
+        </p>
+      </div>
     </div>
   </section>
 
