@@ -54,16 +54,27 @@
       Akzent (Tinte)         „hier kannst du handeln"
       Grün / Gelb / Rot      „so steht es um die Sache"
 
-  Neu dazugekommen ist „Funke" — ein Violett, das AUSSCHLIESSLICH als reine
+  Neu dazugekommen ist „Funke" — ein Gelb, das AUSSCHLIESSLICH als reine
   Fläche auftritt: der Punkt im Wortzeichen, der Textmarker hinter einem Wort
-  in der Überschrift, das Umschlag-Etikett im Aufmacher. Es trägt nie einen
-  Wert, nie einen Zustand, nie eine Schaltfläche.
+  in der Überschrift, der Glanz im Schlussband. Es trägt nie einen Wert, nie
+  einen Zustand, nie eine Schaltfläche.
 
-  Bewusst NICHT Gelb, wie es die Referenz vorschlug: Gelb ist bei uns bereits
-  „Frist bald fällig" (`--warnung`), sichtbar auf derselben Seite im Abschnitt
-  „Was jetzt ansteht". Ein zweiter, rein dekorativer Gelbton hätte mit dieser
-  Bedeutung kollidiert — genau die vierte Bedeutung, vor der die Regel warnt.
-  Violett liegt fernab von Blau, Grün, Gelb und Rot und kollidiert mit keiner.
+  ── ZWEITER STAND, DERSELBE TAG: GELB DOCH, ABER WEIT WEG VOM WARNTON ────────
+
+  Hier stand zuerst Violett, mit der Begründung, dass Gelb bereits
+  `--warnung` besetzt („Frist bald fällig", sichtbar im Abschnitt „Was jetzt
+  ansteht"). Der Auftraggeber hat das Violett gesehen und ausdrücklich Gelb
+  zurückgefordert — er mag genau den Sonnenton der Referenzseite. Das ist eine
+  Markenfrage, keine Sicherheitsfrage, und sie gehört ihm.
+
+  Die Kollisionssorge ist damit nicht verschwunden, nur anders gelöst: `--funke`
+  ist ein HELLES, SATTES, LEUCHTENDES Gelb — ein Textmarker-Ton, groß und
+  auffällig. `--warnung` ist ein DUNKLES, GEDECKTES Ocker, das ausschließlich
+  als kleine Schrift auf blassem Grund in der Fristen-Liste auftaucht. Gleiche
+  Farbfamilie, aber Helligkeit, Sättigung und Verwendungsort liegen bewusst
+  weit auseinander — und „Funke" bleibt an KEINER Schaltfläche, damit die
+  Handlungsfarbe (Blau) ihre Bedeutung nicht teilen muss. Wo genau die beiden
+  Gelbtöne stehen, steht jetzt direkt bei den Farbwerten unten.
 */
 
 /* ── Schriften ─────────────────────────────────────────────────────────────
@@ -127,10 +138,23 @@
   --warnung-fl-h: 36 55% 93%;
   --kritisch-h:   6 50% 44%;
   --kritisch-fl-h:6 55% 95%;
-  /* Die Ausnahme, siehe Kopfkommentar: reine Fläche, nie ein Zeichen. */
-  --funke-h:      262 70% 55%;
-  --funke-vg-h:   0 0% 100%;
-  --funke-fl-h:   262 60% 95%;
+  /*
+   * Die Ausnahme, siehe Kopfkommentar: reine Fläche, nie ein Zeichen.
+   *
+   * 22.08.2026, zweite Fassung: Gelb statt Violett, auf ausdrücklichen
+   * Wunsch des Auftraggebers — er hat die Referenzseite genau wegen ihres
+   * Sonnengelbs gemocht. Damit es trotzdem nicht mit `--warnung` kollidiert
+   * (auch Gelb, „Frist bald fällig", sichtbar auf derselben Seite), liegen
+   * beide bewusst weit auseinander: „Funke" ist hell, satt und leuchtend —
+   * ein Textmarker-Ton. `--warnung` ist dunkel und gedeckt (ockerfarben) und
+   * erscheint ausschließlich als kleine Schrift auf blassem Grund in der
+   * Fristen-Liste. Gleicher Farbfamilie, aber auf den ersten Blick nicht zu
+   * verwechseln — und „Funke" bleibt an KEINER Schaltfläche, damit die
+   * Handlungsfarbe (Blau) ihre Bedeutung nicht teilen muss.
+   */
+  --funke-h:      45 95% 60%;
+  --funke-vg-h:   38 55% 22%;
+  --funke-fl-h:   45 90% 94%;
   --schatten: 0 0% 0%;
 
   --grund: hsl(var(--grund-h));
@@ -174,9 +198,9 @@
     --warnung-fl-h: 36 40% 13%;
     --kritisch-h:   7 63% 65%;
     --kritisch-fl-h:7 40% 15%;
-    --funke-h:      262 70% 75%;
-    --funke-vg-h:   150 10% 10%;
-    --funke-fl-h:   262 30% 18%;
+    --funke-h:      45 90% 66%;
+    --funke-vg-h:   38 55% 18%;
+    --funke-fl-h:   45 45% 20%;
   }
 }
 :root[data-darstellung="dunkel"] {
@@ -194,9 +218,9 @@
   --warnung-fl-h: 36 40% 13%;
   --kritisch-h:   7 63% 65%;
   --kritisch-fl-h:7 40% 15%;
-  --funke-h:      262 70% 75%;
-  --funke-vg-h:   150 10% 10%;
-  --funke-fl-h:   262 30% 18%;
+  --funke-h:      45 90% 66%;
+  --funke-vg-h:   38 55% 18%;
+  --funke-fl-h:   45 45% 20%;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
