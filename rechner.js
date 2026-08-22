@@ -11,21 +11,29 @@
  * ── DIE EINE STELLE, AN DER DER PREIS STEHT ─────────────────────────────────
  *
  * Massgeblich ist `docs/architektur/preis-und-zaehlung.md` im Hauptprojekt.
- * Hier stehen nur die drei Zahlen, aus denen alles andere folgt. Aendert sich
+ * Hier steht nur die Pakettabelle, aus der alles andere folgt. Aendert sich
  * der Preis, aendert er sich hier — und `preise-erzeugen.py --pruefe` haelt
  * die Tabelle im `<noscript>`-Block dagegen, damit die beiden nicht
  * auseinanderlaufen.
  *
- * Beide Betraege sind BRUTTO: der Gesamtpreis, den ein Privatvermieter zahlt.
+ * Seit dem 22.08.2026 ein Paketmodell statt eines Preises je Einheit
+ * (echte Preisentscheidung des Auftraggebers, hergeleitet gegen objego und
+ * DoorLoop — Begruendung in `docs/eingang/2026-08-22-preismodell-pakete.md`
+ * im Hauptprojekt). Alle Betraege sind BRUTTO: der Gesamtpreis, den ein
+ * Privatvermieter zahlt.
  */
-const MONAT_JE_EINHEIT = 9.99;
-const JAHR_JE_EINHEIT = 100.0;
-const FREI = 1;
+const PAKETE = [
+  { name: "Start", bis: 1, monat: 0, jahr: 0 },
+  { name: "Wachstum", bis: 10, monat: 7.99, jahr: 79.99 },
+  { name: "Portfolio", bis: 50, monat: 24.99, jahr: 249.99 },
+];
 
-/* Der Regler reicht bis 100. Das Zahlenfeld daneben nimmt mehr an — eine
-   Verwaltung mit 340 Wohnungen soll sie eintippen koennen, ohne dass ein
-   Regler mit 3400 Stufen entsteht, auf dem niemand die 12 trifft. */
-const REGLER_MAX = 100;
+/* Der Regler reicht bis zur letzten Paketgrenze. Das Zahlenfeld daneben
+   nimmt mehr an — eine Verwaltung mit mehr Einheiten soll sie eintippen
+   koennen, ohne dass ein Regler mit tausenden Stufen entsteht, auf dem
+   niemand den eigenen Wert trifft. Ab hier gilt kein Paket mehr aus dieser
+   Tabelle, sondern ein individuelles Gespraech (`TARIF-3`). */
+const REGLER_MAX = PAKETE[PAKETE.length - 1].bis;
 const ZAHL_MAX = 9999;
 
 const euro = new Intl.NumberFormat("de-DE", {
@@ -38,13 +46,17 @@ const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 /* ── Rechnung ─────────────────────────────────────────────────────────────── */
 
+function paket(einheiten) {
+  return PAKETE.find((p) => einheiten <= p.bis) || PAKETE[PAKETE.length - 1];
+}
+
 function rechne(einheiten) {
-  const zahlbar = Math.max(0, einheiten - FREI);
-  const monat = zahlbar * MONAT_JE_EINHEIT;
-  const jahr = zahlbar * JAHR_JE_EINHEIT;
+  const p = paket(einheiten);
+  const monat = p.monat;
+  const jahr = p.jahr;
   return {
     einheiten,
-    zahlbar,
+    paket: p,
     monat,
     jahr,
     jahrProMonat: jahr / 12,
@@ -118,14 +130,12 @@ function reglerAufsetzen() {
       ? `${euro.format(r.jahr)} € im Jahr, jährlich gezahlt`
       : `${euro.format(r.monat * 12)} € im Jahr, monatlich gezahlt`;
 
-    if (r.zahlbar === 0) {
+    if (r.paket.monat === 0) {
       herleitung.textContent =
         "Ihre erste Einheit ist dauerhaft kostenlos — ohne Frist und ohne Kreditkarte.";
     } else {
-      const je = jaehrlich ? "100,00 €" : "9,99 €";
       herleitung.textContent =
-        `${ganz.format(r.einheiten)} Einheiten − 1 dauerhaft kostenlos ` +
-        `= ${ganz.format(r.zahlbar)} × ${je}`;
+        `${ganz.format(r.einheiten)} Einheiten → Paket „${r.paket.name}"`;
     }
 
     vorteil.textContent = r.ersparnis > 0 ? `spart ${euro.format(r.ersparnis)} €` : "";
@@ -154,9 +164,9 @@ function reglerAufsetzen() {
      */
     regler.setAttribute(
       "aria-valuetext",
-      r.zahlbar === 0
+      r.paket.monat === 0
         ? "1 Einheit — dauerhaft kostenlos"
-        : `${r.einheiten} Einheiten — ${euro.format(neu)} Euro im Monat`,
+        : `${r.einheiten} Einheiten — Paket ${r.paket.name}, ${euro.format(neu)} Euro im Monat`,
     );
   }
 

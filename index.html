@@ -30,10 +30,16 @@
   eigene Referenzseite mitgeschickt. Diese Fassung übernimmt ihren TYPOGRAFIE-
   UND ENERGIE-Charakter, aber nicht ungeprüft ihren Inhalt:
 
-  - Der PREIS bleibt 9,99 € je Einheit und Monat, erste Einheit dauerhaft frei.
-    Die Referenz zeigte ein anderes Modell (0 € bis 3 Einheiten, dann 2 €). Eine
-    echte Preisänderung ist laut `.claude/rules/general.md` eine von drei
-    Sachen, die gefragt werden — nicht selbst entschieden.
+  - Der PREIS wurde nicht stillschweigend von der Referenz übernommen (0 € bis
+    3 Einheiten, dann 2 €) — eine echte Preisänderung ist laut
+    `.claude/rules/general.md` eine von drei Sachen, die gefragt werden, nicht
+    selbst entschieden. Stattdessen stand hier zunächst weiter der alte Preis
+    (9,99 € je Einheit), bis der Auftraggeber am 22.08.2026 ausdrücklich und
+    mit Begründung ein Paketmodell entschieden hat — an der Konkurrenz
+    orientiert, aber mit eigenen, recherchierten Zahlen statt den Werten der
+    Referenz. Herleitung: `docs/eingang/2026-08-22-preismodell-pakete.md` im
+    Hauptprojekt. Der Unterschied zur Referenz ist damit nicht mehr die Zahl,
+    sondern dass diese hier eine geprüfte Entscheidung ist.
   - KEINE erfundenen Fähigkeiten. Die Referenz zeigte einen KI-Assistenten,
     Bankanbindung, DATEV-Export — nichts davon existiert. Jede Zahl und jede
     Fähigkeit hier ist entweder gebaut (siehe `features/INDEX.md`) oder als
@@ -1052,7 +1058,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
   <div class="leiste">
     <div class="huelle enthuellen">
       <div><div class="n">1</div><div class="l">Einheit dauerhaft kostenlos</div></div>
-      <div><div class="n">9,99<small>€</small></div><div class="l">je weitere Einheit, im Monat</div></div>
+      <div><div class="n">7,99<small>€</small></div><div class="l">ab, im Monat — Paket „Wachstum"</div></div>
       <div><div class="n">Frankfurt</div><div class="l">Supabase-Standort, DSGVO</div></div>
       <div><div class="n">0<small>€</small></div><div class="l">versteckte Kosten — Endpreis inkl. USt</div></div>
     </div>
@@ -1290,7 +1296,7 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
     <div class="huelle enthuellen">
       <div class="sec-kopf">
         <h2>Ein Preis, den man sich merken kann.</h2>
-        <p>Pro Einheit, nicht pro Modul oder Sitzplatz. Keine versteckten Stufen.</p>
+        <p>Drei Pakete, nicht pro Modul oder Sitzplatz abgerechnet. Keine versteckten Stufen.</p>
       </div>
 
       <div class="rechner" hidden>
@@ -1298,13 +1304,13 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
 
         <div class="reglerzeile">
           <input type="range" class="schiene" id="regler"
-                 min="1" max="100" step="1" value="12"
+                 min="1" max="50" step="1" value="5"
                  aria-labelledby="regler-frage">
           <input type="number" class="zahlfeld" id="zahl"
-                 min="1" max="9999" step="1" value="12"
-                 aria-label="Anzahl der Einheiten, auch über 100 eintragbar">
+                 min="1" max="9999" step="1" value="5"
+                 aria-label="Anzahl der Einheiten, auch über 50 eintragbar">
         </div>
-        <p class="spanne" aria-hidden="true"><span>1</span><span>100</span></p>
+        <p class="spanne" aria-hidden="true"><span>1</span><span>50</span></p>
 
         <div class="taktwahl" role="group" aria-label="Zahlweise">
           <button type="button" data-takt="monat" class="aktiv" aria-pressed="true">Monatlich</button>
@@ -1316,25 +1322,25 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
         <div class="ergebnis">
           <div class="ergebnis-gluehen" id="gluehen" aria-hidden="true"></div>
           <p class="betrag-zeile" style="margin:0">
-            <span class="betrag-gross"><span id="betrag">109,89</span><span class="waehrung">€</span></span>
+            <span class="betrag-gross"><span id="betrag">7,99</span><span class="waehrung">€</span></span>
             <span class="takt" id="takt">im Monat</span>
             <span class="jahresvorteil" id="jahresvorteil" hidden></span>
           </p>
           <span class="nebensatz" id="nebensatz"></span>
           <span class="herleitung" id="herleitung"></span>
           <p class="viele" id="viele" hidden>
-            Ab etwa hundert Einheiten lohnt sich ein Gespräch: Für größere Bestände stimmen
-            wir Pakete ab. Bis dahin gilt genau diese Rechnung, ohne Obergrenze.
+            Ab 51 Einheiten lohnt sich ein Gespräch statt einer Tabelle: Für Hausverwaltungen
+            dieser Größe stimmen wir ein eigenes Paket ab, aus echten Zahlen statt einer
+            Preisstufe im Voraus.
           </p>
         </div>
       </div>
 
       <noscript>
         <div class="rechner ohneskript">
-          <p class="frage">Preis je Bestandsgröße</p>
+          <p class="frage">Preis je Paket</p>
           <p style="font-size:.9rem;color:var(--mute);margin-top:-.5rem">
-            Der Regler braucht JavaScript. Dieselbe Rechnung als Tabelle — die erste Einheit
-            ist überall schon abgezogen.
+            Der Regler braucht JavaScript. Dieselbe Rechnung als Tabelle.
           </p>
           <table>
             <thead>
@@ -1342,13 +1348,9 @@ footer .huelle { display: flex; justify-content: space-between; flex-wrap: wrap;
             </thead>
             <tbody>
               <tr><td>1</td><td>0,00 €</td><td>0,00 €</td></tr>
-              <tr><td>2</td><td>9,99 €</td><td>100,00 €</td></tr>
-              <tr><td>3</td><td>19,98 €</td><td>200,00 €</td></tr>
-              <tr><td>5</td><td>39,96 €</td><td>400,00 €</td></tr>
-              <tr><td>10</td><td>89,91 €</td><td>900,00 €</td></tr>
-              <tr><td>20</td><td>189,81 €</td><td>1.900,00 €</td></tr>
-              <tr><td>50</td><td>489,51 €</td><td>4.900,00 €</td></tr>
-              <tr><td>100</td><td>989,01 €</td><td>9.900,00 €</td></tr>
+              <tr><td>2–10</td><td>7,99 €</td><td>79,99 €</td></tr>
+              <tr><td>11–50</td><td>24,99 €</td><td>249,99 €</td></tr>
+              <tr><td>ab 51</td><td colspan="2">individuell — Gespräch statt Tabelle</td></tr>
             </tbody>
           </table>
         </div>

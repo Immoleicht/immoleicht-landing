@@ -71,17 +71,20 @@ const browser = await chromium.launch();
   const rechner = seite.locator(".rechner");
 
   melde("Rechner sichtbar (Skript lief)", await rechner.isVisible(), true);
-  melde("Startwert 12 Einheiten", await betrag.innerText(), "109,89");
+  melde("Startwert 5 Einheiten, Paket Wachstum", await betrag.innerText(), "7,99");
 
   // Ueber das Zahlenfeld: der Weg fuer eine Verwaltung, die 37 eintippt.
+  // 37 faellt ins Paket "Portfolio" (11 bis 50 Einheiten).
   await seite.fill("#zahl", "37");
-  melde("37 Einheiten", await betrag.innerText(), "359,64");
+  melde("37 Einheiten, Paket Portfolio", await betrag.innerText(), "24,99");
   melde("Regler zieht mit", await seite.inputValue("#regler"), "37");
 
-  // Ueber 100: Regler bleibt am Anschlag, die Zahl zaehlt weiter.
+  // Ueber die letzte Paketgrenze: Regler bleibt am Anschlag, die Zahl zaehlt
+  // weiter, der Preis bleibt beim letzten Paket (individuell ist hier nicht
+  // abgebildet, siehe "Hinweis fuer grosse Bestaende").
   await seite.fill("#zahl", "340");
-  melde("340 Einheiten", await betrag.innerText(), "3.386,61");
-  melde("Regler am Anschlag", await seite.inputValue("#regler"), "100");
+  melde("340 Einheiten, weiterhin Paket Portfolio", await betrag.innerText(), "24,99");
+  melde("Regler am Anschlag", await seite.inputValue("#regler"), "50");
   melde("Hinweis fuer grosse Bestaende", await seite.locator("#viele").isVisible(), true);
 
   // Der kostenlose Fall.
@@ -94,30 +97,31 @@ const browser = await chromium.launch();
   );
   melde("kein Hinweis auf Pakete", await seite.locator("#viele").isVisible(), false);
 
-  // Jaehrlich.
+  // Jaehrlich. 12 faellt ins Paket "Portfolio" (24,99 €/Monat, 249,99 €/Jahr).
   await seite.fill("#zahl", "12");
   await seite.click('.taktwahl button[data-takt="jahr"]');
-  melde("jaehrlich, auf den Monat", await betrag.innerText(), "91,67");
-  melde("Ersparnis genannt", await seite.locator("#jahresvorteil").innerText(), "spart 218,68 €");
+  melde("jaehrlich, auf den Monat", await betrag.innerText(), "20,83");
+  melde("Ersparnis genannt", await seite.locator("#jahresvorteil").innerText(), "spart 49,89 €");
   melde(
     "Jahresbetrag genannt",
-    (await seite.locator("#nebensatz").innerText()).includes("1.100,00 € im Jahr"),
+    (await seite.locator("#nebensatz").innerText()).includes("249,99 € im Jahr"),
     true,
   );
   await seite.click('.taktwahl button[data-takt="monat"]');
-  melde("zurueck auf monatlich", await betrag.innerText(), "109,89");
+  melde("zurueck auf monatlich", await betrag.innerText(), "24,99");
   melde("Ersparnis wieder weg", await seite.locator("#jahresvorteil").isVisible(), false);
 
-  // Tastatur: der Regler muss ohne Maus bedienbar sein.
+  // Tastatur: der Regler muss ohne Maus bedienbar sein. Ausgangswert 12,
+  // zwei Schritte nach rechts macht 14 - weiterhin Paket "Portfolio".
   await seite.locator("#regler").focus();
   await seite.keyboard.press("ArrowRight");
   await seite.keyboard.press("ArrowRight");
   melde("Pfeiltaste bewegt den Regler", await seite.inputValue("#regler"), "14");
-  melde("und die Zahl rechnet mit", await betrag.innerText(), "129,87");
+  melde("und die Zahl rechnet mit", await betrag.innerText(), "24,99");
 
   // Was eine Vorlesehilfe ansagt: nicht "14", sondern was es kostet.
   const gesprochen = await seite.locator("#regler").getAttribute("aria-valuetext");
-  melde("Ansage nennt den Preis", gesprochen.includes("129,87"), true);
+  melde("Ansage nennt den Preis", gesprochen.includes("24,99"), true);
 
   // Zielgroessen.
   for (const wahl of ["#zahl", '.taktwahl button[data-takt="jahr"]', "#darstellung"]) {
@@ -129,8 +133,8 @@ const browser = await chromium.launch();
   }
 
   // Unsinnige Eingaben duerfen nicht in Unsinn muenden. 99999 wird auf 9999
-  // gekappt, davon sind 9998 zahlbar: 9998 × 9,99 = 99.880,02.
-  for (const [eingabe, erwartet] of [["0", "0,00"], ["-5", "0,00"], ["99999", "99.880,02"]]) {
+  // gekappt - weit ueber der letzten Paketgrenze, also Paket "Portfolio".
+  for (const [eingabe, erwartet] of [["0", "0,00"], ["-5", "0,00"], ["99999", "24,99"]]) {
     await seite.fill("#zahl", eingabe);
     await seite.locator("#zahl").blur();
     melde(`Eingabe "${eingabe}" abgefangen`, await betrag.innerText(), erwartet);
@@ -164,7 +168,7 @@ const browser = await chromium.launch();
   // von `.leiste .n small { margin-left: … }`, nicht von einem Zeichen.
   const zahlen = await seite.locator(".leiste .n").allInnerTexts();
   melde("Kennzahl: erste Einheit", zahlen[0].trim(), "1");
-  melde("Kennzahl: Monatspreis", zahlen[1].replace(/\s+/g, ""), "9,99€");
+  melde("Kennzahl: Monatspreis", zahlen[1].replace(/\s+/g, ""), "7,99€");
   melde("Kennzahl: Standort", zahlen[2].trim(), "Frankfurt");
   melde("Kennzahl: versteckte Kosten", zahlen[3].replace(/\s+/g, ""), "0€");
 
@@ -291,7 +295,7 @@ const browser = await chromium.launch();
   melde("Regler bleibt verborgen", await seite.locator(".rechner:not(.ohneskript)").isVisible(), false);
   melde(
     "Preis steht trotzdem da",
-    (await seite.locator(".ohneskript").innerText()).includes("89,91 €"),
+    (await seite.locator(".ohneskript").innerText()).includes("7,99 €"),
     true,
   );
   // Der wichtigste Punkt: Nichts ist durch die Einblend-Bewegung unsichtbar.
